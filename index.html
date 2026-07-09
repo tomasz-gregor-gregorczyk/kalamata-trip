@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workation Gdynia → Kalamata (wariant bałkański)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#151f38; --card:#1c2842; --card2:#223052;
+    --accent:#38bdf8; --accent2:#f59e0b; --green:#34d399; --text:#e2e8f0;
+    --muted:#94a3b8; --border:#2b3a5c; --out:#38bdf8; --ret:#f472b6; --brd:#f59e0b; --work:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
+  .wrap{display:flex;height:100vh}
+  #map{flex:1;height:100vh;background:#0b1220}
+  .side{width:450px;max-width:47vw;height:100vh;overflow-y:auto;
+    background:var(--panel);border-left:1px solid var(--border);padding:0 0 40px}
+  header{padding:18px 20px 14px;border-bottom:1px solid var(--border);
+    background:linear-gradient(135deg,#1e293b,#0f172a);position:sticky;top:0;z-index:5}
+  header h1{margin:0 0 4px;font-size:17px}
+  header p{margin:0;font-size:12px;color:var(--muted)}
+  .stats{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;
+    padding:7px 11px;flex:1;min-width:78px}
+  .stat b{display:block;font-size:16px;color:var(--accent)}
+  .stat span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .section-title{padding:16px 20px 6px;font-size:12px;text-transform:uppercase;
+    letter-spacing:1px;color:var(--muted);font-weight:700}
+  .leg-out{color:var(--out)} .leg-ret{color:var(--ret)}
+  .day{margin:7px 16px;background:var(--card);border:1px solid var(--border);
+    border-radius:12px;padding:11px 13px;cursor:pointer;transition:.15s;border-left:4px solid var(--out)}
+  .day.ret{border-left-color:var(--ret)}
+  .day.stay{border-left-color:var(--green);cursor:default}
+  .day.work{border-left-color:var(--work);background:#1e1b31;cursor:default}
+  .day.brd{border-left-color:var(--brd);background:#1e2436}
+  .day:hover{background:var(--card2);transform:translateX(-3px)}
+  .day.stay:hover,.day.work:hover{transform:none;background:#1e1b31}
+  .day.active{outline:2px solid var(--accent);background:var(--card2)}
+  .day-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .day-num{font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+  .day-date{font-size:10.5px;color:var(--accent2);font-weight:700}
+  .day-route{font-size:14.5px;font-weight:700;margin:3px 0 6px;line-height:1.28}
+  .times{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+  .chip{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:20px;
+    background:#0d1526;border:1px solid var(--border);color:var(--text);display:inline-flex;gap:4px;align-items:center}
+  .chip.go{color:#7dd3fc} .chip.brd{color:#fbbf24;border-color:#5c4a12}
+  .chip.end{color:#6ee7b7}
+  .day-meta{font-size:11.5px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  .badge{font-size:9.5px;padding:2px 7px;border-radius:20px;background:#3b2f14;
+    color:#fbbf24;border:1px solid #665012;font-weight:700}
+  .note{width:100%;margin-top:9px;background:#0d1526;border:1px solid var(--border);
+    color:var(--text);border-radius:8px;padding:7px 9px;font-size:12px;
+    font-family:inherit;resize:vertical;min-height:34px;display:none;line-height:1.4}
+  .day.open .note{display:block}
+  .day.work .note,.day.stay .note{display:block;margin-top:6px}
+  .chk{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+  .chk input{width:15px;height:15px;accent-color:var(--green)}
+  .calc{margin:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+  .calc h3{margin:0 0 10px;font-size:13px}
+  .row{display:flex;justify-content:space-between;align-items:center;margin:7px 0;font-size:13px}
+  .row label{color:var(--muted)}
+  .row input{width:92px;background:#0d1526;border:1px solid var(--border);color:var(--text);
+    border-radius:6px;padding:5px 8px;font-size:13px;text-align:right}
+  .total{border-top:1px solid var(--border);margin-top:10px;padding-top:10px;font-size:15px}
+  .total b{color:var(--green);font-size:19px}
+  .info{margin:8px 16px;background:#1a1630;border:1px solid #3b2f5c;border-radius:12px;
+    padding:12px 14px;font-size:12px;line-height:1.55;color:#d6c9f0}
+  .info b{color:#c4b5fd}
+  .legend{position:absolute;bottom:14px;left:14px;z-index:1000;background:rgba(15,23,42,.92);
+    border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--text)}
+  .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
+  .dot{width:12px;height:3px;border-radius:2px;display:inline-block}
+  .leaflet-popup-content{font-size:12.5px;line-height:1.45}
+  .leaflet-popup-content b{color:#0369a1}
+  .leaflet-popup-content a{color:#0284c7;font-weight:700}
+  .mk{background:var(--accent);color:#04202e;border-radius:50%;width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
+    border:2px solid #e0f2fe;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .mk.start{background:var(--green);color:#052e1b}
+  .mk.end{background:var(--accent2);color:#3a2500}
+  .bmk{background:#f59e0b;color:#3a2500;border-radius:6px;width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
+    border:2px solid #fde68a;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .emk{background:#64748b;border-radius:50%;width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;font-size:12px;
+    border:2px solid #cbd5e1;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .toolbar{padding:10px 16px 2px;display:flex;gap:8px}
+  .btn{flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);
+    border-radius:8px;padding:7px;font-size:12px;cursor:pointer}
+  .btn:hover{background:#2a3a60}
+  .mapoff{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    color:var(--muted);font-size:13px;text-align:center;padding:16px;max-width:80%;line-height:1.5}
+  ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#2b3a5c;border-radius:5px}
+  @media (max-width:900px){
+    body{overflow:auto;height:auto}
+    .wrap{flex-direction:column;height:auto}
+    #map{width:100%;height:48vh;min-height:280px;flex:none}
+    .side{width:100%;max-width:100%;height:auto;border-left:none;border-top:1px solid var(--border)}
+    header{position:static}
+    .legend{font-size:10px;padding:7px 9px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="map">
+    <div class="legend">
+      <div><span class="dot" style="background:var(--out)"></span> Trasa (korytarz bałkański)</div>
+      <div><span class="dot" style="background:var(--green);height:12px;width:12px;border-radius:50%"></span> Start / meta</div>
+      <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
+      <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
+      <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
+      <div><span style="font-size:12px">⛰️</span> Górski / wysoki odcinek</div>
+    </div>
+  </div>
+  <div class="side">
+    <header>
+      <h1>💻 Workation Gdynia → Kalamata</h1>
+      <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Cel: szybko do Grecji/UE (net do pracy). Na miejscu pon. wieczór.</p>
+      <div class="stats">
+        <div class="stat"><b>25</b><span>dni łącznie</span></div>
+        <div class="stat"><b>~5 290</b><span>km w obie str.</span></div>
+        <div class="stat"><b>8</b><span>dni jazdy</span></div>
+        <div class="stat"><b>6</b><span>nocy w drodze</span></div>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button class="btn" onclick="toggleNotes(true)">Rozwiń notatki</button>
+      <button class="btn" onclick="toggleNotes(false)">Zwiń</button>
+      <button class="btn" onclick="resetPlan()">Wyczyść zapisane</button>
+    </div>
+
+    <div class="section-title leg-out">▼ Dojazd — pt–pon (2–5.10)</div>
+    <div id="list-out"></div>
+
+    <div class="section-title" style="color:var(--green)">■ Pobyt / workation</div>
+    <div id="list-stay"></div>
+
+    <div class="section-title leg-ret">▲ Powrót — pt–pon (23–26.10)</div>
+    <div id="list-ret"></div>
+
+    <div class="section-title">Kalkulator kosztów (obie strony)</div>
+    <div class="calc">
+      <h3>Paliwo i opłaty — Vivaro L2H2 (kat. 2)</h3>
+      <div class="row"><label>Dystans w 1 stronę (km)</label><input id="c-km" type="number" value="2645"></div>
+      <div class="row"><label>Spalanie (l/100 km)</label><input id="c-cons" type="number" value="10" step="0.5"></div>
+      <div class="row"><label>Cena paliwa ON (zł/l)</label><input id="c-price" type="number" value="6.6" step="0.1"></div>
+      <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="720"></div>
+      <div class="row"><label>Nocleg w drodze (zł/noc)</label><input id="c-hotel" type="number" value="300"></div>
+      <div class="row"><label>Nocy w drodze</label><input id="c-nights" type="number" value="6"></div>
+      <div class="row"><span>Paliwo (tam i z powrotem)</span><span id="r-fuel">—</span></div>
+      <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
+      <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
+      <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
+    </div>
+
+    <div class="section-title">Logika workation + ważne uwagi</div>
+    <div class="info">
+      <b>💻 Praca a roaming:</b> Polska, Słowacja, Węgry i Grecja są w UE — net działa jak w kraju. <b>Serbia i Macedonia to strefa roamingu</b> (czerwony odcinek). Dlatego cały ten odcinek przejeżdżamy w <b>weekend</b> (sob+niedz), a w Grecji jesteś już w niedzielę wieczorem — od poniedziałku pracujesz z pełnym netem. W powrocie tak samo: pracujesz w piątek z Grecji, weekend na przejazd, w Polsce w niedzielę wieczorem.<br><br>
+      <b>Dni robocze:</b> jazda dopiero <b>po pracy, po 15:00</b> — rano nie ruszamy. To robi z poniedziałku (dojazd) i piątku (powrót) długie wieczory (~565 km, dojazd ~21:15) — jeśli za dużo, rozbij na nocleg w Patras i dokończ następnego dnia. Cały dzień jesteś w kraju UE, więc net działa.<br><br>
+      <b>Weekendy są długie:</b> soboty i niedziele to ~800–850 km (~9–10 h) — męczące, ale bez pracy. Granice wypadają: sb Horgoš (do Serbii), niedz powrót Röszke (do UE) — sprawdzaj kamery, backup Kelebija.<br><br>
+      <b>Granice poza UE:</b> Serbia i Macedonia — dowody/paszporty + <b>Zielona Karta</b>. Kliknij żółty znacznik → kamera live + najlepsze godziny.<br><br>
+      <b>Winiety:</b> Słowacja + Węgry (10-dniowe) — <b>drugi komplet na powrót</b> (pierwszy wygaśnie).<br><br>
+      <b>EES:</b> wjazd do UE (Evzoni w dojeździe, Röszke w powrocie) — biometria, paszporty gotowe.<br><br>
+      <b>⛰️ Wysokości:</b> Egnatia przez Pindos koło Metsovo (~1 100 m) — dni 3–4 (dojazd) i 5–6 (powrót). Górski odcinek pokonujesz rano/za dnia. Pod koniec X wyżej bywa zimno i mgła.<br><br>
+      <b>🚐 Vivaro L2H2 (kamper ≤3,5 t):</b> wysoki bus → kat. 2 w Serbii, Macedonii i Grecji (opłaty ~40% wyższe niż osobówka, stąd ~720 zł/stronę). Winiety SK/HU po masie ≤3,5 t — bez zmian. Spalanie realnie ~10 l/100. Możesz spać na kempingach/aire zamiast hoteli — taniej.<br><br>
+      <b>Długość pobytu:</b> ~18 nocy (5–23.10), by powrót też wypadł na weekend. Chcesz dokładnie 2 tyg.? wyjazd pon. 19.10 — ale wtedy Bałkany w środku tygodnia, gorzej dla pracy.
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- miasta i granice ----
+const CITIES = {
+  gdynia:      {name:"Gdynia",      ll:[54.5189,18.5305]},
+  czestochowa: {name:"Częstochowa", ll:[50.8118,19.1203]},
+  belgrad:     {name:"Belgrad — Camp Dunav (Zemun)", ll:[44.8580,20.3300]},
+  grevena:     {name:"Grevena (GR)",ll:[40.0830,21.4270]},
+  patras:      {name:"Patras / Rio",ll:[38.2460,21.7350]},
+  kalamata:    {name:"Kalamata",    ll:[37.0389,22.1142]},
+};
+
+const BORDERS = [
+  {key:'horgos_b', ll:[46.16,19.98], name:'Horgoš–Röszke (HU↔RS)',
+   best:'Najlepiej: przed 07:00 lub po 11:00. Unikaj 07–11, 16–20 i weekendów. Backup: Kelebija (+45 km).',
+   roam:'📵 Dojazd: wjeżdżasz do Serbii → WYŁĄCZ dane. 📶 Powrót: po wjeździe na Węgry (UE) → WŁĄCZ dane.',
+   cam:'https://borderalarm.com/bottlenecks/roszke-horgos/'},
+  {key:'presevo_b', ll:[42.24,21.68], name:'Preševo–Tabanovce (RS↔MK)',
+   best:'Najlepiej: dni robocze 10–15. Unikaj pt i nd wieczorem.',
+   roam:'📵 Cały czas poza UE (Serbia ↔ Macedonia) — dane mobilne wyłączone.',
+   cam:'https://borderalarm.com/bottlenecks/presevo-tabanovce/'},
+  {key:'evzoni_b', ll:[41.11,22.53], name:'Bogorodica–Evzoni (MK↔GR)',
+   best:'Najlepiej: dni robocze 10–15. Wjazd do UE = kontrola EES. Alternatywa: Dojran.',
+   roam:'📶 Dojazd: wjeżdżasz do Grecji (UE) → WŁĄCZ dane (net do pracy!). 📵 Powrót: wyjazd z UE → WYŁĄCZ dane.',
+   cam:'https://borderalarm.com/bottlenecks/bogorodica-evzoni/'},
+];
+BORDERS.forEach(b=>CITIES[b.key]={name:b.name, ll:b.ll});
+
+// linia trasy
+const ROUTE = [
+  [54.5189,18.5305],[51.76,19.46],[50.8118,19.1203],[50.26,19.02],
+  [49.22,18.74],[48.15,17.11],[47.4979,19.0402],[46.25,20.15],
+  [46.16,19.98],[45.25,19.85],[44.7866,20.4489],[43.32,21.90],
+  [42.24,21.68],[41.9981,21.4254],[41.11,22.53],[40.64,22.94],
+  [40.0830,21.4270],[39.6650,20.8537],[38.32,21.77],[38.25,21.73],[37.0389,22.1142],
+];
+
+const STOPS = [
+  {key:"gdynia",     label:"S", cls:"start", txt:"Start · pt 2.10 po pracy"},
+  {key:"czestochowa",label:"1", cls:"",      txt:"Nocleg: pt 2.10 (dojazd) i nd 25.10 (powrót)"},
+  {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 i sb 24.10 · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com"},
+  {key:"grevena",    label:"3", cls:"",      txt:"Nocleg: nd 4.10 (dojazd) i pt 23.10 (powrót) · Grecja — net UE działa!"},
+  {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — workation (~18 nocy, 5–23.10)"},
+];
+
+// ---- rozpiska ----
+const OUT = [
+  {day:"DZIEŃ 1", date:"pt 2.10 · praca", type:"drive", from:"Gdynia (po pracy, 15:00)", to:"Częstochowa", key:"czestochowa",
+   km:450, temp:"~16°/8°", dep:"15:00", arr:"~20:00",
+   note:"Pracujesz normalnie do 15:00, potem ruszasz — wieczorny odcinek ~450 km. Weekend przeznaczamy na główne kilometry."},
+
+  {day:"DZIEŃ 2", date:"sb 3.10 · weekend", type:"toborder", from:"Częstochowa", to:"granica Horgoš–Röszke", key:"horgos_b",
+   km:660, temp:"~19°/9°", dep:"06:00", arr:"~13:30", badge:"granica HU→RS",
+   note:"Długi dzień bez pracy. Przez Słowację (winiety SK+HU) i Węgry. Sobota na Horgoš — sprawdź kamery, w razie kolejki Kelebija. 📵 Wjazd do Serbii — wyłącz dane."},
+  {day:"DZIEŃ 2", date:"sb 3.10 · weekend", type:"fromborder", from:"Horgoš–Röszke", to:"Belgrad · Camp Dunav (Zemun)", key:"belgrad",
+   km:190, temp:"~20°/10°", dep:"~14:15", arr:"~17:30",
+   note:"Nocleg: Camp Dunav w Zemunie — zjazd 1 km z E-75, więc nie wjeżdżasz busem w centrum. Prąd, wifi, prysznice, zrzut wód. REZERWUJ i zapisz nawigację offline jeszcze przed granicą (w Serbii roaming = brak danych). Do centrum tramwaj/taxi wieczorem."},
+
+  {day:"DZIEŃ 3", date:"nd 4.10 · weekend", type:"toborder", from:"Belgrad", to:"granica Preševo–Tabanovce", key:"presevo_b",
+   km:360, temp:"~19°/9°", dep:"06:00", arr:"~10:30", badge:"granica RS→MK",
+   note:"Wczesny start, idealne okno (10–15). 📵 Dalej poza UE (Macedonia) — dane wyłączone."},
+  {day:"DZIEŃ 3", date:"nd 4.10 · weekend", type:"toborder", from:"Preševo–Tabanovce", to:"granica Bogorodica–Evzoni", key:"evzoni_b",
+   km:250, temp:"~20°/9°", dep:"~11:00", arr:"~14:00", badge:"granica MK→GR · EES",
+   note:"Przez Skopje (przelotowo). Wjazd do UE — EES, paszporty gotowe. 📶 WŁĄCZ dane — od tego momentu internet działa (UE). To klucz do pracy w tygodniu."},
+  {day:"DZIEŃ 3", date:"nd 4.10 · weekend", type:"fromborder", from:"Bogorodica–Evzoni", to:"Grevena (Grecja)", key:"grevena",
+   km:190, temp:"~16°/7° (⛰️ Pindos)", dep:"~14:45", arr:"~16:30",
+   note:"Autostrada Egnatia. Nocleg w Grecji = działający net na jutrzejszą pracę. Grevena tuż przed najwyższą częścią Pindos."},
+
+  {day:"DZIEŃ 4", date:"pn 5.10 · praca", type:"work",
+   to:"💻 Praca zdalna 09:00–15:00 · Grevena (Grecja, net działa)",
+   note:"Rano bez jazdy — pracujesz z Greveny. Po 15:00 ruszasz w ostatni odcinek."},
+  {day:"DZIEŃ 4", date:"pn 5.10 · praca", type:"drive", from:"Grevena (po 15:00)", to:"KALAMATA", key:"kalamata",
+   km:565, temp:"~20°→22°", dep:"15:00", arr:"~21:15",
+   note:"Długi wieczorny odcinek (~565 km): przez Pindos → Ioannina → most Rio–Antirrio → Patras → Kalamata ~21:15. Alternatywa: nocleg w Patras (~20:00) i ostatnie 215 km we wtorek po pracy."},
+];
+
+const STAY = [
+  {type:"stay", date:"5–23.10", to:"Kalamata — workation (~18 nocy)", temp:"~23°/14° → ~20° pod koniec (morze ~22°)",
+   note:"Praca zdalna z Kalamaty (UE, net działa). Baza: Mesenia, Mystras, Pylos, Mani, plaże. Wyjazd powrotny w piątek 23.10, żeby weekend znów przypadł na Bałkany."},
+];
+
+const RET = [
+  {day:"DZIEŃ 5", date:"pt 23.10 · praca", type:"work",
+   to:"💻 Praca zdalna 09:00–15:00 · Kalamata (ostatni dzień)",
+   note:"Rano bez jazdy — pracujesz z Kalamaty. Ostatni dzień z pełnym netem przed weekendem w roamingu. Po 15:00 ruszasz."},
+  {day:"DZIEŃ 5", date:"pt 23.10 · praca", type:"drive", from:"Kalamata (po 15:00)", to:"Grevena (Grecja)", key:"grevena",
+   km:565, temp:"~18°→16° (⛰️)", dep:"15:00", arr:"~21:15",
+   note:"Długi wieczorny odcinek (~565 km): Kalamata → Patras → most Rio–Antirrio → Egnatia → Grevena ~21:15. Nocleg w Grecji (net jeszcze działa)."},
+
+  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"toborder", from:"Grevena", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
+   km:190, temp:"~15°/6° (⛰️)", dep:"07:00", arr:"~09:00", badge:"granica GR→MK",
+   note:"📵 Wyjazd z Grecji — wyłącz dane (wchodzisz w roaming; weekend, więc bez wpływu na pracę)."},
+  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"toborder", from:"Evzoni–Bogorodica", to:"granica Tabanovce–Preševo", key:"presevo_b",
+   km:250, temp:"~15°/6°", dep:"~09:30", arr:"~12:30", badge:"granica MK→RS",
+   note:"Przez Skopje (przelotowo)."},
+  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"fromborder", from:"Tabanovce–Preševo", to:"Belgrad · Camp Dunav (Zemun)", key:"belgrad",
+   km:360, temp:"~15°/6°", dep:"~13:00", arr:"~17:00",
+   note:"Znów Camp Dunav w Zemunie (1 km z E-75, prąd, wifi, prysznice). Rezerwuj wcześniej — 24.10 to końcówka sezonu (kemping czynny do 1.11). Zapisz nawigację offline przed granicą."},
+
+  {day:"DZIEŃ 7", date:"nd 25.10 · weekend", type:"toborder", from:"Belgrad", to:"granica Röszke", key:"horgos_b",
+   km:190, temp:"~14°/5°", dep:"06:00", arr:"~08:00", badge:"granica RS→HU · EES",
+   note:"Wjazd do UE + EES. Niedziela rano — sprawdź kamery, backup Kelebija. 📶 Po wjeździe na Węgry — WŁĄCZ dane (znów w UE)."},
+  {day:"DZIEŃ 7", date:"nd 25.10 · weekend", type:"fromborder", from:"Röszke", to:"Częstochowa", key:"czestochowa",
+   km:660, temp:"~12°/4°", dep:"~09:00", arr:"~17:30",
+   note:"Przez Węgry i Słowację (drugi komplet winiet SK+HU). Nocleg w Częstochowie (Polska, UE — net na jutrzejszą pracę). Bonus: w nocy zmiana czasu na zimowy +1 h."},
+
+  {day:"DZIEŃ 8", date:"pn 26.10 · praca", type:"work",
+   to:"💻 Praca zdalna 09:00–15:00 · Częstochowa (PL)",
+   note:"Rano bez jazdy — pracujesz z Częstochowy. Po 15:00 ostatni odcinek do domu."},
+  {day:"DZIEŃ 8", date:"pn 26.10 · praca", type:"drive", from:"Częstochowa (po 15:00)", to:"GDYNIA", key:"gdynia",
+   km:450, temp:"~11°/5°", dep:"15:00", arr:"~20:00",
+   note:"Po pracy → dom ~20:00. 🏠"},
+];
+
+// ---- render listy NAJPIERW (działa też offline, bez mapy) ----
+const store = loadStore();
+function loadStore(){try{return JSON.parse(localStorage.getItem('kalamata_workation_v1')||'{}')}catch(e){return {}}}
+function saveStore(){try{localStorage.setItem('kalamata_workation_v1',JSON.stringify(store))}catch(e){}}
+
+function chips(d){
+  if(d.type==="toborder")
+    return `<div class="times"><span class="chip go">🕐 start ${d.dep}</span><span class="chip brd">🛂 na granicy ${d.arr}</span></div>`;
+  if(d.type==="fromborder")
+    return `<div class="times"><span class="chip brd">🛂 po odprawie ${d.dep}</span><span class="chip end">🏨 ${d.arr}</span></div>`;
+  if(d.type==="drive")
+    return `<div class="times"><span class="chip go">🕐 ${d.dep}</span><span class="chip end">🏁 ${d.arr}</span></div>`;
+  return "";
+}
+function icon(d){
+  return d.type==="toborder"?"🚗 → 🛂":d.type==="fromborder"?"🛂 → 🏨":"🚗";
+}
+function dayCard(d, cls, idx){
+  const id = cls+idx;
+  const noteVal = (store[id]&&store[id].note!=null)?store[id].note:d.note;
+  if(d.type==="stay"){
+    return `<div class="day stay">
+      <div class="day-top"><span class="day-num">🏖️ POBYT</span><span class="day-date">${d.date}</span></div>
+      <div class="day-route">${d.to}</div>
+      ${d.temp?`<div class="day-meta"><span>🌡️ ${d.temp}</span></div>`:''}
+      <div class="note">${noteVal}</div></div>`;
+  }
+  if(d.type==="work"){
+    return `<div class="day work">
+      <div class="day-top"><span class="day-num">💻 PRACA</span><span class="day-date">${d.date||''}</span></div>
+      <div class="day-route">${d.to}</div>
+      <div class="note">${noteVal}</div></div>`;
+  }
+  const done = store[id]&&store[id].done;
+  const brd = (d.type==="toborder"||d.type==="fromborder")?" brd":"";
+  const bw = d.badge?`<span class="badge">${d.badge}</span>`:'';
+  return `<div class="day ${cls}${brd}" data-key="${d.key}" data-id="${id}" onclick="focusDay(this,event)">
+    <div class="day-top">
+      <span class="day-num">${d.day} · ${icon(d)}</span>
+      <span class="day-date">${d.date}</span>
+    </div>
+    <div class="day-route">${d.from} → ${d.to}</div>
+    ${chips(d)}
+    <div class="day-meta"><span>📏 ~${d.km} km</span>${d.temp?`<span>🌡️ ${d.temp}</span>`:''}${bw}</div>
+    <textarea class="note" onclick="event.stopPropagation()" oninput="saveNote('${id}',this.value)">${noteVal}</textarea>
+    <label class="chk" onclick="event.stopPropagation()">
+      <input type="checkbox" ${done?'checked':''} onchange="saveDone('${id}',this.checked)"> zaplanowane / zarezerwowane
+    </label>
+  </div>`;
+}
+document.getElementById('list-out').innerHTML = OUT.map((d,i)=>dayCard(d,'out',i)).join('');
+document.getElementById('list-stay').innerHTML = STAY.map((d,i)=>dayCard(d,'stay',i)).join('');
+document.getElementById('list-ret').innerHTML = RET.map((d,i)=>dayCard(d,'ret',i)).join('');
+
+let activeEl=null;
+function focusDay(el,e){
+  const key=el.getAttribute('data-key');
+  el.classList.toggle('open');
+  if(activeEl&&activeEl!==el)activeEl.classList.remove('active');
+  el.classList.add('active');activeEl=el;
+  const c=CITIES[key];
+  if(map&&c){map.flyTo(c.ll,7,{duration:.8}); markers[key]&&markers[key].openPopup();}
+}
+function saveNote(id,v){store[id]=store[id]||{};store[id].note=v;saveStore();}
+function saveDone(id,v){store[id]=store[id]||{};store[id].done=v;saveStore();}
+function toggleNotes(open){document.querySelectorAll('.day').forEach(d=>{if(!d.classList.contains('stay')&&!d.classList.contains('work'))d.classList.toggle('open',open);});}
+function resetPlan(){if(confirm('Wyczyścić zapisane notatki i zaznaczenia?')){try{localStorage.removeItem('kalamata_workation_v1')}catch(e){}location.reload();}}
+
+// ---- kalkulator ----
+const ids=['c-km','c-cons','c-price','c-toll','c-hotel','c-nights'];
+function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł';}
+function v(id){return +document.getElementById(id).value||0;}
+function calc(){
+  const km=v('c-km'),cons=v('c-cons'),price=v('c-price'),toll=v('c-toll'),hotel=v('c-hotel'),nights=v('c-nights');
+  const fuel=(km*2)*(cons/100)*price, tollT=toll*2, hotelT=hotel*nights;
+  document.getElementById('r-fuel').textContent=fmt(fuel);
+  document.getElementById('r-toll').textContent=fmt(tollT);
+  document.getElementById('r-hotel').textContent=fmt(hotelT);
+  document.getElementById('r-total').textContent=fmt(fuel+tollT+hotelT);
+}
+ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
+calc();
+
+// ---- mapa (opcjonalna — wymaga internetu; plan po prawej działa bez niej) ----
+let map=null, markers={};
+const ELEV = [
+  {ll:[49.42,19.20], name:'Beskidy — granica PL/SK', alt:'~600–700 m',
+   note:'Krótki górski odcinek. W końcu października rano możliwa mgła i przymrozek.'},
+  {ll:[39.77,21.18], name:'Pindos / Metsovo — Egnatia Odos (A2)', alt:'~1 000–1 150 m — najwyższy punkt trasy',
+   note:'Nowoczesna autostrada z licznymi tunelami i wiaduktami — NIE serpentyny. Łagodne, równe nachylenia (~5–6%), busem to długi, spokojny podjazd i zjazd. Stara droga przez przełęcz Katara (1690 m) była stroma — autostrada omija ją tunelami. Uwaga: w końcu X wyżej zimno, mgła i wiatr; w powrocie (pt) pokonujesz ten odcinek po zmroku — światła, ostrożnie.'},
+];
+function initMap(){
+  const mapEl=document.getElementById('map');
+  if(typeof L==='undefined'){
+    mapEl.insertAdjacentHTML('beforeend','<div class="mapoff">🗺️ Mapa wymaga internetu.<br>Plan podróży, godziny i kalkulator po prawej działają offline.</div>');
+    return;
+  }
+  try{
+    map = L.map('map',{scrollWheelZoom:true}).setView([46,20],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18, attribution:'© OpenStreetMap'}).addTo(map);
+    L.polyline(ROUTE,{color:'#38bdf8',weight:12,opacity:.12}).addTo(map);
+    L.polyline(ROUTE,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map);
+    L.polyline(ROUTE.slice(8,15),{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
+      .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE). Przejeżdżamy ją w weekend, gdy nie pracujecie.');
+    ELEV.forEach(m=>{
+      const ic=L.divIcon({className:'',html:'<div class="emk">⛰️</div>',iconSize:[22,22],iconAnchor:[11,11]});
+      L.marker(m.ll,{icon:ic}).addTo(map).bindPopup(`<b>⛰️ ${m.name}</b><br><b>${m.alt}</b><br>${m.note}`);
+    });
+    STOPS.forEach(s=>{
+      const c=CITIES[s.key];
+      const ic=L.divIcon({className:'',html:`<div class="mk ${s.cls}">${s.label}</div>`,iconSize:[26,26],iconAnchor:[13,13]});
+      markers[s.key]=L.marker(c.ll,{icon:ic}).addTo(map).bindPopup(`<b>${c.name}</b><br>${s.txt}`);
+    });
+    BORDERS.forEach(b=>{
+      const ic=L.divIcon({className:'',html:'<div class="bmk">🛂</div>',iconSize:[22,22],iconAnchor:[11,11]});
+      markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
+        `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
+    });
+    map.fitBounds(L.polyline(ROUTE).getBounds(),{padding:[40,40]});
+    setTimeout(()=>{try{map.invalidateSize()}catch(e){}},300);
+  }catch(e){
+    console.warn('Mapa nie wystartowała:',e);
+    mapEl.insertAdjacentHTML('beforeend','<div class="mapoff">🗺️ Nie udało się załadować mapy (brak internetu?).<br>Plan po prawej działa offline.</div>');
+  }
+}
+initMap();
+// iPad: po obrocie ekranu / zmianie rozmiaru przelicz mapę
+window.addEventListener('resize',()=>{ if(map){try{map.invalidateSize()}catch(e){}} });
+window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(map){try{map.invalidateSize()}catch(e){}} },400); });
+</script>
+</body>
+</html>
