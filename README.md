@@ -72,6 +72,27 @@ ale bez tokenu nic nie zapisze. Nie commituj `config.php` (jest ignorowany).
 Lokalnie (przez `file://`) live-tracking nie działa (brak PHP) — plan i mapa działają
 normalnie, znika tylko znacznik 🚐. Do testów lokalnych: `php -S localhost:8000`.
 
+## Auto-deploy przez GitHub Actions (FTP)
+
+Workflow `.github/workflows/deploy.yml` przy każdym `git push` na gałąź `main`
+wgrywa pliki na FTP.
+
+Konfiguracja (raz):
+
+1. Repo na GitHubie (prywatne). Wypchnij kod: `git push -u origin main`.
+2. W repo → **Settings → Secrets and variables → Actions → New repository secret** dodaj:
+   - `FTP_SERVER` — host, np. `ftp.twojadomena.pl`
+   - `FTP_USERNAME` — login FTP
+   - `FTP_PASSWORD` — hasło FTP
+   - `FTP_SERVER_DIR` — katalog docelowy ZE slashem, np. `public_html/kalamata/`
+   - (opcjonalnie) zmienna `FTP_PROTOCOL` = `ftp`, jeśli hosting nie wspiera FTPS.
+3. Na serwerze **raz, ręcznie** wgraj `config.php` (z tokenem) i pierwszy `location.json`
+   — workflow ich celowo NIE dotyka (są w `exclude`), żeby nie nadpisać sekretu ani
+   bieżącej pozycji.
+
+Od teraz: edytujesz plan lokalnie → `git commit` + `git push` → Action sam publikuje.
+Pozycję 🚐 w trasie zmieniasz przez `panel.php` (z telefonu), niezależnie od deploya.
+
 ## Zależności (CDN)
 
 - [Leaflet 1.9.4](https://leafletjs.com/) — mapa

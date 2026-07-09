@@ -1,0 +1,38 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: {}
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # FTPS (szyfrowane) domyślnie; jeśli hosting tego nie wspiera,
+          # ustaw zmienną repo FTP_PROTOCOL na "ftp".
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+          # katalog docelowy na serwerze, ZE slashem na końcu, np. "public_html/kalamata/"
+          server-dir: ${{ secrets.FTP_SERVER_DIR }}
+          # NIE wgrywaj/NIE kasuj tych plików na serwerze:
+          # config.php (sekret) i location.json (bieżąca pozycja, nadpisywana w locie)
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            README.md
+            .gitignore
+            config.php
+            config.example.php
+            location.json
+            .deploy.env
+            deploy.sh
