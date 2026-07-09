@@ -5,6 +5,7 @@ Thumbs.db
 # editors
 .vscode/
 .idea/
+.claude/
 *.swp
 
 # node (gdyby doszedł tooling)
