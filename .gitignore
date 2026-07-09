@@ -10,3 +10,7 @@ Thumbs.db
 # node (gdyby doszedł tooling)
 node_modules/
 dist/
+
+# sekrety i dane runtime (live tracking)
+config.php
+location.json

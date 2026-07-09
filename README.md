@@ -41,6 +41,37 @@ python3 -m http.server 8000
   wyjazdem warto potwierdzić: winiety SK/HU, stawki opłat kat. 2, status tunelu Llogara
   (wariant adriatycki), rozkłady kamer granicznych.
 
+## Śledzenie na żywo (PHP) — „gdzie teraz jesteśmy"
+
+Znajomi otwierają `index.html` na serwerze i widzą znacznik 🚐 z Waszą aktualną
+pozycją + czasem ostatniej aktualizacji (mapa odświeża się co 60 s). Wy aktualizujecie
+pozycję przez `panel.php`.
+
+Pliki:
+
+- `where.php` — API: `GET` zwraca pozycję (JSON), `POST` (z tokenem) ją zapisuje.
+- `panel.php` — panel do aktualizacji: token + wybór przystanku / **GPS telefonu** / ręczne
+  współrzędne + notatka.
+- `config.php` — Twój tajny **token** (skopiowany z `config.example.php`). W `.gitignore`.
+- `location.json` — bieżąca pozycja (zapisywana przez `where.php`). W `.gitignore`.
+
+### Wdrożenie na serwer PHP
+
+1. Wgraj cały folder na hosting (FTP/panel).
+2. Skopiuj `config.example.php` → `config.php` i ustaw własny token
+   (albo wgraj gotowy `config.php` i zmień w nim token).
+3. Upewnij się, że folder ma **prawo zapisu** dla PHP (żeby `location.json` dało się
+   nadpisać) — zwykle `chmod 755` folder i `644` pliki wystarcza; jeśli zapis się nie
+   udaje, ustaw `location.json` na `666` lub folder na `775`.
+4. Wejdź na `https://twojadomena/…/panel.php`, wpisz token, ustaw pozycję (np. „Użyj GPS”).
+5. Podaj znajomym link do `index.html` — reszta dzieje się sama.
+
+Uwaga bezpieczeństwa: pozycję może zmienić tylko ktoś z tokenem. Panel jest publiczny,
+ale bez tokenu nic nie zapisze. Nie commituj `config.php` (jest ignorowany).
+
+Lokalnie (przez `file://`) live-tracking nie działa (brak PHP) — plan i mapa działają
+normalnie, znika tylko znacznik 🚐. Do testów lokalnych: `php -S localhost:8000`.
+
 ## Zależności (CDN)
 
 - [Leaflet 1.9.4](https://leafletjs.com/) — mapa

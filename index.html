@@ -94,6 +94,11 @@
   .btn:hover{background:#2a3a60}
   .mapoff{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     color:var(--muted);font-size:13px;text-align:center;padding:16px;max-width:80%;line-height:1.5}
+  .live-banner{margin-top:10px;background:#10233a;border:1px solid #1d4e6b;color:#7dd3fc;
+    border-radius:10px;padding:8px 11px;font-size:12.5px;line-height:1.45}
+  .live-banner a{color:#e2e8f0;text-decoration:underline;cursor:pointer}
+  .live{font-size:22px;filter:drop-shadow(0 0 4px #000);animation:pulse 1.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
   ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#2b3a5c;border-radius:5px}
   @media (max-width:900px){
     body{overflow:auto;height:auto}
@@ -128,6 +133,7 @@
         <div class="stat"><b>9</b><span>dni jazdy</span></div>
         <div class="stat"><b>7</b><span>nocy w drodze</span></div>
       </div>
+      <div id="live-banner" class="live-banner" style="display:none"></div>
     </header>
 
     <div class="toolbar">
@@ -430,6 +436,38 @@ initMap();
 // iPad: po obrocie ekranu / zmianie rozmiaru przelicz mapę
 window.addEventListener('resize',()=>{ if(map){try{map.invalidateSize()}catch(e){}} });
 window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(map){try{map.invalidateSize()}catch(e){}} },400); });
+
+// ---- LIVE: gdzie jesteśmy teraz (czyta where.php; działa tylko na serwerze PHP) ----
+let liveMarker=null, liveLL=null;
+function relTime(iso){
+  const d=new Date(iso), s=(Date.now()-d)/1000;
+  if(isNaN(s)) return '';
+  if(s<90) return 'przed chwilą';
+  if(s<3600) return Math.round(s/60)+' min temu';
+  if(s<86400) return Math.round(s/3600)+' h temu';
+  return Math.round(s/86400)+' dni temu';
+}
+function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML;}
+function updateLive(){
+  fetch('where.php?t='+Date.now()).then(r=>r.json()).then(d=>{
+    if(!d || d.lat==null) return;
+    liveLL=[d.lat,d.lng];
+    const label=esc(d.label)||'w drodze', note=esc(d.note);
+    const banner=document.getElementById('live-banner');
+    banner.style.display='block';
+    banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
+    if(map){
+      if(!liveMarker){
+        const ic=L.divIcon({className:'',html:'<div class="live">🚐</div>',iconSize:[30,30],iconAnchor:[15,15]});
+        liveMarker=L.marker(liveLL,{icon:ic,zIndexOffset:1000}).addTo(map);
+      } else liveMarker.setLatLng(liveLL);
+      liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+(note?'<br>'+note:''));
+    }
+  }).catch(()=>{});
+}
+function showLive(){ if(map&&liveLL){ map.flyTo(liveLL,8,{duration:.8}); liveMarker&&liveMarker.openPopup(); } }
+updateLive();
+setInterval(updateLive, 60000);
 </script>
 </body>
 </html>
