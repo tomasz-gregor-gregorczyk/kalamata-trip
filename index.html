@@ -73,6 +73,11 @@
   .legend{position:absolute;bottom:14px;left:14px;z-index:1000;background:rgba(15,23,42,.92);
     border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--text)}
   .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
+  .legend-toggle{background:none;border:none;color:var(--text);font-weight:700;font-size:11.5px;
+    cursor:pointer;padding:0;display:flex;align-items:center;gap:6px}
+  .legend-body{margin-top:7px}
+  .legend.collapsed{padding:7px 10px}
+  .legend.collapsed .legend-body{display:none}
   .dot{width:12px;height:3px;border-radius:2px;display:inline-block}
   .leaflet-popup-content{font-size:12.5px;line-height:1.45}
   .leaflet-popup-content b{color:#0369a1}
@@ -113,14 +118,17 @@
 <body>
 <div class="wrap">
   <div id="map">
-    <div class="legend">
-      <div><span class="dot" style="background:var(--out)"></span> Trasa (korytarz bałkański)</div>
-      <div><span class="dot" style="background:var(--green);height:12px;width:12px;border-radius:50%"></span> Start / meta</div>
-      <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
-      <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
-      <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
-      <div><span style="font-size:12px">⛰️</span> Górski / wysoki odcinek</div>
-      <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Dojazd przez Ateny (powrót zachodem)</div>
+    <div class="legend" id="legend">
+      <button class="legend-toggle" onclick="toggleLegend()" aria-label="Pokaż/ukryj legendę">🗺️ Legenda <span id="legend-caret">▾</span></button>
+      <div class="legend-body">
+        <div><span class="dot" style="background:var(--out)"></span> Trasa (korytarz bałkański)</div>
+        <div><span class="dot" style="background:var(--green);height:12px;width:12px;border-radius:50%"></span> Start / meta</div>
+        <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
+        <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
+        <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
+        <div><span style="font-size:12px">⛰️</span> Górski / wysoki odcinek</div>
+        <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Dojazd przez Ateny (powrót zachodem)</div>
+      </div>
     </div>
   </div>
   <div class="side">
@@ -370,6 +378,9 @@ function saveNote(id,v){store[id]=store[id]||{};store[id].note=v;saveStore();}
 function saveDone(id,v){store[id]=store[id]||{};store[id].done=v;saveStore();}
 function toggleNotes(open){document.querySelectorAll('.day').forEach(d=>{if(!d.classList.contains('stay')&&!d.classList.contains('work'))d.classList.toggle('open',open);});}
 function resetPlan(){if(confirm('Wyczyścić zapisane notatki i zaznaczenia?')){try{localStorage.removeItem('kalamata_workation_v1')}catch(e){}location.reload();}}
+function toggleLegend(){const l=document.getElementById('legend');const c=l.classList.toggle('collapsed');document.getElementById('legend-caret').textContent=c?'▸':'▾';}
+// na telefonie zwiń legendę domyślnie, żeby nie zasłaniała mapy
+if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
 
 // ---- kalkulator ----
 const ids=['c-km','c-cons','c-price','c-toll','c-hotel','c-nights'];
