@@ -126,20 +126,20 @@
         <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
         <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
         <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
-        <div><span style="font-size:12px">⛰️</span> Górski / wysoki odcinek</div>
-        <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Dojazd przez Ateny (powrót zachodem)</div>
+        <div><span style="font-size:12px">⛰️</span> Górski odcinek (tylko Beskidy)</div>
+        <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Zjazd do Meteor (nocleg w dojeździe)</div>
       </div>
     </div>
   </div>
   <div class="side">
     <header>
       <h1>💻 Workation Gdynia → Kalamata</h1>
-      <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Cel: szybko do Grecji/UE (net do pracy). Na miejscu wt. wieczór — z przystankami Meteory + Ateny.</p>
+      <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Dojazd przez Meteory + Ateny, powrót CAŁY przez Ateny (bez Pindos).</p>
       <div class="stats">
-        <div class="stat"><b>25</b><span>dni łącznie</span></div>
-        <div class="stat"><b>~5 370</b><span>km w obie str.</span></div>
-        <div class="stat"><b>9</b><span>dni jazdy</span></div>
-        <div class="stat"><b>7</b><span>nocy w drodze</span></div>
+        <div class="stat"><b>27</b><span>dni łącznie</span></div>
+        <div class="stat"><b>~5 750</b><span>km w obie str.</span></div>
+        <div class="stat"><b>10</b><span>dni jazdy</span></div>
+        <div class="stat"><b>9</b><span>nocy w drodze</span></div>
       </div>
       <div id="live-banner" class="live-banner" style="display:none"></div>
     </header>
@@ -156,8 +156,25 @@
     <div class="section-title" style="color:var(--green)">■ Pobyt / workation</div>
     <div id="list-stay"></div>
 
-    <div class="section-title leg-ret">▲ Powrót — pt–pon (23–26.10)</div>
+    <div class="section-title leg-ret">▲ Powrót — pt–wt (23–27.10) · przez Ateny, BEZ Pindos</div>
     <div id="list-ret"></div>
+
+    <div class="section-title">🌡️ Temperatury dzień po dniu</div>
+    <div class="calc" style="padding:12px 14px">
+      <h3 style="margin-bottom:6px">Dojazd (2–6.10)</h3>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>1 · Gdynia→Częstochowa</span><b>~16°/8°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>2 · →Belgrad</span><b>~20°/10°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>3 · →Kalambaka/Meteory</span><b>~19°/9°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>4 · →Ateny</span><b>~24°/14°</b></div>
+      <div class="row"><span>5 · →KALAMATA 🏖️</span><b>~25°/15°</b></div>
+      <h3 style="margin:14px 0 6px">Powrót (23–27.10) — bez Pindos</h3>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>6 · Kalamata→Ateny</span><b>~21°/13°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>7 · →Skopje (przez Thessaloniki)</span><b>~16°/7°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>8 · →Budapeszt (przez Belgrad)</span><b>~13°/5°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>9 · →Częstochowa</span><b>~12°/4°</b></div>
+      <div class="row"><span>10 · →GDYNIA 🏠</span><b>~11°/5°</b></div>
+      <p style="font-size:11px;color:var(--muted);margin:10px 0 0">Powrót jest chłodniejszy niż dojazd z dwóch powodów: koniec października (~4–6° mniej niż na początku miesiąca) i kierunek na północ. Trasa przez Ateny pomija Pindos (~1100 m, tam bywałoby ~0–10°) — cała reszta trasy (Serbia, Węgry, Polska) ma tę samą temperaturę niezależnie od wyboru drogi.</p>
+    </div>
 
     <div class="section-title">Kalkulator kosztów (obie strony)</div>
     <div class="calc">
@@ -167,7 +184,7 @@
       <div class="row"><label>Cena paliwa ON (zł/l)</label><input id="c-price" type="number" value="6.6" step="0.1"></div>
       <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="720"></div>
       <div class="row"><label>Nocleg w drodze (zł/noc)</label><input id="c-hotel" type="number" value="300"></div>
-      <div class="row"><label>Nocy w drodze</label><input id="c-nights" type="number" value="7"></div>
+      <div class="row"><label>Nocy w drodze</label><input id="c-nights" type="number" value="9"></div>
       <div class="row"><span>Paliwo (tam i z powrotem)</span><span id="r-fuel">—</span></div>
       <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
       <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
@@ -177,14 +194,14 @@
     <div class="section-title">Logika workation + ważne uwagi</div>
     <div class="info">
       <b>💻 Praca a roaming:</b> Polska, Słowacja, Węgry i Grecja są w UE — net działa jak w kraju. <b>Serbia i Macedonia to strefa roamingu</b> (czerwony odcinek). Dlatego cały ten odcinek przejeżdżamy w <b>weekend</b> (sob+niedz), a w Grecji jesteś już w niedzielę wieczorem — od poniedziałku pracujesz z pełnym netem. W powrocie tak samo: pracujesz w piątek z Grecji, weekend na przejazd, w Polsce w niedzielę wieczorem.<br><br>
-      <b>Dni robocze:</b> jazda dopiero <b>po pracy, po 15:00</b> — rano nie ruszamy. To robi z poniedziałku (dojazd) i piątku (powrót) długie wieczory (~565 km, dojazd ~21:15) — jeśli za dużo, rozbij na nocleg w Patras i dokończ następnego dnia. Cały dzień jesteś w kraju UE, więc net działa.<br><br>
-      <b>Weekendy są długie:</b> soboty i niedziele to ~800–850 km (~9–10 h) — męczące, ale bez pracy. Granice wypadają: sb Horgoš (do Serbii), niedz powrót Röszke (do UE) — sprawdzaj kamery, backup Kelebija.<br><br>
+      <b>Dni robocze:</b> jazda dopiero <b>po pracy, po 15:00</b> — rano nie ruszamy. Dotyczy dni 4–5 (dojazd, Kalambaka→Ateny→Kalamata) i dni 6, 9, 10 (powrót). Cały dzień jesteś w kraju UE, więc net działa.<br><br>
+      <b>Weekendy są długie:</b> soboty i niedziele przez Bałkany to ~500–800 km (~6–10 h) — męczące, ale bez pracy. Granice: sb Horgoš (dojazd, do Serbii), sb/nd Evzoni + Preševo + Röszke (powrót) — sprawdzaj kamery, backup Kelebija.<br><br>
       <b>Granice poza UE:</b> Serbia i Macedonia — dowody/paszporty + <b>Zielona Karta</b>. Kliknij żółty znacznik → kamera live + najlepsze godziny.<br><br>
       <b>Winiety:</b> Słowacja + Węgry (10-dniowe) — <b>drugi komplet na powrót</b> (pierwszy wygaśnie).<br><br>
       <b>EES:</b> wjazd do UE (Evzoni w dojeździe, Röszke w powrocie) — biometria, paszporty gotowe.<br><br>
-      <b>⛰️ Wysokości:</b> Egnatia przez Pindos koło Metsovo (~1 100 m) — dni 3–4 (dojazd) i 5–6 (powrót). Górski odcinek pokonujesz rano/za dnia. Pod koniec X wyżej bywa zimno i mgła.<br><br>
+      <b>⛰️ Wysokości — BEZ PINDOS:</b> cała trasa (w obie strony!) idzie przez Ateny, nizinami. Pindos (Egnatia, ~1100 m) w ogóle nie jest na trasie — jedyny górski fragment to Beskidy na granicy PL/SK (~600–700 m). Dzięki temu powrót nie ma ryzyka śniegu/mgły na wysokości.<br><br>
       <b>🚐 Vivaro L2H2 (kamper ≤3,5 t):</b> wysoki bus → kat. 2 w Serbii, Macedonii i Grecji (opłaty ~40% wyższe niż osobówka, stąd ~720 zł/stronę). Winiety SK/HU po masie ≤3,5 t — bez zmian. Spalanie realnie ~10 l/100. Możesz spać na kempingach/aire zamiast hoteli — taniej.<br><br>
-      <b>Długość pobytu:</b> ~18 nocy (5–23.10), by powrót też wypadł na weekend. Chcesz dokładnie 2 tyg.? wyjazd pon. 19.10 — ale wtedy Bałkany w środku tygodnia, gorzej dla pracy.
+      <b>Długość pobytu:</b> ~17 nocy w Kalamacie (6–23.10). Dojazd 5 dni (pt–wt), powrót 5 dni (pt–wt) — bo bez Pindos trasa jest dłuższa (~5 750 km vs ~5 370 km), stąd jeden dodatkowy dzień w powrocie (Budapeszt jako dodatkowy nocleg).
     </div>
   </div>
 </div>
@@ -197,7 +214,8 @@ const CITIES = {
   belgrad:     {name:"Belgrad — Camp Dunav (Zemun)", ll:[44.8580,20.3300]},
   grevena:     {name:"Kalambaka / Meteory — Camping Vrachos", ll:[39.7180,21.6230]},
   ateny:       {name:"Ateny", ll:[37.9838,23.7275]},
-  patras:      {name:"Patras / Rio",ll:[38.2460,21.7350]},
+  skopje:      {name:"Skopje", ll:[41.9981,21.4254]},
+  budapeszt:   {name:"Budapeszt", ll:[47.4979,19.0402]},
   kalamata:    {name:"Kalamata",    ll:[37.0389,22.1142]},
 };
 
@@ -218,20 +236,24 @@ const BORDERS = [
 BORDERS.forEach(b=>CITIES[b.key]={name:b.name, ll:b.ll});
 
 // linia trasy
+// korytarz wschodni (obie strony przez Ateny — bez Pindos); Kalambaka jest tylko znacznikiem-detourem
 const ROUTE = [
   [54.5189,18.5305],[51.76,19.46],[50.8118,19.1203],[50.26,19.02],
   [49.22,18.74],[48.15,17.11],[47.4979,19.0402],[46.25,20.15],
   [46.16,19.98],[45.25,19.85],[44.7866,20.4489],[43.32,21.90],
   [42.24,21.68],[41.9981,21.4254],[41.11,22.53],[40.64,22.94],
-  [39.7180,21.6230],[39.6650,20.8537],[38.32,21.77],[38.25,21.73],[37.0389,22.1142],
+  [39.64,22.42],[38.90,22.43],[38.32,23.32],[37.9838,23.7275],
+  [37.94,22.93],[37.51,22.38],[37.0389,22.1142],
 ];
 
 const STOPS = [
-  {key:"gdynia",     label:"S", cls:"start", txt:"Start · pt 2.10 po pracy"},
-  {key:"czestochowa",label:"1", cls:"",      txt:"Nocleg: pt 2.10 (dojazd) i nd 25.10 (powrót)"},
-  {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 i sb 24.10 · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com"},
-  {key:"grevena",    label:"3", cls:"",      txt:"Nocleg: nd 4.10 (dojazd) i pt 23.10 (powrót) · <b>Camping Vrachos</b>, Kastraki/Meteory — kamper, prąd, wifi, basen, psy OK. Grecja = net UE działa! Rezerwacja/godziny: tel. +30 24320 22293. Nocleg pod skałami Meteorów."},
-  {key:"ateny",      label:"4", cls:"",      txt:"Nocleg pon. 5.10 — apartament z psem. ⚠️ PARKING: bus ~2,5 m NIE zmieści się w parkingach podziemnych (limit ~2 m) — bierz nocleg z parkingiem naziemnym/na ulicy. Dobra taktyka: apartament przy stacji metra na obrzeżu + metro do centrum, albo Koukaki (spacerowo pod Akropol, ale o parking trudno). CO ZWIEDZIĆ wieczorem (bez wchodzenia na Akropol też super): Plaka i Anafiotika (klimatyczne uliczki), Monastiraki (plac, tawerny), promenada Dionysiou Areopagitou (podświetlony Akropol, pies OK), wzgórze Filopappou / Areopag (widok gratis), Lykabettos (panorama). Kolacja: Plaka / Psyrri."},
+  {key:"gdynia",     label:"S", cls:"start", txt:"Start · pt 2.10 po pracy · meta pobytu"},
+  {key:"czestochowa",label:"1", cls:"",      txt:"Nocleg: pt 2.10 (dojazd) i pon 26.10 (powrót)"},
+  {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 (dojazd) · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com. W powrocie Belgrad mijany przelotowo."},
+  {key:"grevena",    label:"3", cls:"",      txt:"Nocleg: nd 4.10 (tylko dojazd) · <b>Camping Vrachos</b>, Kastraki/Meteory — kamper, prąd, wifi, basen, psy OK. Grecja = net UE działa! Tel. +30 24320 22293. Nocleg pod skałami Meteorów. (Powrót idzie inną drogą — przez Ateny.)"},
+  {key:"ateny",      label:"4", cls:"",      txt:"Nocleg: pon 5.10 (dojazd) i pt 23.10 (powrót). Apartament z psem. ⚠️ PARKING: bus ~2,5 m NIE zmieści się w parkingach podziemnych (limit ~2 m) — bierz nocleg z parkingiem naziemnym/na ulicy; najlepiej przy stacji metra na obrzeżu + metro do centrum, albo Koukaki. CO ZWIEDZIĆ wieczorem (bez Akropolu też super): Plaka i Anafiotika, Monastiraki, promenada Dionysiou Areopagitou (podświetlony Akropol, pies OK), Filopappou/Areopag (widok gratis), Lykabettos. Kolacja: Plaka / Psyrri."},
+  {key:"skopje",     label:"5", cls:"",      txt:"Nocleg: sb 24.10 (tylko powrót). Macedonia Płn. — poza UE (roaming, korzystaj z wifi hotelu). Weekend, więc bez wpływu na pracę."},
+  {key:"budapeszt",  label:"6", cls:"",      txt:"Nocleg: nd 25.10 (tylko powrót). Węgry — znów w UE, net działa na poniedziałkową pracę. W nocy zmiana czasu na zimowy +1 h."},
   {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — workation (~17 nocy, 6–23.10)"},
 ];
 
@@ -279,34 +301,44 @@ const STAY = [
 ];
 
 const RET = [
-  {day:"DZIEŃ 5", date:"pt 23.10 · praca", type:"work",
+  {day:"DZIEŃ 6", date:"pt 23.10 · praca", type:"work",
    to:"💻 Praca zdalna 07:00–15:00 · Kalamata (ostatni dzień)",
-   note:"Rano bez jazdy — pracujesz z Kalamaty. Ostatni dzień z pełnym netem przed weekendem w roamingu. Po 15:00 ruszasz."},
-  {day:"DZIEŃ 5", date:"pt 23.10 · praca", type:"drive", from:"Kalamata (po 15:00)", to:"Kalambaka · Camping Vrachos", key:"grevena",
-   km:560, temp:"~18°→16° (⛰️)", dep:"15:00", arr:"~21:15",
-   note:"Długi wieczorny odcinek (~560 km): Kalamata → Patras → most Rio–Antirrio → Egnatia → Kalambaka ~21:15. Dojazd po zmroku — Meteory się zmarnują, ale to porządny nocleg. POTWIERDŹ późny check-in (recepcja może być zamknięta wieczorem) — tel. +30 24320 22293. Net jeszcze działa (Grecja)."},
+   note:"Rano bez jazdy — pracujesz z Kalamaty. Po 15:00 ruszacie trasą przez Ateny (BEZ Pindos)."},
+  {day:"DZIEŃ 6", date:"pt 23.10 · praca", type:"drive", from:"Kalamata (po 15:00)", to:"Ateny (nocleg)", key:"ateny",
+   km:290, temp:"~21°/13°", dep:"15:00", arr:"~18:00",
+   note:"A7 „Moreas” przez Tripoli → Korynt → Ateny. Płasko, bez gór (Pindos omijamy). ~3 h. Nocleg w Atenach (tylko przespać — miasto znacie z dojazdu). Grecja = net jeszcze działa."},
 
-  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"toborder", from:"Kalambaka", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
-   km:240, temp:"~15°/6° (⛰️)", dep:"07:00", arr:"~09:30", badge:"granica GR→MK",
-   note:"Kalambaka → Egnatia → granica. 📵 Wyjazd z Grecji — wyłącz dane (wchodzisz w roaming; weekend, więc bez wpływu na pracę)."},
-  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"toborder", from:"Evzoni–Bogorodica", to:"granica Tabanovce–Preševo", key:"presevo_b",
-   km:250, temp:"~15°/6°", dep:"~09:30", arr:"~12:30", badge:"granica MK→RS",
-   note:"Przez Skopje (przelotowo)."},
-  {day:"DZIEŃ 6", date:"sb 24.10 · weekend", type:"fromborder", from:"Tabanovce–Preševo", to:"Belgrad · Camp Dunav (Zemun)", key:"belgrad",
-   km:360, temp:"~15°/6°", dep:"~13:00", arr:"~17:00",
-   note:"Znów Camp Dunav w Zemunie (1 km z E-75, prąd, wifi, prysznice). Rezerwuj wcześniej — 24.10 to końcówka sezonu (kemping czynny do 1.11). Zapisz nawigację offline przed granicą."},
+  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"drive", from:"Ateny", to:"Thessaloniki (przelotowo)", key:"evzoni_b",
+   km:500, temp:"~17°/8°", dep:"06:30", arr:"~12:00",
+   note:"Autostrada A1 przez Lamię i Larisę — płasko, szybko. Długi dzień bez pracy."},
+  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"toborder", from:"Thessaloniki", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
+   km:80, temp:"~16°/7°", dep:"~12:30", arr:"~13:15", badge:"granica GR→MK",
+   note:"📵 Wyjazd z Grecji — wyłącz dane (wchodzisz w strefę roamingu; weekend, więc bez wpływu na pracę)."},
+  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"fromborder", from:"Evzoni–Bogorodica", to:"Skopje", key:"skopje",
+   km:170, temp:"~16°/6°", dep:"~13:45", arr:"~16:00",
+   note:"Nocleg w Skopje (Macedonia, roaming — wifi hotelu). W nocy zmiana czasu na zimowy → +1 h snu."},
 
-  {day:"DZIEŃ 7", date:"nd 25.10 · weekend", type:"toborder", from:"Belgrad", to:"granica Röszke", key:"horgos_b",
-   km:190, temp:"~14°/5°", dep:"06:00", arr:"~08:00", badge:"granica RS→HU · EES",
-   note:"Wjazd do UE + EES. Niedziela rano — sprawdź kamery, backup Kelebija. 📶 Po wjeździe na Węgry — WŁĄCZ dane (znów w UE)."},
-  {day:"DZIEŃ 7", date:"nd 25.10 · weekend", type:"fromborder", from:"Röszke", to:"Częstochowa", key:"czestochowa",
-   km:660, temp:"~12°/4°", dep:"~09:00", arr:"~17:30",
-   note:"Przez Węgry i Słowację (drugi komplet winiet SK+HU). Nocleg w Częstochowie (Polska, UE — net na jutrzejszą pracę). Bonus: w nocy zmiana czasu na zimowy +1 h."},
+  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"toborder", from:"Skopje", to:"granica Tabanovce–Preševo", key:"presevo_b",
+   km:80, temp:"~15°/6°", dep:"06:00", arr:"~06:50", badge:"granica MK→RS",
+   note:"Granica tuż za Skopje — rano pusto."},
+  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"toborder", from:"Preševo–Tabanovce", to:"granica Röszke (przez Belgrad)", key:"horgos_b",
+   km:550, temp:"~14°/5°", dep:"~07:10", arr:"~14:00", badge:"granica RS→HU · EES",
+   note:"Przez Serbię: Belgrad mijasz ~11:00. Wjazd do UE + EES. Niedziela — sprawdź kamery, backup Kelebija. 📶 Po wjeździe na Węgry — WŁĄCZ dane."},
+  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"fromborder", from:"Röszke", to:"Budapeszt", key:"budapeszt",
+   km:190, temp:"~13°/5°", dep:"~15:00", arr:"~17:30",
+   note:"Nocleg w Budapeszcie (Węgry, UE — net na jutrzejszą pracę)."},
 
-  {day:"DZIEŃ 8", date:"pn 26.10 · praca", type:"work",
+  {day:"DZIEŃ 9", date:"pn 26.10 · praca", type:"work",
+   to:"💻 Praca zdalna 07:00–15:00 · Budapeszt",
+   note:"Rano bez jazdy — pracujesz z Budapesztu (net działa). Po 15:00 ruszasz."},
+  {day:"DZIEŃ 9", date:"pn 26.10 · praca", type:"drive", from:"Budapeszt (po 15:00)", to:"Częstochowa", key:"czestochowa",
+   km:470, temp:"~12°/4°", dep:"15:00", arr:"~20:00",
+   note:"Przez Słowację (drugi komplet winiet SK+HU) → Częstochowa. Nocleg."},
+
+  {day:"DZIEŃ 10", date:"wt 27.10 · praca", type:"work",
    to:"💻 Praca zdalna 07:00–15:00 · Częstochowa (PL)",
-   note:"Rano bez jazdy — pracujesz z Częstochowy. Po 15:00 ostatni odcinek do domu."},
-  {day:"DZIEŃ 8", date:"pn 26.10 · praca", type:"drive", from:"Częstochowa (po 15:00)", to:"GDYNIA", key:"gdynia",
+   note:"Ostatni dzień pracy w trasie. Po 15:00 ostatni odcinek do domu."},
+  {day:"DZIEŃ 10", date:"wt 27.10 · praca", type:"drive", from:"Częstochowa (po 15:00)", to:"GDYNIA", key:"gdynia",
    km:450, temp:"~11°/5°", dep:"15:00", arr:"~20:00",
    note:"Po pracy → dom ~20:00. 🏠"},
 ];
@@ -401,9 +433,7 @@ calc();
 let map=null, markers={};
 const ELEV = [
   {ll:[49.42,19.20], name:'Beskidy — granica PL/SK', alt:'~600–700 m',
-   note:'Krótki górski odcinek. W końcu października rano możliwa mgła i przymrozek.'},
-  {ll:[39.77,21.18], name:'Pindos / Metsovo — Egnatia Odos (A2)', alt:'~1 000–1 150 m — najwyższy punkt trasy',
-   note:'Nowoczesna autostrada z licznymi tunelami i wiaduktami — NIE serpentyny. Łagodne, równe nachylenia (~5–6%), busem to długi, spokojny podjazd i zjazd. Stara droga przez przełęcz Katara (1690 m) była stroma — autostrada omija ją tunelami. Uwaga: w końcu X wyżej zimno, mgła i wiatr; w powrocie (pt) pokonujesz ten odcinek po zmroku — światła, ostrożnie.'},
+   note:'Jedyny górski odcinek na trasie (Pindos omijamy przez Ateny w obie strony). W końcu października rano możliwa mgła i przymrozek.'},
 ];
 function initMap(){
   const mapEl=document.getElementById('map');
@@ -418,10 +448,9 @@ function initMap(){
     L.polyline(ROUTE,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map);
     L.polyline(ROUTE.slice(8,15),{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
       .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE). Przejeżdżamy ją w weekend, gdy nie pracujecie.');
-    // dojazd przez Ateny (wschód) — powrót idzie zachodem przez Rio–Antirrio (główna linia)
-    const EAST_ARM=[[39.7180,21.6230],[39.36,22.05],[38.90,22.43],[38.32,23.32],[37.9838,23.7275],[37.9350,22.9320],[37.5100,22.3800],[37.0389,22.1142]];
-    L.polyline(EAST_ARM,{color:'#38bdf8',weight:4,opacity:.85,dashArray:'7,7'}).addTo(map)
-      .bindPopup('🚗 <b>Dojazd przez Ateny</b> (autostradą, bez gór). Powrót — zachodnią stroną przez most Rio–Antirrio i Janinę.');
+    // krótki spur do Kalambaki/Meteor (nocleg w dojeździe — detour od korytarza)
+    L.polyline([[39.64,22.42],[39.7180,21.6230]],{color:'#38bdf8',weight:3,opacity:.7,dashArray:'5,6'}).addTo(map)
+      .bindPopup('Zjazd do Kalambaki / Meteor (nocleg w dojeździe, nd 4.10).');
     ELEV.forEach(m=>{
       const ic=L.divIcon({className:'',html:'<div class="emk">⛰️</div>',iconSize:[22,22],iconAnchor:[11,11]});
       L.marker(m.ll,{icon:ic}).addTo(map).bindPopup(`<b>⛰️ ${m.name}</b><br><b>${m.alt}</b><br>${m.note}`);
@@ -436,7 +465,7 @@ function initMap(){
       markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
-    map.fitBounds(L.polyline(ROUTE.concat([[37.9838,23.7275]])).getBounds(),{padding:[40,40]});
+    map.fitBounds(L.polyline(ROUTE).getBounds(),{padding:[40,40]});
     setTimeout(()=>{try{map.invalidateSize()}catch(e){}},300);
   }catch(e){
     console.warn('Mapa nie wystartowała:',e);
