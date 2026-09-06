@@ -137,7 +137,7 @@
       <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Dojazd przez Meteory, <b>pn 5.10 wolne</b> — z Kalambaki prosto do Kalamaty (obwodnicą Aten). Powrót CAŁY przez Ateny (bez Pindos).</p>
       <div class="stats">
         <div class="stat"><b>27</b><span>dni łącznie</span></div>
-        <div class="stat"><b>~5 750</b><span>km w obie str.</span></div>
+        <div class="stat"><b>~5 570</b><span>km w obie str.</span></div>
         <div class="stat"><b>9</b><span>dni jazdy</span></div>
         <div class="stat"><b>8</b><span>nocy w drodze</span></div>
       </div>
@@ -178,7 +178,8 @@
     <div class="section-title">Kalkulator kosztów (obie strony)</div>
     <div class="calc">
       <h3>Paliwo i opłaty — Vivaro L2H2 (kat. 2)</h3>
-      <div class="row"><label>Dystans w 1 stronę (km)</label><input id="c-km" type="number" value="2685"></div>
+      <div class="row"><label>Dojazd — km (suma z rozpiski)</label><input id="c-km" type="number" value="2790"></div>
+      <div class="row"><label>Powrót — km (suma z rozpiski)</label><input id="c-km-ret" type="number" value="2780"></div>
       <div class="row"><label>Spalanie (l/100 km)</label><input id="c-cons" type="number" value="10" step="0.5"></div>
       <div class="row"><label>Cena paliwa ON (zł/l, śr. ważona)</label><input id="c-price" type="number" value="8.25" step="0.05"></div>
       <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="720"></div>
@@ -188,13 +189,13 @@
       <div class="row"><label>Cena za dobę (EUR)</label><input id="c-kal-eur" type="number" value="25" step="1"></div>
       <div class="row"><label>Nocy w Kalamacie</label><input id="c-kal-nights" type="number" value="18"></div>
       <div class="row"><label>Kurs EUR (zł)</label><input id="c-eur" type="number" value="4.25" step="0.01"></div>
-      <div class="row"><span>Paliwo (tam i z powrotem)</span><span id="r-fuel">—</span></div>
+      <div class="row"><span>Paliwo (dojazd + powrót)</span><span id="r-fuel">—</span></div>
       <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
       <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
       <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
       <div class="row"><span>Nocleg w Kalamacie (Camping Fare)</span><span id="r-kal">—</span></div>
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Bez wyżywienia. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 18 nocy (5–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 790 km, powrót 2 780 km — powrót jest inną drogą, przez Thessaloniki). Bez wyżywienia. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 18 nocy (5–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
@@ -207,7 +208,7 @@
       <b>EES:</b> wjazd do UE (Evzoni w dojeździe, Röszke w powrocie) — biometria, paszporty gotowe.<br><br>
       <b>⛰️ Wysokości — BEZ PINDOS:</b> cała trasa (w obie strony!) idzie przez Ateny, nizinami. Pindos (Egnatia, ~1100 m) w ogóle nie jest na trasie — jedyny górski fragment to Beskidy na granicy PL/SK (~600–700 m). Dzięki temu powrót nie ma ryzyka śniegu/mgły na wysokości.<br><br>
       <b>🚐 Vivaro L2H2 (kamper ≤3,5 t):</b> wysoki bus → kat. 2 w Serbii, Macedonii i Grecji (opłaty ~40% wyższe niż osobówka, stąd ~720 zł/stronę). Winiety SK/HU po masie ≤3,5 t — bez zmian. Spalanie realnie ~10 l/100. Możesz spać na kempingach/aire zamiast hoteli — taniej.<br><br>
-      <b>Długość pobytu:</b> ~18 nocy w Kalamacie (5–23.10) — o jedną więcej, odkąd dojazd skrócił się do 4 dni. <b>Dojazd 4 dni (pt–pn), powrót 5 dni (pt–wt)</b>: w dojeździe poniedziałek jest wolny, więc odcinek Kalambaka→Kalamata (~640 km) robicie jednym ciągiem; w powrocie pracujesz w drodze, więc dni jazdy jest więcej. Trasa bez Pindos jest dłuższa (~5 750 km vs ~5 370 km), stąd w powrocie dodatkowy nocleg w Budapeszcie.
+      <b>Długość pobytu:</b> ~18 nocy w Kalamacie (5–23.10) — o jedną więcej, odkąd dojazd skrócił się do 4 dni. <b>Dojazd 4 dni (pt–pn), powrót 5 dni (pt–wt)</b>: w dojeździe poniedziałek jest wolny, więc odcinek Kalambaka→Kalamata (~640 km) robicie jednym ciągiem; w powrocie pracujesz w drodze, więc dni jazdy jest więcej. Trasa bez Pindos jest dłuższa (~5 570 km vs ~5 370 km przez Pindos), stąd w powrocie dodatkowy nocleg w Budapeszcie.
     </div>
   </div>
 </div>
@@ -411,13 +412,13 @@ function toggleLegend(){const l=document.getElementById('legend');const c=l.clas
 if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
 
 // ---- kalkulator ----
-const ids=['c-km','c-cons','c-price','c-toll','c-hotel','c-nights','c-kal-eur','c-kal-nights','c-eur'];
+const ids=['c-km','c-km-ret','c-cons','c-price','c-toll','c-hotel','c-nights','c-kal-eur','c-kal-nights','c-eur'];
 function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł';}
 function v(id){return +document.getElementById(id).value||0;}
 function calc(){
-  const km=v('c-km'),cons=v('c-cons'),price=v('c-price'),toll=v('c-toll'),hotel=v('c-hotel'),nights=v('c-nights');
+  const km=v('c-km'),kmRet=v('c-km-ret'),cons=v('c-cons'),price=v('c-price'),toll=v('c-toll'),hotel=v('c-hotel'),nights=v('c-nights');
   const kalEur=v('c-kal-eur'),kalNights=v('c-kal-nights'),eur=v('c-eur');
-  const fuel=(km*2)*(cons/100)*price, tollT=toll*2, hotelT=hotel*nights;
+  const fuel=(km+kmRet)*(cons/100)*price, tollT=toll*2, hotelT=hotel*nights;
   const trip=fuel+tollT+hotelT, kalT=kalEur*kalNights*eur;
   document.getElementById('r-fuel').textContent=fmt(fuel);
   document.getElementById('r-toll').textContent=fmt(tollT);
