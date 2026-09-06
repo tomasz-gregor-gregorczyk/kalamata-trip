@@ -22,7 +22,7 @@ python3 -m http.server 8000
 - **Rozpiska** dojazd / pobyt / powrót — każdy dzień z godzinami, dystansem, temperaturą,
   a dni z granicą rozbite na osobne punkty (przejazd do granicy / od granicy).
   Notatki i checkboxy zapisują się w `localStorage`.
-- **Kalkulator kosztów** (paliwo + opłaty + noclegi) — pola do edycji na żywo.
+- **Kalkulator kosztów** (paliwo + opłaty + noclegi w drodze + nocleg w Kalamacie 25 EUR/dobę) — pola do edycji na żywo.
 
 ## Założenia planu
 

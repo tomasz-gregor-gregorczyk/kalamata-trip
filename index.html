@@ -185,11 +185,17 @@
       <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="720"></div>
       <div class="row"><label>Nocleg w drodze (zł/noc)</label><input id="c-hotel" type="number" value="300"></div>
       <div class="row"><label>Nocy w drodze</label><input id="c-nights" type="number" value="9"></div>
+      <h3 style="margin:14px 0 6px">Nocleg w Kalamacie</h3>
+      <div class="row"><label>Cena za dobę (EUR)</label><input id="c-kal-eur" type="number" value="25" step="1"></div>
+      <div class="row"><label>Nocy w Kalamacie</label><input id="c-kal-nights" type="number" value="17"></div>
+      <div class="row"><label>Kurs EUR (zł)</label><input id="c-eur" type="number" value="4.25" step="0.01"></div>
       <div class="row"><span>Paliwo (tam i z powrotem)</span><span id="r-fuel">—</span></div>
       <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
       <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
       <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Bez pobytu w Kalamacie i wyżywienia. Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <div class="row"><span>Nocleg w Kalamacie</span><span id="r-kal">—</span></div>
+      <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Bez wyżywienia. Nocleg w Kalamacie liczony po 25 EUR/dobę × 17 nocy (6–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
@@ -416,16 +422,20 @@ function toggleLegend(){const l=document.getElementById('legend');const c=l.clas
 if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
 
 // ---- kalkulator ----
-const ids=['c-km','c-cons','c-price','c-toll','c-hotel','c-nights'];
+const ids=['c-km','c-cons','c-price','c-toll','c-hotel','c-nights','c-kal-eur','c-kal-nights','c-eur'];
 function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł';}
 function v(id){return +document.getElementById(id).value||0;}
 function calc(){
   const km=v('c-km'),cons=v('c-cons'),price=v('c-price'),toll=v('c-toll'),hotel=v('c-hotel'),nights=v('c-nights');
+  const kalEur=v('c-kal-eur'),kalNights=v('c-kal-nights'),eur=v('c-eur');
   const fuel=(km*2)*(cons/100)*price, tollT=toll*2, hotelT=hotel*nights;
+  const trip=fuel+tollT+hotelT, kalT=kalEur*kalNights*eur;
   document.getElementById('r-fuel').textContent=fmt(fuel);
   document.getElementById('r-toll').textContent=fmt(tollT);
   document.getElementById('r-hotel').textContent=fmt(hotelT);
-  document.getElementById('r-total').textContent=fmt(fuel+tollT+hotelT);
+  document.getElementById('r-total').textContent=fmt(trip);
+  document.getElementById('r-kal').textContent=fmt(kalT)+' ('+Math.round(kalEur*kalNights).toLocaleString('pl-PL')+' EUR)';
+  document.getElementById('r-grand').textContent=fmt(trip+kalT);
 }
 ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
 calc();
