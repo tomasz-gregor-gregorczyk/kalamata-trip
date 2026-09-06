@@ -128,6 +128,7 @@
         <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
         <div><span style="font-size:12px">⛰️</span> Górski odcinek (tylko Beskidy)</div>
         <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Zjazd do Meteor (nocleg w dojeździe)</div>
+        <div><span class="dot" style="background:#c084fc;height:0;border-top:3px dashed #c084fc;width:14px"></span> 🟣 Wariant adriatycki HR/BiH/MNE/AL (poglądowo)</div>
       </div>
     </div>
   </div>
@@ -251,6 +252,37 @@ const ROUTE = [
   [42.24,21.68],[41.9981,21.4254],[41.11,22.53],[40.64,22.94],
   [39.64,22.42],[38.90,22.43],[38.32,23.32],[37.9838,23.7275],
   [37.94,22.93],[37.51,22.38],[37.0389,22.1142],[37.0213,22.1434],
+];
+
+// ---- WARIANT ADRIATYCKI (poglądowo) — HR / BiH / MNE / AL ----
+const ROUTE_ADR = [
+  [54.5189,18.5305],[52.41,16.93],[51.1079,17.0385],[49.84,18.29],[49.1951,16.6068],
+  [48.2082,16.3738],[47.0707,15.4395],[46.5547,15.6459],[45.8150,15.9819],[45.49,15.55],
+  [44.5390,15.3760],[44.1194,15.2314],[43.5081,16.4402],[43.35,17.30],[43.3438,17.8078],
+  [43.02,17.98],[42.7119,18.3444],[42.4527,18.5375],[42.4247,18.7712],[42.2864,18.8400],
+  [42.0938,19.1000],[41.9294,19.2246],[42.0683,19.5126],[41.3275,19.8187],[40.7239,19.5561],
+  [40.2969,20.0189],[40.0758,20.1389],[39.9139,20.3369],[39.6650,20.8537],[39.1600,20.9850],
+  [38.8664,21.1683],[38.6214,21.4079],[38.3250,21.7730],[38.2466,21.7346],[37.6747,21.4416],
+  [37.2500,21.6700],[37.0389,22.1142],
+];
+
+// noclegi wariantu adriatyckiego — te same daty co plan bazowy (pn 5.10 wolne)
+const ADR_STOPS = [
+  {ll:[51.1079,17.0385], lab:"pt", name:"Wrocław — nocleg 1",
+   txt:"<b>pt 2.10</b> · start Gdynia po pracy 15:00 → Wrocław ~20:00.<br>~430 km, autostrada. Jeszcze w Polsce."},
+  {ll:[43.5081,16.4402], lab:"sb", name:"Split — nocleg 2",
+   txt:"<b>sb 3.10</b> · Wrocław 06:00 → Ostrawa → Brno → Wiedeń → Graz → Maribor → Zagrzeb → A1 → Split ~20:00.<br>~1 045 km, <b>cały dzień w Schengen — zero kontroli granicznych</b>. Najdłuższy dzień wariantu."},
+  {ll:[41.3275,19.8187], lab:"nd", name:"Tirana — nocleg 3",
+   txt:"<b>nd 4.10</b> · Split 07:00 → Mostar → Trebinje → Kotor → Budva → Bar → Shkodra → Tirana ~19:30.<br>Tylko ~460 km, ale <b>~11 h</b> — serpentyny, wybrzeże i <b>trzy granice</b>. Najwolniejszy dzień trasy."},
+  {ll:[37.0389,22.1142], lab:"pn", name:"Kalamata — meta",
+   txt:"<b>pn 5.10 (WOLNE)</b> · Tirana 07:00 → Gjirokastra → Kakavia → Ioannina → Ionia Odos → most Rio–Antirrio → Patras → Pyrgos → Kalamata ~17:30.<br>~650 km, druga połowa greckimi autostradami."},
+];
+
+const ADR_BORDERS = [
+  {ll:[43.42,17.42], name:"Chorwacja → Bośnia (Zawiedza/Bijača)", txt:"nd 4.10 rano. Wyjazd z UE i Schengen. Zielona Karta."},
+  {ll:[42.57,18.44], name:"Bośnia → Czarnogóra (Klobuk/Ilino Brdo)", txt:"nd 4.10 przed południem. Droga górska, wąska."},
+  {ll:[41.96,19.32], name:"Czarnogóra → Albania (Sukobin–Muriqan)", txt:"nd 4.10 po południu. ⚠️ Zielona Karta często NIE obejmuje Albanii — polisa graniczna do kupienia na przejściu."},
+  {ll:[39.9139,20.3369], name:"Albania → Grecja (Kakavia)", txt:"pn 5.10 rano. Wjazd do UE — kontrola EES, paszporty gotowe. Bywa wolne, to główne przejście AL→GR."},
 ];
 
 const STOPS = [
@@ -449,6 +481,18 @@ function initMap(){
     L.polyline(ROUTE,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map);
     L.polyline(ROUTE.slice(8,15),{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
       .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE). Przejeżdżamy ją w weekend, gdy nie pracujecie.');
+    // wariant adriatycki (poglądowo) — Chorwacja / Bośnia / Czarnogóra / Albania
+    L.polyline(ROUTE_ADR,{color:'#c084fc',weight:3,opacity:.8,dashArray:'9,7'}).addTo(map)
+      .bindPopup('🟣 <b>Wariant adriatycki (poglądowo)</b><br>Gdynia → Wrocław → Brno → Wiedeń → Graz → Zagrzeb → Split → Mostar → Trebinje → Kotor → Bar → Shkodra → Tirana → Gjirokastra → Ioannina → Rio–Antirrio → Patras → Kalamata.<br><br>~2 600 km (o ~180 km krócej niż korytarz bałkański), ale <b>~36–38 h jazdy zamiast ~32–33 h</b> — odcinek Split → Kakavia to serpentyny i drogi jednojezdniowe.<br><br><b>Te same 3 noce w drodze i ten sam przyjazd — pn 5.10 wieczorem.</b><br>Noclegi: Wrocław (pt) · Split (sb) · Tirana (nd).<br><br>Granice poza Schengen: 4 (HR→BiH, BiH→MNE, MNE→AL, AL→GR).<br>Opłaty: winiety CZ + AT + SLO, chorwacka A1 na bramki, tunel Sozina (MNE), most Rio–Antirrio (GR).<br><br>To wariant poglądowy — plan bazowy pozostaje bałkański.');
+    ADR_STOPS.forEach(a=>{
+      const ic=L.divIcon({className:'',html:'<div style="background:#c084fc;color:#2a1140;border:2px solid #c084fc;border-radius:50%;width:24px;height:24px;line-height:20px;text-align:center;font-size:10px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,.5)">'+a.lab+'</div>',iconSize:[24,24],iconAnchor:[12,12]});
+      L.marker(a.ll,{icon:ic}).addTo(map).bindPopup('<b>🟣 '+a.name+'</b><br>'+a.txt);
+    });
+    ADR_BORDERS.forEach(b=>{
+      const ic=L.divIcon({className:'',html:'<div style="background:#2a1140;color:#c084fc;border:1px solid #c084fc;border-radius:5px;width:20px;height:20px;line-height:18px;text-align:center;font-size:11px">🛂</div>',iconSize:[20,20],iconAnchor:[10,10]});
+      L.marker(b.ll,{icon:ic}).addTo(map).bindPopup('<b>🛂 '+b.name+'</b><br>'+b.txt+'<br><br><i>wariant adriatycki (poglądowo)</i>');
+    });
+
     // krótki spur do Kalambaki/Meteor (nocleg w dojeździe — detour od korytarza)
     L.polyline([[39.64,22.42],[39.7180,21.6230]],{color:'#38bdf8',weight:3,opacity:.7,dashArray:'5,6'}).addTo(map)
       .bindPopup('Zjazd do Kalambaki / Meteor (nocleg w dojeździe, nd 4.10).');
@@ -466,7 +510,7 @@ function initMap(){
       markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
-    map.fitBounds(L.polyline(ROUTE).getBounds(),{padding:[40,40]});
+    map.fitBounds(L.polyline(ROUTE.concat(ROUTE_ADR)).getBounds(),{padding:[40,40]});
     setTimeout(()=>{try{map.invalidateSize()}catch(e){}},300);
   }catch(e){
     console.warn('Mapa nie wystartowała:',e);
