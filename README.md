@@ -33,6 +33,8 @@ python3 -m http.server 8000
 - Pojazd: Opel Vivaro L2H2 (kamper ≤3,5 t) — wysoki bus = kat. 2 opłat w RS/MK/GR.
 - Spalanie założone ~10 l/100 km (ON).
 - Nocleg w Belgradzie: Camp Dunav (Zemun), przy E-75.
+- Nocleg w Kalamacie: Camping Fare (koniec ul. Navarinou, przy plazy) — otwarty caly rok,
+  ~22 EUR/dobe z pradem, psy OK, tel. +30 27210 29520, camping-fare.com.
 
 ## Uwagi
 

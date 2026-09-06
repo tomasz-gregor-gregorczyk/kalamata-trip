@@ -185,7 +185,7 @@
       <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="720"></div>
       <div class="row"><label>Nocleg w drodze (zł/noc)</label><input id="c-hotel" type="number" value="300"></div>
       <div class="row"><label>Nocy w drodze</label><input id="c-nights" type="number" value="9"></div>
-      <h3 style="margin:14px 0 6px">Nocleg w Kalamacie</h3>
+      <h3 style="margin:14px 0 6px">Nocleg w Kalamacie — Camping Fare</h3>
       <div class="row"><label>Cena za dobę (EUR)</label><input id="c-kal-eur" type="number" value="25" step="1"></div>
       <div class="row"><label>Nocy w Kalamacie</label><input id="c-kal-nights" type="number" value="17"></div>
       <div class="row"><label>Kurs EUR (zł)</label><input id="c-eur" type="number" value="4.25" step="0.01"></div>
@@ -193,9 +193,9 @@
       <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
       <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
       <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
-      <div class="row"><span>Nocleg w Kalamacie</span><span id="r-kal">—</span></div>
+      <div class="row"><span>Nocleg w Kalamacie (Camping Fare)</span><span id="r-kal">—</span></div>
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Bez wyżywienia. Nocleg w Kalamacie liczony po 25 EUR/dobę × 17 nocy (6–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Bez wyżywienia. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 17 nocy (6–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Cena ON to średnia ważona per kraj na trasie dojazdu (PL 8,39 / SK 8,11 / HU 7,94 / RS 8,39 / MK 6,55 / GR 8,70 zł/l) — Grecja najdroższa, Macedonia najtańsza: tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
@@ -223,7 +223,7 @@ const CITIES = {
   ateny:       {name:"Ateny", ll:[37.9838,23.7275]},
   skopje:      {name:"Skopje", ll:[41.9981,21.4254]},
   budapeszt:   {name:"Budapeszt", ll:[47.4979,19.0402]},
-  kalamata:    {name:"Kalamata",    ll:[37.0389,22.1142]},
+  kalamata:    {name:"Kalamata — Camping Fare", ll:[37.0213,22.1434]},
 };
 
 const BORDERS = [
@@ -250,7 +250,7 @@ const ROUTE = [
   [46.16,19.98],[45.25,19.85],[44.7866,20.4489],[43.32,21.90],
   [42.24,21.68],[41.9981,21.4254],[41.11,22.53],[40.64,22.94],
   [39.64,22.42],[38.90,22.43],[38.32,23.32],[37.9838,23.7275],
-  [37.94,22.93],[37.51,22.38],[37.0389,22.1142],
+  [37.94,22.93],[37.51,22.38],[37.0389,22.1142],[37.0213,22.1434],
 ];
 
 const STOPS = [
@@ -261,7 +261,7 @@ const STOPS = [
   {key:"ateny",      label:"4", cls:"",      txt:"Nocleg: pon 5.10 (dojazd) i pt 23.10 (powrót). Apartament z psem. ⚠️ PARKING: bus ~2,5 m NIE zmieści się w parkingach podziemnych (limit ~2 m) — bierz nocleg z parkingiem naziemnym/na ulicy; najlepiej przy stacji metra na obrzeżu + metro do centrum, albo Koukaki. CO ZWIEDZIĆ wieczorem (bez Akropolu też super): Plaka i Anafiotika, Monastiraki, promenada Dionysiou Areopagitou (podświetlony Akropol, pies OK), Filopappou/Areopag (widok gratis), Lykabettos. Kolacja: Plaka / Psyrri."},
   {key:"skopje",     label:"5", cls:"",      txt:"Nocleg: sb 24.10 (tylko powrót). Macedonia Płn. — poza UE (roaming, korzystaj z wifi hotelu). Weekend, więc bez wpływu na pracę."},
   {key:"budapeszt",  label:"6", cls:"",      txt:"Nocleg: nd 25.10 (tylko powrót). Węgry — znów w UE, net działa na poniedziałkową pracę. W nocy zmiana czasu na zimowy +1 h."},
-  {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — workation (~17 nocy, 6–23.10)"},
+  {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — workation (~17 nocy, 6–23.10) · <b>Camping Fare</b>, koniec ul. Navarinou (Anatolikos Synoikismos), 241 33 Kalamata — przy samej plaży, ~4 km od centrum. Otwarty CAŁY ROK (październik OK). Cennik: kamper 6 € + 2×6 € osoba + prąd 4 € = <b>~22 €/dobę</b> (w kalkulatorze 25 € z zapasem). Bar/tawerna, prysznice, psy OK (z książeczką szczepień). ⚠️ Mały kemping — <b>bez obsługi kamperów &gt;8–8,5 m</b>; Vivaro L2H2 (~5,3 m) wchodzi bez problemu. Tel. +30 27210 29520 / +30 697 918 8290 · dimitrisfoudeas@hotmail.com · camping-fare.com. Rezerwuj na 17 nocy z góry."},
 ];
 
 // ---- rozpiska ----
@@ -299,12 +299,12 @@ const OUT = [
    note:"Opcjonalnie rano Akropol/Muzeum Akropolu (jeśli chcecie — praca skrócona). Standardowo praca 7–15 z apartamentu, net UE działa."},
   {day:"DZIEŃ 5", date:"wt 6.10 · praca", type:"drive", from:"Ateny (po 15:00)", to:"KALAMATA", key:"kalamata",
    km:290, temp:"~24°/15°", dep:"15:00", arr:"~18:00",
-   note:"Autostrada A8 → Korynt → A7 „Moreas” przez Tripoli → Kalamata. ~3 h, płasko, bez gór. Na miejscu ~18:00. 🏖️"},
+   note:"Autostrada A8 → Korynt → A7 „Moreas” przez Tripoli → Kalamata. ~3 h, płasko, bez gór. Na miejscu ~18:00. 🏖️ Nocleg: <b>Camping Fare</b> — koniec ul. Navarinou, przy plaży. Wjazd od strony wschodniej promenady, nie przez centrum."},
 ];
 
 const STAY = [
-  {type:"stay", date:"6–23.10", to:"Kalamata — workation (~17 nocy)", temp:"~23°/14° → ~20° pod koniec (morze ~22°)",
-   note:"Praca zdalna z Kalamaty (UE, net działa). Baza: Mesenia, Mystras, Pylos, Mani, plaże. Wyjazd powrotny w piątek 23.10, żeby weekend znów przypadł na Bałkany."},
+  {type:"stay", date:"6–23.10", to:"Kalamata — Camping Fare (~17 nocy)", temp:"~23°/14° → ~20° pod koniec (morze ~22°)",
+   note:"Baza: <b>Camping Fare</b>, koniec ul. Navarinou przy plaży (tel. +30 27210 29520, camping-fare.com) — otwarty cały rok, ~22 €/dobę z prądem, psy OK. Praca zdalna z Kalamaty (UE, net działa). Baza: Mesenia, Mystras, Pylos, Mani, plaże. Wyjazd powrotny w piątek 23.10, żeby weekend znów przypadł na Bałkany."},
 ];
 
 const RET = [
