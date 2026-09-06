@@ -28,6 +28,8 @@ python3 -m http.server 8000
 
 - Start: piątek 2.10.2026 po pracy (15:00). Powrót do ~26.10. Pobyt w Kalamacie ~18 nocy.
 - Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni (~800 km).
+- Poniedzialek 5.10 = dzien wolny: z Kalambaki jednym ciagiem do Kalamaty (~640 km,
+  obwodnica Aten Attiki Odos, bez wjazdu do miasta). Dojazd 4 dni, powrot 5 dni.
 - Cel logistyczny: jak najszybciej do Grecji (UE) — działający internet do pracy.
   Strefę roamingu (Serbia + Macedonia) przejeżdżamy w weekend.
 - Pojazd: Opel Vivaro L2H2 (kamper ≤3,5 t) — wysoki bus = kat. 2 opłat w RS/MK/GR.

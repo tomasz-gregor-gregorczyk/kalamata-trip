@@ -77,7 +77,7 @@ const PRESETS = [
   ["Granica Bogorodica–Evzoni", 41.11, 22.53],
   ["Kalambaka / Meteory", 39.718, 21.623],
   ["Ateny", 37.9838, 23.7275],
-  ["Kalamata", 37.0389, 22.1142],
+  ["Kalamata — Camping Fare", 37.0213, 22.1434],
 ];
 const sel = document.getElementById('preset');
 PRESETS.forEach((p,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=p[0]; sel.appendChild(o); });
