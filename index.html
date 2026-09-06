@@ -128,6 +128,7 @@
         <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
         <div><span style="font-size:12px">⛰️</span> Górski odcinek (tylko Beskidy)</div>
         <div><span class="dot" style="background:var(--out);height:0;border-top:3px dashed var(--out);width:14px"></span> Zjazd do Meteor (nocleg w dojeździe)</div>
+        <div><span class="dot" style="background:#f59e0b;height:0;border-top:3px dashed #f59e0b;width:14px"></span> 🇮🇹 Gdynia → Taranto (poglądowo)</div>
       </div>
     </div>
   </div>
@@ -251,6 +252,15 @@ const ROUTE = [
   [42.24,21.68],[41.9981,21.4254],[41.11,22.53],[40.64,22.94],
   [39.64,22.42],[38.90,22.43],[38.32,23.32],[37.9838,23.7275],
   [37.94,22.93],[37.51,22.38],[37.0389,22.1142],[37.0213,22.1434],
+];
+
+// wariant włoski (poglądowo) — Gdynia → Taranto przez Czechy, Austrię i Adriatyk
+const ROUTE_IT = [
+  [54.5189,18.5305],[52.41,16.93],[51.1079,17.0385],[50.0755,14.4378],
+  [48.3069,14.2858],[47.8095,13.0550],[46.6111,13.8558],[46.5050,13.5800],
+  [46.0711,13.2346],[45.4941,12.2436],[44.4949,11.3426],[44.0678,12.5695],
+  [43.6158,13.5189],[42.4618,14.2161],[41.4622,15.5446],[41.1171,16.8719],
+  [40.4644,17.2470],
 ];
 
 const STOPS = [
@@ -449,6 +459,12 @@ function initMap(){
     L.polyline(ROUTE,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map);
     L.polyline(ROUTE.slice(8,15),{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
       .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE). Przejeżdżamy ją w weekend, gdy nie pracujecie.');
+    // wariant włoski — poglądowa linia Gdynia → Taranto (Czechy, Austria, Adriatyk)
+    L.polyline(ROUTE_IT,{color:'#f59e0b',weight:3,opacity:.75,dashArray:'8,7'}).addTo(map)
+      .bindPopup('🇮🇹 <b>Wariant włoski (poglądowo)</b><br>Gdynia → Wrocław → Praga → Linz → Salzburg → Villach → Tarvisio → Udine → Wenecja → Bolonia → Ancona → Pescara → Foggia → Bari → <b>Taranto</b>.<br><br>~2 250 km, <b>cała trasa w UE</b> — bez roamingu i bez kontroli granicznych. Winiety: CZ + AT, potem włoskie autostrady płatne na bramki.<br><br>To tylko narysowana linia — nie jest częścią planu.');
+    L.marker([40.4644,17.2470],{icon:L.divIcon({className:'',html:'<div class="mk" style="background:#f59e0b;border-color:#f59e0b">T</div>',iconSize:[26,26],iconAnchor:[13,13]})}).addTo(map)
+      .bindPopup('<b>🇮🇹 Taranto</b><br>Koniec poglądowej linii włoskiej (~2 250 km z Gdyni).');
+
     // krótki spur do Kalambaki/Meteor (nocleg w dojeździe — detour od korytarza)
     L.polyline([[39.64,22.42],[39.7180,21.6230]],{color:'#38bdf8',weight:3,opacity:.7,dashArray:'5,6'}).addTo(map)
       .bindPopup('Zjazd do Kalambaki / Meteor (nocleg w dojeździe, nd 4.10).');
@@ -466,7 +482,7 @@ function initMap(){
       markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
-    map.fitBounds(L.polyline(ROUTE).getBounds(),{padding:[40,40]});
+    map.fitBounds(L.polyline(ROUTE.concat(ROUTE_IT)).getBounds(),{padding:[40,40]});
     setTimeout(()=>{try{map.invalidateSize()}catch(e){}},300);
   }catch(e){
     console.warn('Mapa nie wystartowała:',e);
