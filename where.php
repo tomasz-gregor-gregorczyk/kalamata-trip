@@ -7,6 +7,8 @@
 //
 // OwnTracks (iOS/Android, tryb HTTP) ustawiamy na adres:
 //   https://TWOJA-DOMENA/where.php?token=TAJNY_TOKEN_SLEDZENIA
+// Ten adres wpisujemy W APLIKACJI, nie w przeglądarce — otwarcie go w przeglądarce
+// to zwykły GET, który tylko odczytuje pozycję i niczego nie zapisuje.
 // Aplikacja wysyła JSON {"_type":"location","lat":..,"lon":..,"tst":..,"batt":..}
 // i oczekuje w odpowiedzi tablicy JSON — dlatego zwracamy [].
 
@@ -71,7 +73,10 @@ $isJson = strpos($ctype, 'application/json') !== false;
 
 // ---------------------------------------------------------------- OwnTracks
 if ($isJson) {
-    if (!tokenOk($_GET['token'] ?? '', $TRACK_TOKEN)) {
+    // Parametr to ?token=..., ale przyjmujemy też ?track_token=... — nazwa klucza
+    // w config.php myli się z nazwą parametru, więc niech działa jedno i drugie.
+    $given = $_GET['token'] ?? ($_GET['track_token'] ?? '');
+    if (!tokenOk($given, $TRACK_TOKEN)) {
         jexit(['error' => 'Zły token śledzenia'], 403);
     }
     $in = json_decode((string)file_get_contents('php://input'), true);

@@ -78,9 +78,14 @@ cały ten odcinek dośle się po wjeździe do Grecji.
 Konfiguracja w aplikacji:
 
 1. **Preferences → Connection → Mode: HTTP**
-2. **URL:** `https://twojadomena/…/where.php?token=TWOJ_TRACK_TOKEN`
-   (token z pola `track_token` w `config.php` — **inny niż hasło do panelu**, żeby dało
-   się go unieważnić niezależnie)
+2. **URL:** `https://twojadomena/…/where.php?token=WARTOSC_Z_track_token`
+   Parametr nazywa się `token`, a jego **wartość** bierzesz z pola `track_token`
+   w `config.php` (przyjmowane jest też `?track_token=...`). To ma być **inny sekret**
+   niż hasło do panelu, żeby dało się go unieważnić niezależnie.
+
+   > **Ten adres wpisujesz w aplikacji, nie w przeglądarce.** Otwarcie go w przeglądarce
+   > to zwykły `GET` — pokaże aktualnie zapisaną pozycję i niczego nie nadpisze.
+   > Zapis robi wyłącznie `POST` z JSON-em, który wysyła OwnTracks.
 3. **Mode:** `Significant changes` na co dzień, `Move` na dni przejazdowe.
 
 Co robi endpoint z takim wpisem:
@@ -99,6 +104,17 @@ Co robi endpoint z takim wpisem:
 
 Panel `panel.php` działa dalej równolegle: przydaje się do dopisania notatki albo
 ręcznego nadpisania pozycji.
+
+**Sprawdzenie, czy działa** (z komputera, podstaw swoją domenę i token):
+
+```bash
+curl -X POST -H 'Content-Type: application/json' \
+  -d '{"_type":"location","lat":44.858,"lon":20.33,"batt":80}' \
+  'https://twojadomena/…/where.php?token=TWOJ_TOKEN'
+```
+
+Poprawna odpowiedź to `[]` i HTTP 200. Potem odśwież `panel.php` — przy pozycji
+powinno pojawić się „📡 automat (OwnTracks)". Zły token zwróci `403`.
 
 ### Wdrożenie na serwer PHP
 
