@@ -33,7 +33,8 @@
 <body>
 <div class="box">
   <h1>📍 Gdzie jesteśmy</h1>
-  <p class="sub">Zaktualizuj pozycję — znajomi zobaczą ją na <a href="index.html">mapie planu</a>.</p>
+  <p class="sub">Zaktualizuj pozycję — znajomi zobaczą ją na <a href="index.html">mapie planu</a>.<br>
+  Jeśli działa OwnTracks, współrzędne lecą same; panel przydaje się do <b>notatki</b> albo do nadpisania pozycji ręcznie.</p>
 
   <div class="card">
     <div class="now" id="current">Ładowanie aktualnej pozycji…</div>
@@ -70,14 +71,17 @@
 // przystanki (te same co na mapie)
 const PRESETS = [
   ["Gdynia", 54.5189, 18.5305],
-  ["Częstochowa", 50.8118, 19.1203],
+  ["MOP Woźniki Zachód (A1)", 50.5980, 19.0000],
   ["Granica Horgoš–Röszke", 46.16, 19.98],
   ["Belgrad — Camp Dunav", 44.858, 20.330],
   ["Granica Preševo–Tabanovce", 42.24, 21.68],
   ["Granica Bogorodica–Evzoni", 41.11, 22.53],
-  ["Kalambaka / Meteory", 39.718, 21.623],
-  ["Ateny", 37.9838, 23.7275],
+  ["Neos Marmaras — Christos House", 40.0850, 23.7930],
   ["Kalamata — Camping Fare", 37.0213, 22.1434],
+  ["Ateny", 37.9838, 23.7275],
+  ["Skopje", 41.9981, 21.4254],
+  ["Budapeszt", 47.4979, 19.0402],
+  ["Częstochowa", 50.8118, 19.1203],
 ];
 const sel = document.getElementById('preset');
 PRESETS.forEach((p,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=p[0]; sel.appendChild(o); });
@@ -109,7 +113,9 @@ function loadCurrent(){
   fetch('where.php?t='+Date.now()).then(r=>r.json()).then(d=>{
     const el=document.getElementById('current');
     if(!d){ el.textContent='Jeszcze nie ustawiono pozycji.'; return; }
-    el.innerHTML='Teraz: <b>'+(d.label||'w drodze')+'</b><br>'+d.lat+', '+d.lng+' · '+rel(d.updated)+(d.note?'<br>„'+d.note+'”':'');
+    const src = d.src==='auto' ? ' · 📡 automat (OwnTracks)' : (d.src==='manual' ? ' · ✍️ ręcznie' : '');
+    const batt = (d.batt!=null) ? ' · 🔋 '+d.batt+'%' : '';
+    el.innerHTML='Teraz: <b>'+(d.label||'w drodze')+'</b><br>'+d.lat+', '+d.lng+' · '+rel(d.updated)+src+batt+(d.note?'<br>„'+d.note+'”':'');
   }).catch(()=>{ document.getElementById('current').textContent='Nie mogę pobrać pozycji.'; });
 }
 loadCurrent();

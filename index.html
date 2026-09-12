@@ -918,15 +918,16 @@ function updateLive(){
     if(!d || d.lat==null) return;
     liveLL=[d.lat,d.lng];
     const label=esc(d.label)||'w drodze', note=esc(d.note);
+    const batt=(d.batt!=null)?' · 🔋'+d.batt+'%':'';
     const banner=document.getElementById('live-banner');
     banner.style.display='block';
-    banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
+    banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+batt+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
     if(map){
       if(!liveMarker){
         const ic=L.divIcon({className:'',html:'<div class="live">🚐</div>',iconSize:[30,30],iconAnchor:[15,15]});
         liveMarker=L.marker(liveLL,{icon:ic,zIndexOffset:1000}).addTo(map);
       } else liveMarker.setLatLng(liveLL);
-      liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+(note?'<br>'+note:''));
+      liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+batt+(note?'<br>'+note:''));
     }
   }).catch(()=>{});
 }
