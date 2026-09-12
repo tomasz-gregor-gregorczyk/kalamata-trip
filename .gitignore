@@ -15,3 +15,6 @@ dist/
 # sekrety i dane runtime (live tracking)
 config.php
 location.json
+
+# lokalny skrypt diagnostyczny (czyta config.php)
+check-tracking.sh
