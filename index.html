@@ -827,6 +827,9 @@ let ADMIN = false;
 // Przy 'let' sięgnięcie po zmienną przed jej deklaracją to ReferenceError,
 // który przerywa cały skrypt.
 let trackLayer=null, trackData=[];
+// To samo dotyczy pozycji na żywo: drawPosts() sprawdza liveLL, żeby odsunąć
+// zdjęcia spod znacznika busa, a bywa wołane zanim wykonałaby się sekcja LIVE.
+let liveMarker=null, liveLL=null;
 function adminToken(){ try{ return localStorage.getItem('kalamata_admin')||''; }catch(e){ return ''; } }
 
 function chips(d){
@@ -1062,22 +1065,67 @@ function delTrack(i){
 }
 
 // ---- dziennik: zdjęcia i wpisy z trasy ----
+let postsData=[];
 function loadPosts(){
   fetch('api.php?action=posts&t='+Date.now()).then(r=>r.json()).then(list=>{
-    if(!Array.isArray(list)||!map) return;
-    if(postLayer) map.removeLayer(postLayer);
-    postLayer=L.layerGroup().addTo(map);
-    list.forEach(p=>{
+    if(!Array.isArray(list)) return;
+    postsData=list; drawPosts();
+  }).catch(()=>{});   // brak PHP (otwarte z dysku) — po prostu nie ma znaczników
+}
+
+function distM(a1,o1,a2,o2){
+  const R=6371000, r=Math.PI/180;
+  const dA=(a2-a1)*r, dO=(o2-o1)*r;
+  const h=Math.sin(dA/2)**2 + Math.cos(a1*r)*Math.cos(a2*r)*Math.sin(dO/2)**2;
+  return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
+}
+// Znaczniki w tym samym punkcie rozkładamy na małym okręgu. Przesunięcie jest
+// w PIKSELACH (przez iconAnchor), więc nie zmienia się przy zoomowaniu, a sam
+// znacznik nadal wisi na prawdziwych współrzędnych.
+function fanOffsets(n){
+  if(n<=1) return [[0,0]];
+  const r=17, out=[];
+  for(let i=0;i<n;i++){
+    const a=-Math.PI/2 + i*2*Math.PI/n;
+    out.push([Math.round(r*Math.cos(a)), Math.round(r*Math.sin(a))]);
+  }
+  return out;
+}
+
+function drawPosts(){
+  if(!map) return;
+  if(postLayer) map.removeLayer(postLayer);
+  postLayer=L.layerGroup().addTo(map);
+
+  // Grupujemy wpisy stojące praktycznie w tym samym miejscu (~100 m).
+  const groups={};
+  postsData.forEach(p=>{
+    const k=(+p.lat).toFixed(3)+','+(+p.lng).toFixed(3);
+    (groups[k]=groups[k]||[]).push(p);
+  });
+
+  Object.keys(groups).forEach(k=>{
+    const g=groups[k];
+    // Czy w tym samym miejscu stoi też bus? Jeśli tak, pierwsze miejsce na okręgu
+    // zostaje dla niego — inaczej zdjęcie chowa się pod znacznikiem pozycji,
+    // który ma zIndexOffset 1000 i zawsze jest na wierzchu.
+    const liveHere = liveLL && distM(liveLL[0],liveLL[1],+g[0].lat,+g[0].lng) < 120;
+    const slots = fanOffsets(g.length + (liveHere?1:0));
+    const offs  = liveHere ? slots.slice(1) : slots;
+
+    g.forEach((p,i)=>{
+      const d=offs[i]||[0,0];
       const glyph = p.photo ? '📷' : '📝';
-      const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+'</div>',iconSize:[24,24],iconAnchor:[12,12]});
+      const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+'</div>',
+        iconSize:[24,24], iconAnchor:[12-d[0], 12-d[1]]});
       const when = esc(p.taken||'') || (p.created? new Date(p.created).toLocaleString('pl-PL') : '');
       const html = '<div class="ppop">'+
         (p.photo? '<img src="'+esc(p.photo)+'" alt="">' : '')+
         (p.text? '<b>'+esc(p.text)+'</b>' : '')+
         (when? '<div class="when">'+when+'</div>' : '')+'</div>';
-      L.marker([p.lat,p.lng],{icon:ic}).addTo(postLayer).bindPopup(html,{maxWidth:260});
+      L.marker([p.lat,p.lng],{icon:ic,zIndexOffset:500}).addTo(postLayer).bindPopup(html,{maxWidth:260});
     });
-  }).catch(()=>{});   // brak PHP (otwarte z dysku) — po prostu nie ma znaczników
+  });
 }
 const ELEV = [
   {ll:[49.42,19.20], name:'Beskidy — granica PL/SK', alt:'~600–700 m',
@@ -1158,7 +1206,6 @@ window.addEventListener('resize',()=>{ if(map){try{map.invalidateSize()}catch(e)
 window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(map){try{map.invalidateSize()}catch(e){}} },400); });
 
 // ---- LIVE: gdzie jesteśmy teraz (czyta where.php; działa tylko na serwerze PHP) ----
-let liveMarker=null, liveLL=null;
 function relTime(iso){
   const d=new Date(iso), s=(Date.now()-d)/1000;
   if(isNaN(s)) return '';
@@ -1171,7 +1218,10 @@ function esc(t){const d=document.createElement('div');d.textContent=t||'';return
 function updateLive(){
   fetch('where.php?t='+Date.now()).then(r=>r.json()).then(d=>{
     if(!d || d.lat==null) return;
+    const moved = !liveLL || liveLL[0]!==d.lat || liveLL[1]!==d.lng;
     liveLL=[d.lat,d.lng];
+    // Pozycja się zmieniła, więc od nowa liczymy, które zdjęcia trzeba odsunąć.
+    if(moved) drawPosts();
     const fb=document.getElementById('findus');
     if(fb){ fb.disabled=false; fb.title='Przybliż do naszej aktualnej pozycji'; }
     // Kolejność: etykieta wpisana ręcznie > nazwa okolicy z geokodera > nic konkretnego
