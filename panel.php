@@ -154,8 +154,9 @@ function loadCurrent(){
     const el=document.getElementById('current');
     if(!d){ el.textContent='Jeszcze nie ustawiono pozycji.'; return; }
     const src = d.src==='auto' ? ' · 📡 automat (OwnTracks)' : (d.src==='manual' ? ' · ✍️ ręcznie' : '');
-    const batt = (d.batt!=null) ? ' · 🔋 '+d.batt+'%' : '';
-    el.innerHTML='Teraz: <b>'+(d.label||'w drodze')+'</b><br>'+d.lat+', '+d.lng+' · '+rel(d.updated)+src+batt+(d.note?'<br>„'+d.note+'”':'');
+    const place=esc(d.place||'');
+    const what = esc(d.label||'') || (place ? 'w okolicy: '+place : 'w drodze');
+    el.innerHTML='Teraz: <b>'+what+'</b><br>'+d.lat+', '+d.lng+' · '+rel(d.updated)+src+(d.note?'<br>„'+d.note+'”':'');
   }).catch(()=>{ document.getElementById('current').textContent='Nie mogę pobrać pozycji.'; });
 }
 loadCurrent();

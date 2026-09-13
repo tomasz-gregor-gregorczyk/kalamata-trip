@@ -1064,17 +1064,19 @@ function updateLive(){
     liveLL=[d.lat,d.lng];
     const fb=document.getElementById('findus');
     if(fb){ fb.disabled=false; fb.title='Przybliż do naszej aktualnej pozycji'; }
-    const label=esc(d.label)||'w drodze', note=esc(d.note);
-    const batt=(d.batt!=null)?' · 🔋'+d.batt+'%':'';
+    // Kolejność: etykieta wpisana ręcznie > nazwa okolicy z geokodera > nic konkretnego
+    const place=esc(d.place);
+    const label = esc(d.label) || (place ? 'w okolicy: '+place : 'w drodze');
+    const note=esc(d.note);
     const banner=document.getElementById('live-banner');
     banner.style.display='block';
-    banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+batt+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
+    banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
     if(map){
       if(!liveMarker){
         const ic=L.divIcon({className:'',html:LIVE_ICON,iconSize:[34,34],iconAnchor:[17,17]});
         liveMarker=L.marker(liveLL,{icon:ic,zIndexOffset:1000}).addTo(map);
       } else liveMarker.setLatLng(liveLL);
-      liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+batt+(note?'<br>'+note:''));
+      liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+(note?'<br>'+note:''));
     }
   }).catch(()=>{});
 }

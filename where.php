@@ -2,6 +2,9 @@
 // Endpoint pozycji — trzy tryby, wszystkie na jednym pliku location.json (bez bazy):
 //
 //   GET                          -> zwraca aktualną pozycję (JSON) dla mapy w index.html
+//
+// Przy każdym zapisie doklejamy nazwę okolicy ('place') z Nominatim — mapa pokazuje
+// wtedy "w okolicy: Nikiti, Grecja" zamiast samych współrzędnych.
 //   POST application/x-www-form  -> zapis ręczny z panel.php (token w polu formularza)
 //   POST application/json        -> zapis automatyczny z OwnTracks (token w query: ?token=...)
 //
@@ -57,6 +60,51 @@ function saveLocation($file, $data) {
         jexit(['error' => 'Nie mogę zapisać location.json (uprawnienia zapisu w folderze?)'], 500);
     }
 }
+// Odwrotne geokodowanie przez Nominatim (OpenStreetMap). Robimy to TU, przy zapisie,
+// a nie w przeglądarce: zapytanie leci raz na zmianę pozycji zamiast raz na minutę
+// razy liczba odwiedzających — Nominatim dopuszcza 1 zapytanie na sekundę.
+// Każdy błąd jest cichy: brak nazwy to nie powód, żeby nie zapisać pozycji.
+function reverseGeocode($lat, $lng) {
+    $url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2'
+         . '&lat=' . rawurlencode((string)$lat) . '&lon=' . rawurlencode((string)$lng)
+         . '&zoom=14&accept-language=pl,en';   // 'en' jako zapas: bez tego Grecja i Serbia
+         // wracaja alfabetem lokalnym (Νέος Μαρμαράς, Земун)
+    $ua  = 'kalamata-trip/1.0 (https://grecja.gofamily.pl)';
+    $raw = false;
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT        => 4,
+            CURLOPT_CONNECTTIMEOUT => 3,
+            CURLOPT_USERAGENT      => $ua,
+        ]);
+        $raw = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $ctx = stream_context_create(['http' => [
+            'timeout' => 4, 'header' => "User-Agent: $ua\r\n",
+        ]]);
+        $raw = @file_get_contents($url, false, $ctx);
+    }
+    if (!$raw) return '';
+
+    $d = json_decode($raw, true);
+    if (!is_array($d) || empty($d['address'])) return '';
+    $a = $d['address'];
+
+    // Od najbardziej szczegółowego: wieś/miasteczko/miasto, potem gmina i powiat.
+    $keys = ['village', 'town', 'city', 'hamlet', 'suburb', 'municipality', 'county', 'state'];
+    $name = '';
+    foreach ($keys as $k) {
+        if (!empty($a[$k])) { $name = (string)$a[$k]; break; }
+    }
+    if ($name === '') return '';
+    $country = !empty($a['country']) ? (string)$a['country'] : '';
+    return $country !== '' ? $name . ', ' . $country : $name;
+}
+
 function validCoords($lat, $lng) {
     return $lat !== null && $lng !== null
         && $lat >= -90 && $lat <= 90 && $lng >= -180 && $lng <= 180;
@@ -118,17 +166,24 @@ if ($isJson) {
     // Notatka to wiadomość od człowieka — zostawiamy ją, dopóki sam jej nie zmienisz w panelu.
     $note = $cur['note'] ?? '';
 
+    // Nazwa okolicy. Jeśli ledwo się ruszyliśmy, a nazwę już mamy — nie pytamy ponownie.
+    $place = '';
+    $reuse = isset($cur['lat'], $cur['lng'], $cur['place']) && $cur['place'] !== ''
+           && distKm($lat, $lng, (float)$cur['lat'], (float)$cur['lng']) < 0.5;
+    $place = $reuse ? (string)$cur['place'] : reverseGeocode($lat, $lng);
+
     $data = [
         'lat'     => round($lat, 5),
         'lng'     => round($lng, 5),
         'label'   => $label,
+        'place'   => $place,
         'note'    => $note,
         'updated' => date('c'),
         'src'     => 'auto',
     ];
-    if (isset($in['batt'])) $data['batt'] = (int)$in['batt'];
-    if (isset($in['acc']))  $data['acc']  = (int)$in['acc'];
-    if (isset($in['vel']))  $data['vel']  = (int)$in['vel'];
+    // OwnTracks przysyła też batt / acc / vel (bateria, dokładność, prędkość).
+    // Nie zapisujemy ich: location.json jest publicznie czytelny, a te dane
+    // nie są nikomu potrzebne do zobaczenia, gdzie jesteśmy.
 
     saveLocation($FILE, $data);
     jexit([], 200);   // OwnTracks oczekuje tablicy
@@ -147,6 +202,7 @@ $data = [
     'lat'     => round($lat, 5),
     'lng'     => round($lng, 5),
     'label'   => trim(strip_tags((string)($_POST['label'] ?? ''))),
+    'place'   => reverseGeocode($lat, $lng),
     'note'    => trim(strip_tags((string)($_POST['note'] ?? ''))),
     'updated' => date('c'),
     'src'     => 'manual',
