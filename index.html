@@ -142,11 +142,20 @@
   .live-badge svg{width:20px;height:20px;fill:#04202e}
   @keyframes ping{0%{transform:scale(.8);opacity:.55}70%{transform:scale(1.6);opacity:0}100%{opacity:0}}
   /* znaczniki dziennika */
-  .pmk{background:var(--work);border-radius:50%;width:24px;height:24px;font-size:12px;
+  .pmk{position:relative;background:var(--work);border-radius:50%;width:24px;height:24px;font-size:12px;
     display:flex;align-items:center;justify-content:center;
     border:2px solid #ede9fe;box-shadow:0 1px 6px rgba(0,0,0,.5)}
-  .ppop img{max-width:230px;width:100%;border-radius:8px;display:block;margin:0 0 6px}
+  .pmk .cnt{position:absolute;top:-6px;right:-7px;background:var(--accent2);color:#3a2500;
+    border:2px solid #fde68a;border-radius:999px;min-width:17px;height:17px;padding:0 3px;
+    font-size:10.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .ppop img{max-width:240px;width:100%;border-radius:8px;display:block;margin:0 0 6px}
   .ppop .when{color:#64748b;font-size:11px}
+  .gnav{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin-top:8px;padding-top:7px;border-top:1px solid #cbd5e1}
+  .gnav button{background:#0f172a;color:#e2e8f0;border:none;border-radius:7px;
+    width:30px;height:26px;font-size:15px;line-height:1;cursor:pointer;font-family:inherit}
+  .gnav button:hover{background:#1e293b}
+  .gnav span{font-size:11.5px;color:#475569;font-weight:700}
   /* notatki: dla gości to zwykły tekst, nie pole do wpisywania */
   .note[readonly]{background:transparent;border-color:transparent;padding-left:0;resize:none;cursor:inherit}
   .btn.on{background:#14532d;border-color:#22c55e;color:#86efac}
@@ -1079,17 +1088,31 @@ function distM(a1,o1,a2,o2){
   const h=Math.sin(dA/2)**2 + Math.cos(a1*r)*Math.cos(a2*r)*Math.sin(dO/2)**2;
   return 2*R*Math.asin(Math.min(1,Math.sqrt(h)));
 }
-// Znaczniki w tym samym punkcie rozkładamy na małym okręgu. Przesunięcie jest
-// w PIKSELACH (przez iconAnchor), więc nie zmienia się przy zoomowaniu, a sam
-// znacznik nadal wisi na prawdziwych współrzędnych.
-function fanOffsets(n){
-  if(n<=1) return [[0,0]];
-  const r=17, out=[];
-  for(let i=0;i<n;i++){
-    const a=-Math.PI/2 + i*2*Math.PI/n;
-    out.push([Math.round(r*Math.cos(a)), Math.round(r*Math.sin(a))]);
-  }
-  return out;
+function postItem(p){
+  const when = esc(p.taken||'') || (p.created? new Date(p.created).toLocaleString('pl-PL') : '');
+  return (p.photo? '<img src="'+esc(p.photo)+'" alt="" loading="lazy">' : '')+
+         (p.text? '<b>'+esc(p.text)+'</b>' : '')+
+         (when? '<div class="when">'+when+'</div>' : '');
+}
+// Kilka wpisow z jednego miejsca pokazujemy jako kolekcje w jednym dymku,
+// a nie jako kilka ikonek obok siebie - przy kempingu byloby ich kilkanascie.
+function groupPopup(g, gid){
+  if(g.length===1) return '<div class="ppop">'+postItem(g[0])+'</div>';
+  const items=g.map((p,i)=>'<div class="gitem" data-g="'+gid+'"'+(i?' hidden':'')+'>'+postItem(p)+'</div>').join('');
+  return '<div class="ppop">'+items+
+    '<div class="gnav"><button type="button" onclick="galStep(\''+gid+'\',-1)">&lsaquo;</button>'+
+    '<span id="gc-'+gid+'">1 / '+g.length+'</span>'+
+    '<button type="button" onclick="galStep(\''+gid+'\',1)">&rsaquo;</button></div></div>';
+}
+function galStep(gid,dir){
+  const items=Array.prototype.slice.call(document.querySelectorAll('.gitem[data-g="'+gid+'"]'));
+  if(!items.length) return;
+  let cur=items.findIndex(e=>!e.hidden); if(cur<0) cur=0;
+  items[cur].hidden=true;
+  const nxt=(cur+dir+items.length)%items.length;
+  items[nxt].hidden=false;
+  const c=document.getElementById('gc-'+gid);
+  if(c) c.textContent=(nxt+1)+' / '+items.length;
 }
 
 function drawPosts(){
@@ -1097,34 +1120,25 @@ function drawPosts(){
   if(postLayer) map.removeLayer(postLayer);
   postLayer=L.layerGroup().addTo(map);
 
-  // Grupujemy wpisy stojące praktycznie w tym samym miejscu (~100 m).
+  // Wpisy z praktycznie tego samego miejsca (~100 m) trafiaja do jednej grupy.
   const groups={};
   postsData.forEach(p=>{
     const k=(+p.lat).toFixed(3)+','+(+p.lng).toFixed(3);
     (groups[k]=groups[k]||[]).push(p);
   });
 
-  Object.keys(groups).forEach(k=>{
+  Object.keys(groups).forEach((k,gi)=>{
     const g=groups[k];
-    // Czy w tym samym miejscu stoi też bus? Jeśli tak, pierwsze miejsce na okręgu
-    // zostaje dla niego — inaczej zdjęcie chowa się pod znacznikiem pozycji,
-    // który ma zIndexOffset 1000 i zawsze jest na wierzchu.
-    const liveHere = liveLL && distM(liveLL[0],liveLL[1],+g[0].lat,+g[0].lng) < 120;
-    const slots = fanOffsets(g.length + (liveHere?1:0));
-    const offs  = liveHere ? slots.slice(1) : slots;
-
-    g.forEach((p,i)=>{
-      const d=offs[i]||[0,0];
-      const glyph = p.photo ? '📷' : '📝';
-      const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+'</div>',
-        iconSize:[24,24], iconAnchor:[12-d[0], 12-d[1]]});
-      const when = esc(p.taken||'') || (p.created? new Date(p.created).toLocaleString('pl-PL') : '');
-      const html = '<div class="ppop">'+
-        (p.photo? '<img src="'+esc(p.photo)+'" alt="">' : '')+
-        (p.text? '<b>'+esc(p.text)+'</b>' : '')+
-        (when? '<div class="when">'+when+'</div>' : '')+'</div>';
-      L.marker([p.lat,p.lng],{icon:ic,zIndexOffset:500}).addTo(postLayer).bindPopup(html,{maxWidth:260});
-    });
+    const glyph = g.some(p=>p.photo) ? '\ud83d\udcf7' : '\ud83d\udcdd';
+    const badge = g.length>1 ? '<span class="cnt">'+g.length+'</span>' : '';
+    // Znacznik busa ma zIndexOffset 1000 i zaslonilby ikonke, wiec gdy stoi
+    // w tym samym miejscu, odsuwamy kolekcje o kilkanascie pikseli w dol.
+    // Przesuniecie idzie przez iconAnchor, wiec nie zmienia sie przy zoomowaniu.
+    const dy = (liveLL && distM(liveLL[0],liveLL[1],+g[0].lat,+g[0].lng) < 120) ? 17 : 0;
+    const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+badge+'</div>',
+      iconSize:[24,24], iconAnchor:[12, 12-dy]});
+    L.marker([g[0].lat,g[0].lng],{icon:ic,zIndexOffset:500}).addTo(postLayer)
+      .bindPopup(groupPopup(g,'g'+gi),{maxWidth:280});
   });
 }
 const ELEV = [
