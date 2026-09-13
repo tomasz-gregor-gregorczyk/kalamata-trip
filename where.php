@@ -15,6 +15,10 @@
 // Aplikacja wysyła JSON {"_type":"location","lat":..,"lon":..,"tst":..,"batt":..}
 // i oczekuje w odpowiedzi tablicy JSON — dlatego zwracamy [].
 
+// Bez tego hosting z serialize_precision=17 zapisuje 40.085 jako
+// 40.08500000000000085265128291212022304534912109375.
+@ini_set('serialize_precision', '-1');
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
