@@ -125,36 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
         jexit($rows);
     }
-    // --- historia zameldowań: czyszczenie i usuwanie pojedynczych wpisów ---------
-// Przydaje się dwa razy: po testach i wtedy, gdy GPS strzeli gdzieś w bok
-// i pojedynczy bledny punkt wykrzywi cala linie na mapie.
-if ($action === 'track_clear' || $action === 'track_delete') {
-    if (!is_file($TRACK)) jexit(['ok' => true, 'removed' => 0]);
-
-    if ($action === 'track_clear') {
-        $n = count(file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: []);
-        if (@unlink($TRACK) === false) {
-            jexit(['error' => 'Nie mogę usunąć track.jsonl (prawa zapisu?).'], 500);
-        }
-        jexit(['ok' => true, 'removed' => $n]);
-    }
-
-    $t     = (string)($_POST['t'] ?? '');
-    $lines = file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
-    $kept  = [];
-    $n     = 0;
-    foreach ($lines as $l) {
-        $r = json_decode($l, true);
-        if (is_array($r) && isset($r['t']) && (string)$r['t'] === $t) { $n++; continue; }
-        $kept[] = $l;
-    }
-    if ($n === 0) jexit(['error' => 'Nie ma zameldowania o tym czasie'], 404);
-    if (file_put_contents($TRACK, $kept ? implode("\n", $kept) . "\n" : '', LOCK_EX) === false) {
-        jexit(['error' => 'Nie mogę zapisać track.jsonl.'], 500);
-    }
-    jexit(['ok' => true, 'removed' => $n]);
-}
-
 jexit(['error' => 'Nieznana akcja'], 400);
 }
 
@@ -268,6 +238,43 @@ if ($action === 'post_delete') {
     if (!$found) jexit(['error' => 'Nie ma takiego wpisu'], 404);
     writeJson($POSTS, $kept);
     jexit(['ok' => true, 'id' => $id]);
+}
+
+// --- historia zameldowań: czyszczenie i usuwanie pojedynczych wpisów ---------
+// Przydaje się dwa razy: po testach i wtedy, gdy GPS strzeli gdzieś w bok
+// i pojedynczy bledny punkt wykrzywi cala linie na mapie.
+if ($action === 'track_clear' || $action === 'track_delete') {
+    if (!is_file($TRACK)) jexit(['ok' => true, 'removed' => 0]);
+
+    if ($action === 'track_clear') {
+        $n = count(file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: []);
+        if (@unlink($TRACK) === false) {
+            jexit(['error' => 'Nie mogę usunąć track.jsonl (prawa zapisu?).'], 500);
+        }
+        jexit(['ok' => true, 'removed' => $n]);
+    }
+
+    // W treści formularza '+' oznacza spację, więc "...:44+00:00" dociera jako
+    // "...:44 00:00". Cofamy to, zamiast wymagać %2B od każdego klienta.
+    $t = str_replace(' ', '+', (string)($_POST['t'] ?? ''));
+    $want  = strtotime($t);
+    $lines = file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+    $kept  = [];
+    $n     = 0;
+    foreach ($lines as $l) {
+        $r = json_decode($l, true);
+        if (is_array($r) && isset($r['t'])) {
+            $rt = (string)$r['t'];
+            // Porównujemy też po czasie, żeby nie wywrócić się na innym zapisie strefy.
+            if ($rt === $t || ($want !== false && strtotime($rt) === $want)) { $n++; continue; }
+        }
+        $kept[] = $l;
+    }
+    if ($n === 0) jexit(['error' => 'Nie ma zameldowania o tym czasie'], 404);
+    if (file_put_contents($TRACK, $kept ? implode("\n", $kept) . "\n" : '', LOCK_EX) === false) {
+        jexit(['error' => 'Nie mogę zapisać track.jsonl.'], 500);
+    }
+    jexit(['ok' => true, 'removed' => $n]);
 }
 
 jexit(['error' => 'Nieznana akcja'], 400);
