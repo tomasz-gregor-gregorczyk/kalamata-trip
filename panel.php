@@ -28,6 +28,12 @@
   .now{font-size:13px;color:var(--muted);line-height:1.5}
   .now b{color:var(--accent)}
   a{color:var(--accent)}
+  .back{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;
+    padding:8px 14px 8px 11px;border-radius:999px;text-decoration:none;
+    background:var(--card);border:1px solid var(--border);color:var(--text);
+    font-size:13px;font-weight:700;transition:background .15s,border-color .15s}
+  .back:hover{background:#22304d;border-color:var(--accent)}
+  .back span{font-size:16px;line-height:1;color:var(--accent)}
   .hint{font-size:11.5px;color:var(--muted);line-height:1.45;margin:8px 0 0}
   .btn-add{background:var(--accent);color:#04202e;border-color:var(--accent)}
   .post{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start}
@@ -44,8 +50,9 @@
 </head>
 <body>
 <div class="box">
+  <a class="back" href="index.html"><span>&lsaquo;</span> Wróć do mapy i planu</a>
   <h1>📍 Gdzie jesteśmy</h1>
-  <p class="sub">Zaktualizuj pozycję — znajomi zobaczą ją na <a href="index.html">mapie planu</a>.<br>
+  <p class="sub">Zaktualizuj pozycję — znajomi zobaczą ją na mapie planu.<br>
   Jeśli działa OwnTracks, współrzędne lecą same; panel przydaje się do <b>notatki</b> albo do nadpisania pozycji ręcznie.</p>
 
   <div class="card">
