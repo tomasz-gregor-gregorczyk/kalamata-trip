@@ -64,11 +64,27 @@ function saveLocation($file, $data) {
 // a nie w przeglądarce: zapytanie leci raz na zmianę pozycji zamiast raz na minutę
 // razy liczba odwiedzających — Nominatim dopuszcza 1 zapytanie na sekundę.
 // Każdy błąd jest cichy: brak nazwy to nie powód, żeby nie zapisać pozycji.
-function reverseGeocode($lat, $lng) {
+
+// Nazwa kraju z kodu ISO — po polsku i bez dodatkowego zapytania do geokodera
+// (odpowiedź w języku lokalnym zwracałaby "Ελλάδα" albo "Србија").
+function countryPl($code, $fallback) {
+    $map = [
+        'pl' => 'Polska', 'sk' => 'Słowacja', 'cz' => 'Czechy', 'hu' => 'Węgry',
+        'at' => 'Austria', 'de' => 'Niemcy', 'si' => 'Słowenia', 'hr' => 'Chorwacja',
+        'ba' => 'Bośnia i Hercegowina', 'rs' => 'Serbia', 'me' => 'Czarnogóra',
+        'xk' => 'Kosowo', 'mk' => 'Macedonia Północna', 'al' => 'Albania',
+        'gr' => 'Grecja', 'bg' => 'Bułgaria', 'ro' => 'Rumunia', 'it' => 'Włochy',
+        'ua' => 'Ukraina', 'tr' => 'Turcja',
+    ];
+    $code = strtolower((string)$code);
+    return isset($map[$code]) ? $map[$code] : (string)$fallback;
+}
+
+function nominatim($lat, $lng, $lang) {
     $url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2'
          . '&lat=' . rawurlencode((string)$lat) . '&lon=' . rawurlencode((string)$lng)
-         . '&zoom=14&accept-language=pl,en';   // 'en' jako zapas: bez tego Grecja i Serbia
-         // wracaja alfabetem lokalnym (Νέος Μαρμαράς, Земун)
+         . '&zoom=14';
+    if ($lang !== '') $url .= '&accept-language=' . rawurlencode($lang);
     $ua  = 'kalamata-trip/1.0 (https://grecja.gofamily.pl)';
     $raw = false;
 
@@ -88,20 +104,41 @@ function reverseGeocode($lat, $lng) {
         ]]);
         $raw = @file_get_contents($url, false, $ctx);
     }
-    if (!$raw) return '';
-
+    if (!$raw) return null;
     $d = json_decode($raw, true);
-    if (!is_array($d) || empty($d['address'])) return '';
-    $a = $d['address'];
+    return (is_array($d) && !empty($d['address'])) ? $d['address'] : null;
+}
 
-    // Od najbardziej szczegółowego: wieś/miasteczko/miasto, potem gmina i powiat.
-    $keys = ['village', 'town', 'city', 'hamlet', 'suburb', 'municipality', 'county', 'state'];
-    $name = '';
-    foreach ($keys as $k) {
-        if (!empty($a[$k])) { $name = (string)$a[$k]; break; }
+// Z odpowiedzi wybieramy najbardziej szczegółową nazwę miejsca.
+function placeName($addr) {
+    foreach (['village', 'town', 'city', 'hamlet', 'suburb', 'municipality', 'county', 'state'] as $k) {
+        if (!empty($addr[$k])) return (string)$addr[$k];
     }
+    return '';
+}
+
+function reverseGeocode($lat, $lng) {
+    // Bez accept-language dostajemy nazwę oryginalną, tak jak zapisana lokalnie.
+    $local = nominatim($lat, $lng, '');
+    if (!$local) return '';
+    $name = placeName($local);
     if ($name === '') return '';
-    $country = !empty($a['country']) ? (string)$a['country'] : '';
+
+    // Angielski dokładamy tylko wtedy, gdy oryginał nie jest po łacinie — czyli
+    // dla Grecji i cyrylicznej Serbii. Dla Polski czy Węgier drugie zapytanie
+    // byłoby bezcelowe, a Nominatim ma limit jednego na sekundę.
+    if (preg_match('/[^\x{0000}-\x{024F}]/u', $name)) {
+        $en = nominatim($lat, $lng, 'en');
+        if ($en) {
+            $nameEn = placeName($en);
+            if ($nameEn !== '' && $nameEn !== $name) $name .= ' (' . $nameEn . ')';
+        }
+    }
+
+    $country = countryPl(
+        isset($local['country_code']) ? $local['country_code'] : '',
+        isset($local['country']) ? $local['country'] : ''
+    );
     return $country !== '' ? $name . ', ' . $country : $name;
 }
 
