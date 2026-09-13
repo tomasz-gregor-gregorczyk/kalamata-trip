@@ -822,6 +822,11 @@ const RET = [
 // zmieniac moze tylko wlasciciel po wpisaniu tokenu (tryb edycji).
 let SRV = {notes:{}, done:{}};
 let ADMIN = false;
+// Deklarowane TU, a nie przy kodzie mapy niżej: setAdmin() woła renderTrackList(),
+// a to wykonuje się przy starcie strony, zanim doszlibyśmy do sekcji mapy.
+// Przy 'let' sięgnięcie po zmienną przed jej deklaracją to ReferenceError,
+// który przerywa cały skrypt.
+let trackLayer=null, trackData=[];
 function adminToken(){ try{ return localStorage.getItem('kalamata_admin')||''; }catch(e){ return ''; } }
 
 function chips(d){
@@ -918,7 +923,9 @@ function toggleAdmin(){
     else alert('Zły token.');
   }).catch(e=>alert('Nie mogę się połączyć: '+e.message));
 }
-if(adminToken()) setAdmin(true);
+// Zabezpieczenie: gdyby cokolwiek tu poszlo nie tak, nie moze to zatrzymac
+// reszty skryptu - inaczej przestaje dzialac mapa, historia i pozycja na zywo.
+try{ if(adminToken()) setAdmin(true); }catch(e){ console.warn('Tryb edycji:',e); }
 
 let activeEl=null;
 function focusDay(el,e){
@@ -994,7 +1001,6 @@ function fitAll(){
 }
 
 // ---- historia zameldowań: przebyta trasa ----
-let trackLayer=null, trackData=[];
 function fmtWhen(iso){
   const d=new Date(iso);
   if(isNaN(d)) return '';
@@ -1013,8 +1019,8 @@ function loadTrack(){
 }
 function renderTrackList(){
   const el=document.getElementById('track-list'), cnt=document.getElementById('hist-cnt');
-  if(cnt) cnt.textContent = trackData.length ? trackData.length+' wpisów' : 'brak';
   if(!el) return;
+  if(cnt) cnt.textContent = trackData.length ? trackData.length+' wpisów' : 'brak';
   if(!trackData.length){ el.textContent='Jeszcze nie ma żadnego zameldowania.'; return; }
   // najnowsze na górze, ograniczone do 300 — reszta i tak jest w GPX
   el.innerHTML = trackData.map((r,i)=>({r:r,i:i})).reverse().slice(0,300).map(x=>
