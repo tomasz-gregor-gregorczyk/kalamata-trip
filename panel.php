@@ -105,6 +105,14 @@
     <div class="now" style="margin-bottom:6px">Wpisy na mapie</div>
     <div id="postlist" class="now">Ładowanie…</div>
   </div>
+
+  <div class="card">
+    <div class="now" id="trackinfo">Historia zameldowań: ładowanie…</div>
+    <button type="button" class="del" style="width:100%;margin-top:10px;padding:9px"
+            onclick="clearTrack()">Wyczyść historię zameldowań</button>
+    <p class="hint">Kasuje cały ślad trasy widoczny na mapie i w GPX. Bieżąca pozycja
+    zostaje — znika tylko historia. Nie da się tego cofnąć.</p>
+  </div>
 </div>
 
 <script>
@@ -337,6 +345,27 @@ function delPost(id){
   });
 }
 loadPosts();
+
+function loadTrackInfo(){
+  fetch('api.php?action=track&t='+Date.now()).then(r=>r.json()).then(d=>{
+    const el=document.getElementById('trackinfo');
+    if(!Array.isArray(d)){ el.textContent='Historia zameldowań: brak danych.'; return; }
+    const last = d.length ? d[d.length-1] : null;
+    el.innerHTML = 'Historia zameldowań: <b>'+d.length+'</b> '+
+      (d.length===1?'wpis':(d.length%10>=2&&d.length%10<=4&&(d.length<12||d.length>14)?'wpisy':'wpisów'))+
+      (last ? '<br><span style="font-size:11px">ostatni: '+esc(last.place||last.label||'')+' · '+rel(last.t)+'</span>' : '');
+  }).catch(()=>{ document.getElementById('trackinfo').textContent='Historia zameldowań: nie mogę pobrać.'; });
+}
+function clearTrack(){
+  if(!confirm('Usunąć CAŁĄ historię zameldowań? Tego nie da się cofnąć.')) return;
+  const body=new URLSearchParams({action:'track_clear',token:document.getElementById('token').value});
+  fetch('api.php',{method:'POST',body}).then(r=>r.json()).then(d=>{
+    const st=document.getElementById('pstatus'); st.style.display='block';
+    if(d.ok){ st.className='status ok'; st.textContent='✔ Wyczyszczono ('+d.removed+' wpisów).'; loadTrackInfo(); }
+    else { st.className='status err'; st.textContent='✖ '+(d.error||'Błąd'); }
+  }).catch(e=>alert('Błąd sieci: '+e.message));
+}
+loadTrackInfo();
 </script>
 </body>
 </html>

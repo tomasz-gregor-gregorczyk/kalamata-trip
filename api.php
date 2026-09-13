@@ -9,6 +9,8 @@
 //   POST action=done        + token    -> zaznaczenie "zaplanowane / zarezerwowane"
 //   POST action=post        + token    -> nowy wpis dziennika (opcjonalnie ze zdjęciem)
 //   POST action=post_delete + token    -> kasowanie wpisu razem ze zdjęciem
+//   POST action=track_clear  + token   -> wyczyszczenie historii zameldowań
+//   POST action=track_delete + token   -> usunięcie jednego zameldowania (po czasie 't')
 //   POST action=check       + token    -> sprawdzenie tokenu (tryb edycji w index.html)
 //
 // Zapis wymaga tokenu z 'token' w config.php — tego samego co panel.
@@ -123,7 +125,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
         jexit($rows);
     }
-    jexit(['error' => 'Nieznana akcja'], 400);
+    // --- historia zameldowań: czyszczenie i usuwanie pojedynczych wpisów ---------
+// Przydaje się dwa razy: po testach i wtedy, gdy GPS strzeli gdzieś w bok
+// i pojedynczy bledny punkt wykrzywi cala linie na mapie.
+if ($action === 'track_clear' || $action === 'track_delete') {
+    if (!is_file($TRACK)) jexit(['ok' => true, 'removed' => 0]);
+
+    if ($action === 'track_clear') {
+        $n = count(file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: []);
+        if (@unlink($TRACK) === false) {
+            jexit(['error' => 'Nie mogę usunąć track.jsonl (prawa zapisu?).'], 500);
+        }
+        jexit(['ok' => true, 'removed' => $n]);
+    }
+
+    $t     = (string)($_POST['t'] ?? '');
+    $lines = file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+    $kept  = [];
+    $n     = 0;
+    foreach ($lines as $l) {
+        $r = json_decode($l, true);
+        if (is_array($r) && isset($r['t']) && (string)$r['t'] === $t) { $n++; continue; }
+        $kept[] = $l;
+    }
+    if ($n === 0) jexit(['error' => 'Nie ma zameldowania o tym czasie'], 404);
+    if (file_put_contents($TRACK, $kept ? implode("\n", $kept) . "\n" : '', LOCK_EX) === false) {
+        jexit(['error' => 'Nie mogę zapisać track.jsonl.'], 500);
+    }
+    jexit(['ok' => true, 'removed' => $n]);
+}
+
+jexit(['error' => 'Nieznana akcja'], 400);
 }
 
 // ------------------------------------------------------------------- zapis
