@@ -32,6 +32,7 @@ jobs:
             README.md
             .gitignore
             config.php
+            data/**
             config.example.php
             location.json
             .deploy.env

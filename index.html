@@ -104,8 +104,24 @@
   .live-banner{margin-top:10px;background:#10233a;border:1px solid #1d4e6b;color:#7dd3fc;
     border-radius:10px;padding:8px 11px;font-size:12.5px;line-height:1.45}
   .live-banner a{color:#e2e8f0;text-decoration:underline;cursor:pointer}
-  .live{font-size:22px;filter:drop-shadow(0 0 4px #000);animation:pulse 1.6s ease-in-out infinite}
-  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+  /* znacznik "jesteśmy tu" — odznaka z busem zamiast gołej emotki */
+  .live{position:relative;width:34px;height:34px}
+  .live-ring{position:absolute;inset:-7px;border-radius:50%;background:var(--accent);
+    animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
+  .live-badge{position:absolute;inset:0;border-radius:50%;
+    background:linear-gradient(145deg,#7dd3fc,#0284c7);border:2.5px solid #e0f2fe;
+    box-shadow:0 2px 9px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
+  .live-badge svg{width:20px;height:20px;fill:#04202e}
+  @keyframes ping{0%{transform:scale(.8);opacity:.55}70%{transform:scale(1.6);opacity:0}100%{opacity:0}}
+  /* znaczniki dziennika */
+  .pmk{background:var(--work);border-radius:50%;width:24px;height:24px;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+    border:2px solid #ede9fe;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .ppop img{max-width:230px;width:100%;border-radius:8px;display:block;margin:0 0 6px}
+  .ppop .when{color:#64748b;font-size:11px}
+  /* notatki: dla gości to zwykły tekst, nie pole do wpisywania */
+  .note[readonly]{background:transparent;border-color:transparent;padding-left:0;resize:none;cursor:inherit}
+  .btn.on{background:#14532d;border-color:#22c55e;color:#86efac}
   ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#2b3a5c;border-radius:5px}
   @media (max-width:900px){
     body{overflow:auto;height:auto}
@@ -129,7 +145,9 @@
         <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
         <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
         <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
+        <div><span class="dot" style="background:var(--work);height:10px;width:10px;border-radius:50%"></span> Zdjęcie / wpis z trasy</div>
         <div><span style="font-size:12px">⛰️</span> Górski odcinek (tylko Beskidy)</div>
+        <div style="margin-top:6px"><a href="#" onclick="fitAll();return false;" style="color:var(--accent)">🗺️ pokaż całą trasę</a></div>
         <div><span class="dot" style="background:var(--green)"></span> Przeskok Chalkidiki → Kalamata (sb 10.10)</div>
       </div>
     </div>
@@ -150,7 +168,7 @@
     <div class="toolbar">
       <button class="btn" onclick="toggleNotes(true)">Rozwiń notatki</button>
       <button class="btn" onclick="toggleNotes(false)">Zwiń</button>
-      <button class="btn" onclick="resetPlan()">Wyczyść zapisane</button>
+      <button class="btn" id="btn-admin" onclick="toggleAdmin()">🔒 Tryb edycji</button>
     </div>
 
     <div class="section-title leg-out">▼ Dojazd — pt–nd (2–4.10) · Woźniki → Belgrad → Chalkidiki</div>
@@ -736,9 +754,11 @@ const RET = [
 ];
 
 // ---- render listy NAJPIERW (działa też offline, bez mapy) ----
-const store = loadStore();
-function loadStore(){try{return JSON.parse(localStorage.getItem('kalamata_workation_v1')||'{}')}catch(e){return {}}}
-function saveStore(){try{localStorage.setItem('kalamata_workation_v1',JSON.stringify(store))}catch(e){}}
+// Notatki i zaznaczenia sa teraz WSPOLNE i trzymane na serwerze: widza je wszyscy,
+// zmieniac moze tylko wlasciciel po wpisaniu tokenu (tryb edycji).
+let SRV = {notes:{}, done:{}};
+let ADMIN = false;
+function adminToken(){ try{ return localStorage.getItem('kalamata_admin')||''; }catch(e){ return ''; } }
 
 function chips(d){
   if(d.type==="toborder")
@@ -754,7 +774,7 @@ function icon(d){
 }
 function dayCard(d, cls, idx){
   const id = cls+idx;
-  const noteVal = (store[id]&&store[id].note!=null)?store[id].note:d.note;
+  const noteVal = (SRV.notes[id]!=null)?SRV.notes[id]:d.note;
   if(d.type==="stay"){
     return `<div class="day stay">
       <div class="day-top"><span class="day-num">🏖️ POBYT</span><span class="day-date">${d.date}</span></div>
@@ -768,7 +788,7 @@ function dayCard(d, cls, idx){
       <div class="day-route">${d.to}</div>
       <div class="note">${noteVal}</div></div>`;
   }
-  const done = store[id]&&store[id].done;
+  const done = !!SRV.done[id];
   const brd = (d.type==="toborder"||d.type==="fromborder")?" brd":"";
   const bw = d.badge?`<span class="badge">${d.badge}</span>`:'';
   return `<div class="day ${cls}${brd}" data-key="${d.key}" data-id="${id}" onclick="focusDay(this,event)">
@@ -779,15 +799,61 @@ function dayCard(d, cls, idx){
     <div class="day-route">${d.from} → ${d.to}</div>
     ${chips(d)}
     <div class="day-meta"><span>📏 ~${d.km} km</span>${d.temp?`<span>🌡️ ${d.temp}</span>`:''}${bw}</div>
-    <textarea class="note" onclick="event.stopPropagation()" oninput="saveNote('${id}',this.value)">${noteVal}</textarea>
+    <textarea class="note" data-note="${id}" ${ADMIN?'':'readonly'} onclick="event.stopPropagation()"
+      oninput="saveNote('${id}',this.value)">${noteVal}</textarea>
     <label class="chk" onclick="event.stopPropagation()">
-      <input type="checkbox" ${done?'checked':''} onchange="saveDone('${id}',this.checked)"> zaplanowane / zarezerwowane
+      <input type="checkbox" data-done="${id}" ${done?'checked':''} ${ADMIN?'':'disabled'}
+        onchange="saveDone('${id}',this.checked)"> zaplanowane / zarezerwowane
     </label>
   </div>`;
 }
-document.getElementById('list-out').innerHTML = OUT.map((d,i)=>dayCard(d,'out',i)).join('');
-document.getElementById('list-stay').innerHTML = STAY.map((d,i)=>dayCard(d,'stay',i)).join('');
-document.getElementById('list-ret').innerHTML = RET.map((d,i)=>dayCard(d,'ret',i)).join('');
+function renderLists(){
+  document.getElementById('list-out').innerHTML = OUT.map((d,i)=>dayCard(d,'out',i)).join('');
+  document.getElementById('list-stay').innerHTML = STAY.map((d,i)=>dayCard(d,'stay',i)).join('');
+  document.getElementById('list-ret').innerHTML = RET.map((d,i)=>dayCard(d,'ret',i)).join('');
+}
+renderLists();
+
+// Stan z serwera dociaga sie asynchronicznie - nadpisujemy wartosci w miejscu,
+// zeby nie gubic rozwinietych kart ani pozycji scrolla.
+function applyServerState(){
+  document.querySelectorAll('textarea[data-note]').forEach(t=>{
+    const id=t.getAttribute('data-note');
+    if(SRV.notes[id]!=null && t.value!==SRV.notes[id]) t.value=SRV.notes[id];
+  });
+  document.querySelectorAll('input[data-done]').forEach(c=>{
+    c.checked = !!SRV.done[c.getAttribute('data-done')];
+  });
+}
+function loadServerState(){
+  return fetch('api.php?action=notes&t='+Date.now()).then(r=>r.json()).then(d=>{
+    if(d && !d.error){ SRV.notes=d.notes||{}; SRV.done=d.done||{}; applyServerState(); }
+  }).catch(()=>{});   // brak PHP (np. otwarte z dysku) - zostaja teksty domyslne
+}
+loadServerState();
+
+// ---- tryb edycji ----
+function setAdmin(on){
+  ADMIN=on;
+  document.querySelectorAll('textarea[data-note]').forEach(t=>{ t.readOnly=!on; });
+  document.querySelectorAll('input[data-done]').forEach(c=>{ c.disabled=!on; });
+  const b=document.getElementById('btn-admin');
+  if(b){ b.textContent = on ? '🔓 Tryb edycji: WŁĄCZONY' : '🔒 Tryb edycji'; b.classList.toggle('on',on); }
+}
+function toggleAdmin(){
+  if(ADMIN){
+    try{ localStorage.removeItem('kalamata_admin'); }catch(e){}
+    setAdmin(false); return;
+  }
+  const t=prompt('Token (ten sam co do panelu):','');
+  if(!t) return;
+  const body=new URLSearchParams({action:'check',token:t});
+  fetch('api.php',{method:'POST',body}).then(r=>r.json()).then(d=>{
+    if(d.ok){ try{ localStorage.setItem('kalamata_admin',t); }catch(e){} setAdmin(true); }
+    else alert('Zły token.');
+  }).catch(e=>alert('Nie mogę się połączyć: '+e.message));
+}
+if(adminToken()) setAdmin(true);
 
 let activeEl=null;
 function focusDay(el,e){
@@ -798,10 +864,23 @@ function focusDay(el,e){
   const c=CITIES[key];
   if(map&&c){map.flyTo(c.ll,7,{duration:.8}); markers[key]&&markers[key].openPopup();}
 }
-function saveNote(id,v){store[id]=store[id]||{};store[id].note=v;saveStore();}
-function saveDone(id,v){store[id]=store[id]||{};store[id].done=v;saveStore();}
+let noteTimer={};
+function saveNote(id,v){
+  if(!ADMIN) return;
+  SRV.notes[id]=v;
+  clearTimeout(noteTimer[id]);                       // debounce - nie zapisujemy co znak
+  noteTimer[id]=setTimeout(()=>{
+    const body=new URLSearchParams({action:'note',token:adminToken(),id:id,text:v});
+    fetch('api.php',{method:'POST',body}).catch(()=>{});
+  },700);
+}
+function saveDone(id,v){
+  if(!ADMIN) return;
+  if(v) SRV.done[id]=true; else delete SRV.done[id];
+  const body=new URLSearchParams({action:'done',token:adminToken(),id:id,value:v?'1':'0'});
+  fetch('api.php',{method:'POST',body}).catch(()=>{});
+}
 function toggleNotes(open){document.querySelectorAll('.day').forEach(d=>{if(!d.classList.contains('stay')&&!d.classList.contains('work'))d.classList.toggle('open',open);});}
-function resetPlan(){if(confirm('Wyczyścić zapisane notatki i zaznaczenia?')){try{localStorage.removeItem('kalamata_workation_v1')}catch(e){}location.reload();}}
 function toggleLegend(){const l=document.getElementById('legend');const c=l.classList.toggle('collapsed');document.getElementById('legend-caret').textContent=c?'▸':'▾';}
 // na telefonie zwiń legendę domyślnie, żeby nie zasłaniała mapy
 if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
@@ -830,7 +909,35 @@ ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
 calc();
 
 // ---- mapa (opcjonalna — wymaga internetu; plan po prawej działa bez niej) ----
-let map=null, markers={};
+let map=null, markers={}, postLayer=null;
+const LIVE_ICON = '<div class="live"><span class="live-ring"></span><span class="live-badge">'+
+  '<svg viewBox="0 0 24 24" aria-hidden="true">'+
+  '<path d="M2.4 7.1c0-1 .8-1.8 1.8-1.8h8c1 0 1.8.8 1.8 1.8v1.4h2.4c.6 0 1.2.3 1.5.8l1.6 2.4c.2.4.3.8.3 1.2v2.5c0 .5-.4 1-1 1h-1.3a2.6 2.6 0 0 0-5 0H8.7a2.6 2.6 0 0 0-5 0H2.4c-.6 0-1-.5-1-1V7.1zm13.6 2.6v2.2h3.4l-1.4-2.2h-2z"/>'+
+  '<circle cx="6.2" cy="16.6" r="1.8"/><circle cx="17.2" cy="16.6" r="1.8"/></svg></span></div>';
+
+function fitAll(){
+  if(!map) return;
+  map.fitBounds(L.polyline([].concat(GEO.out,GEO.ret,GEO.transfer)).getBounds(),{padding:[40,40]});
+}
+
+// ---- dziennik: zdjęcia i wpisy z trasy ----
+function loadPosts(){
+  fetch('api.php?action=posts&t='+Date.now()).then(r=>r.json()).then(list=>{
+    if(!Array.isArray(list)||!map) return;
+    if(postLayer) map.removeLayer(postLayer);
+    postLayer=L.layerGroup().addTo(map);
+    list.forEach(p=>{
+      const glyph = p.photo ? '📷' : '📝';
+      const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+'</div>',iconSize:[24,24],iconAnchor:[12,12]});
+      const when = esc(p.taken||'') || (p.created? new Date(p.created).toLocaleString('pl-PL') : '');
+      const html = '<div class="ppop">'+
+        (p.photo? '<img src="'+esc(p.photo)+'" alt="">' : '')+
+        (p.text? '<b>'+esc(p.text)+'</b>' : '')+
+        (when? '<div class="when">'+when+'</div>' : '')+'</div>';
+      L.marker([p.lat,p.lng],{icon:ic}).addTo(postLayer).bindPopup(html,{maxWidth:260});
+    });
+  }).catch(()=>{});   // brak PHP (otwarte z dysku) — po prostu nie ma znaczników
+}
 const ELEV = [
   {ll:[49.42,19.20], name:'Beskidy — granica PL/SK', alt:'~600–700 m',
    note:'Jedyny górski odcinek na trasie (Pindos omijamy — w Grecji jedziecie A1 i obwodnicą Aten). W końcu października rano możliwa mgła i przymrozek.'},
@@ -890,7 +997,11 @@ function initMap(){
       markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
-    map.fitBounds(L.polyline([].concat(GEO.out,GEO.ret,GEO.transfer)).getBounds(),{padding:[40,40]});
+    fitAll();
+    // Domyślnie o jeden stopień bliżej niż samo dopasowanie do trasy — cała trasa
+    // mieści się dopiero przy bardzo małym powiększeniu i mapa robi się nieczytelna.
+    map.setZoom(map.getZoom()+1);
+    loadPosts();
     setTimeout(()=>{try{map.invalidateSize()}catch(e){}},300);
   }catch(e){
     console.warn('Mapa nie wystartowała:',e);
@@ -924,7 +1035,7 @@ function updateLive(){
     banner.innerHTML='🚐 Teraz: <b>'+label+'</b> · '+relTime(d.updated)+batt+(note?' — '+note:'')+' &nbsp;<a onclick="showLive()">pokaż na mapie ›</a>';
     if(map){
       if(!liveMarker){
-        const ic=L.divIcon({className:'',html:'<div class="live">🚐</div>',iconSize:[30,30],iconAnchor:[15,15]});
+        const ic=L.divIcon({className:'',html:LIVE_ICON,iconSize:[34,34],iconAnchor:[17,17]});
         liveMarker=L.marker(liveLL,{icon:ic,zIndexOffset:1000}).addTo(map);
       } else liveMarker.setLatLng(liveLL);
       liveMarker.bindPopup('🚐 <b>'+label+'</b><br>'+relTime(d.updated)+batt+(note?'<br>'+note:''));

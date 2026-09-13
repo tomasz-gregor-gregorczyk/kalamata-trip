@@ -21,7 +21,10 @@ python3 -m http.server 8000
   najlepsze godziny), strefa roamingu (Serbia + Macedonia), odcinki górskie (Pindos).
 - **Rozpiska** dojazd / pobyt / powrót — każdy dzień z godzinami, dystansem, temperaturą,
   a dni z granicą rozbite na osobne punkty (przejazd do granicy / od granicy).
-  Notatki i checkboxy zapisują się w `localStorage`.
+  Notatki i checkboxy są **wspólne, trzymane na serwerze**: widzą je wszyscy, edytuje
+  tylko właściciel po włączeniu trybu edycji (przycisk 🔒 w pasku narzędzi + token).
+- **Dziennik z trasy** — wpisy i zdjęcia przypięte do miejsc, widoczne na mapie jako
+  fioletowe znaczniki 📷 / 📝. Dodajesz je w `panel.php`.
 - **Kalkulator kosztów** (paliwo + opłaty + noclegi w drodze + Chalkidiki + Kalamata) — pola do edycji na żywo.
 
 ## Założenia planu
@@ -54,6 +57,46 @@ python3 -m http.server 8000
   wyjazdem warto potwierdzić: winiety SK/HU, stawki opłat kat. 2, status tunelu Llogara
   (wariant adriatycki), rozkłady kamer granicznych.
 
+## Notatki i dziennik (PHP)
+
+`api.php` obsługuje treści, które mają być **publiczne do czytania, ale tylko Twoje do
+zmiany**. Autoryzacja tokenem z `token` w `config.php` — tym samym co panel.
+
+```
+GET  api.php?action=notes        -> { notes:{id:tekst}, done:{id:true} }
+GET  api.php?action=posts        -> [ {id,lat,lng,text,photo,taken,created} ]
+POST action=note|done   + token  -> notatka / zaznaczenie przy dniu rozpiski
+POST action=post        + token  -> wpis dziennika (opcjonalnie ze zdjęciem)
+POST action=post_delete + token  -> kasowanie wpisu razem z plikiem
+POST action=check       + token  -> weryfikacja tokenu (tryb edycji w index.html)
+```
+
+Dane lądują w `data/` (`notes.json`, `posts.json`, `uploads/`). Katalog jest w
+`.gitignore` **i** w `exclude` workflow deploya, więc ani git, ani publikacja nigdy go
+nie nadpiszą. `data/uploads/.htaccess` wyłącza wykonywanie PHP w katalogu ze zdjęciami.
+
+### Zdjęcia
+
+Upload jest w `panel.php`. Przed wysłaniem przeglądarka:
+
+1. czyta z pliku **EXIF** — współrzędne GPS i datę wykonania (parser jest w `panel.php`,
+   więc nie potrzeba rozszerzenia `exif` po stronie PHP);
+2. **zmniejsza zdjęcie** do 1600 px / JPEG 82% — 4 MB z aparatu schodzi do ~300 KB,
+   co ma znaczenie przy wysyłce z telefonu w trasie.
+
+Gdy zdjęcie nie ma GPS (np. wyłączona geolokalizacja w aparacie), wpis dostaje **ostatnią
+znaną pozycję** z `location.json`. Możesz też wskazać współrzędne ręcznie.
+
+PHP przyjmuje plik tylko wtedy, gdy `getimagesize()` rozpozna w nim JPEG/PNG/WEBP,
+i sam nadaje nazwę oraz rozszerzenie — nazwa z uploadu nie jest używana.
+
+### Tryb edycji w index.html
+
+Przycisk 🔒 w pasku narzędzi pyta o token, sprawdza go przez `action=check` i zapamiętuje
+w `localStorage`. Dopóki jest włączony, pola notatek i checkboxy są aktywne i zapisują się
+na serwer (notatki z opóźnieniem 700 ms, żeby nie wysyłać po znaku). Dla pozostałych
+odwiedzających notatki są zwykłym tekstem, bez możliwości edycji.
+
 ## Śledzenie na żywo (PHP) — „gdzie teraz jesteśmy"
 
 Znajomi otwierają `index.html` na serwerze i widzą znacznik 🚐 z Waszą aktualną
@@ -62,11 +105,13 @@ pozycję przez `panel.php`.
 
 Pliki:
 
-- `where.php` — API: `GET` zwraca pozycję (JSON), `POST` (z tokenem) ją zapisuje.
+- `where.php` — API pozycji: `GET` zwraca pozycję (JSON), `POST` (z tokenem) ją zapisuje.
+- `api.php` — API treści: notatki rozpiski i dziennik ze zdjęciami.
 - `panel.php` — panel do aktualizacji: token + wybór przystanku / **GPS telefonu** / ręczne
   współrzędne + notatka.
 - `config.php` — Twój tajny **token** (skopiowany z `config.example.php`). W `.gitignore`.
 - `location.json` — bieżąca pozycja (zapisywana przez `where.php`). W `.gitignore`.
+- `data/` — notatki, wpisy i zdjęcia. W `.gitignore` i w `exclude` deploya.
 
 ### Automatyczne śledzenie: OwnTracks
 
