@@ -135,6 +135,7 @@
   /* znacznik "jesteśmy tu" — odznaka z busem zamiast gołej emotki */
   .live{position:relative;width:34px;height:34px}
   .live-ring{position:absolute;inset:-7px;border-radius:50%;background:var(--accent);
+    pointer-events:none;   /* ozdoba: nie moze przechwytywac klikniec sasiednich znacznikow */
     animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
   .live-badge{position:absolute;inset:0;border-radius:50%;
     background:linear-gradient(145deg,#7dd3fc,#0284c7);border:2.5px solid #e0f2fe;
@@ -1131,10 +1132,12 @@ function drawPosts(){
     const g=groups[k];
     const glyph = g.some(p=>p.photo) ? '\ud83d\udcf7' : '\ud83d\udcdd';
     const badge = g.length>1 ? '<span class="cnt">'+g.length+'</span>' : '';
-    // Znacznik busa ma zIndexOffset 1000 i zaslonilby ikonke, wiec gdy stoi
-    // w tym samym miejscu, odsuwamy kolekcje o kilkanascie pikseli w dol.
-    // Przesuniecie idzie przez iconAnchor, wiec nie zmienia sie przy zoomowaniu.
-    const dy = (liveLL && distM(liveLL[0],liveLL[1],+g[0].lat,+g[0].lng) < 120) ? 17 : 0;
+    // Znacznik busa ma zIndexOffset 1000, wiec lezy na wierzchu i przechwytuje
+    // klikniecia. Odznaka ma 34 px (czyli 17 px ponizej srodka), ikonka zdjecia
+    // 24 px (12 px), wiec zeby sie nie stykaly, potrzeba 17+12 = 29 px. Dajemy 34,
+    // z zapasem na widoczna przerwe. Przesuniecie idzie przez iconAnchor,
+    // wiec nie zmienia sie przy zoomowaniu.
+    const dy = (liveLL && distM(liveLL[0],liveLL[1],+g[0].lat,+g[0].lng) < 120) ? 34 : 0;
     const ic=L.divIcon({className:'',html:'<div class="pmk">'+glyph+badge+'</div>',
       iconSize:[24,24], iconAnchor:[12, 12-dy]});
     L.marker([g[0].lat,g[0].lng],{icon:ic,zIndexOffset:500}).addTo(postLayer)
