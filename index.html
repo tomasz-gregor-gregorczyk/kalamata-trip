@@ -150,6 +150,21 @@
   /* notatki: dla gości to zwykły tekst, nie pole do wpisywania */
   .note[readonly]{background:transparent;border-color:transparent;padding-left:0;resize:none;cursor:inherit}
   .btn.on{background:#14532d;border-color:#22c55e;color:#86efac}
+  /* historia zameldowań */
+  .hist{margin:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+  .hist summary{padding:11px 14px;cursor:pointer;font-size:12.5px;font-weight:700;
+    list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .hist summary::-webkit-details-marker{display:none}
+  .hist summary .cnt{font-weight:400;color:var(--muted);font-size:11.5px}
+  .hist .body{padding:0 14px 12px;max-height:320px;overflow-y:auto}
+  .trow{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);
+    font-size:12px;cursor:pointer;align-items:baseline}
+  .trow:last-child{border-bottom:none}
+  .trow:hover{background:var(--card2)}
+  .trow .tt{color:var(--accent2);font-weight:700;flex:none;min-width:92px;font-size:11px}
+  .trow .tp{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hist .foot{padding:9px 14px 0;border-top:1px solid var(--border);font-size:11.5px;color:var(--muted);line-height:1.5}
+  .hist .foot a{color:var(--accent)}
   ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#2b3a5c;border-radius:5px}
   @media (max-width:900px){
     body{overflow:auto;height:auto}
@@ -181,6 +196,7 @@
         <div><span class="dot" style="background:#ef4444;height:6px"></span> 📵 Strefa roamingu (Serbia + Macedonia)</div>
         <div><span class="dot" style="background:var(--work);height:10px;width:10px;border-radius:50%"></span> Zdjęcie / wpis z trasy</div>
         <div><span style="font-size:12px">⛰️</span> Górski odcinek (tylko Beskidy)</div>
+        <div><span class="dot" style="background:#e2e8f0;height:0;border-top:3px dotted #e2e8f0;width:14px"></span> Przebyta trasa (zameldowania)</div>
         <div style="margin-top:6px"><a href="#" onclick="fitAll();return false;" style="color:var(--accent)">🗺️ pokaż całą trasę</a></div>
         <div><span class="dot" style="background:var(--green)"></span> Przeskok Chalkidiki → Kalamata (sb 10.10)</div>
       </div>
@@ -204,6 +220,16 @@
       <button class="btn" onclick="toggleNotes(false)">Zwiń</button>
       <button class="btn" id="btn-admin" onclick="toggleAdmin()">🔒 Tryb edycji</button>
     </div>
+
+    <details class="hist" id="hist">
+      <summary>📋 Historia zameldowań <span class="cnt" id="hist-cnt">—</span></summary>
+      <div class="body" id="track-list">Ładowanie…</div>
+      <div class="foot">
+        Zapis każdej pozycji wysłanej z telefonu — gdyby trzeba było odtworzyć trasę.
+        <a href="api.php?action=track&amp;format=gpx">⤓ pobierz ślad jako GPX</a>
+        (otworzy się w Google Earth, OsmAnd, Garminie).
+      </div>
+    </details>
 
     <div class="section-title leg-out">▼ Dojazd — pt–nd (2–4.10) · Woźniki → Belgrad → Chalkidiki</div>
     <div id="list-out"></div>
@@ -954,6 +980,54 @@ function fitAll(){
   map.fitBounds(L.polyline([].concat(GEO.out,GEO.ret,GEO.transfer)).getBounds(),{padding:[40,40]});
 }
 
+// ---- historia zameldowań: przebyta trasa ----
+let trackLayer=null, trackData=[];
+function fmtWhen(iso){
+  const d=new Date(iso);
+  if(isNaN(d)) return '';
+  const dni=['nd','pn','wt','śr','cz','pt','sb'];
+  return dni[d.getDay()]+' '+d.getDate()+'.'+(d.getMonth()+1)+', '+
+    String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function loadTrack(){
+  return fetch('api.php?action=track&t='+Date.now()).then(r=>r.json()).then(rows=>{
+    if(!Array.isArray(rows)) return;
+    trackData=rows; renderTrackList(); drawTrack();
+  }).catch(()=>{
+    const el=document.getElementById('track-list');
+    if(el) el.textContent='Historia dostępna dopiero na serwerze (wymaga PHP).';
+  });
+}
+function renderTrackList(){
+  const el=document.getElementById('track-list'), cnt=document.getElementById('hist-cnt');
+  if(cnt) cnt.textContent = trackData.length ? trackData.length+' wpisów' : 'brak';
+  if(!el) return;
+  if(!trackData.length){ el.textContent='Jeszcze nie ma żadnego zameldowania.'; return; }
+  // najnowsze na górze, ograniczone do 300 — reszta i tak jest w GPX
+  el.innerHTML = trackData.map((r,i)=>({r:r,i:i})).reverse().slice(0,300).map(x=>
+    '<div class="trow" onclick="flyTrack('+x.i+')">'+
+    '<span class="tt">'+fmtWhen(x.r.t)+'</span>'+
+    '<span class="tp">'+(esc(x.r.label)||esc(x.r.place)||(x.r.lat+', '+x.r.lng))+'</span>'+
+    '</div>').join('');
+}
+function drawTrack(){
+  if(!map||!trackData.length) return;
+  if(trackLayer) map.removeLayer(trackLayer);
+  trackLayer=L.layerGroup().addTo(map);
+  L.polyline(trackData.map(r=>[r.lat,r.lng]),
+    {color:'#e2e8f0',weight:3,opacity:.8,dashArray:'1,7',lineCap:'round'}).addTo(trackLayer);
+  trackData.forEach(r=>{
+    L.circleMarker([r.lat,r.lng],{radius:3.5,color:'#e2e8f0',weight:1.5,
+      fillColor:'#0f172a',fillOpacity:1}).addTo(trackLayer)
+      .bindPopup('<b>'+(esc(r.label)||esc(r.place)||'Zameldowanie')+'</b><br>'+
+                 fmtWhen(r.t)+'<br>'+r.lat+', '+r.lng);
+  });
+}
+function flyTrack(i){
+  const r=trackData[i];
+  if(map&&r) map.flyTo([r.lat,r.lng],13,{duration:1});
+}
+
 // ---- dziennik: zdjęcia i wpisy z trasy ----
 function loadPosts(){
   fetch('api.php?action=posts&t='+Date.now()).then(r=>r.json()).then(list=>{
@@ -1043,6 +1117,9 @@ function initMap(){
   }
 }
 initMap();
+// Historia ladowana po initMap: lista w rozpisce dziala nawet bez mapy,
+// a drawTrack sam sprawdza, czy mapa w ogole powstala.
+loadTrack();
 // iPad: po obrocie ekranu / zmianie rozmiaru przelicz mapę
 window.addEventListener('resize',()=>{ if(map){try{map.invalidateSize()}catch(e){}} });
 window.addEventListener('orientationchange',()=>{ setTimeout(()=>{ if(map){try{map.invalidateSize()}catch(e){}} },400); });

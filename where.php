@@ -18,7 +18,12 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
-$FILE = __DIR__ . '/location.json';
+$FILE  = __DIR__ . '/location.json';
+// Log zameldowań: dopisywany przy każdym zapisie pozycji. Gdyby coś się stało,
+// z tego da się odtworzyć przebytą trasę. Format JSONL (jedna linia = jeden wpis),
+// bo dopisanie linii jest atomowe i nie wymaga wczytywania całego pliku.
+$TRACK = __DIR__ . '/data/track.jsonl';
+$TRACK_MAX = 20000;
 $cfg  = file_exists(__DIR__ . '/config.php')
         ? require __DIR__ . '/config.php'
         : require __DIR__ . '/config.example.php';
@@ -53,6 +58,28 @@ function readCurrent($file) {
     if (!is_file($file)) return null;
     $d = json_decode((string)file_get_contents($file), true);
     return is_array($d) ? $d : null;
+}
+function appendTrack($file, $data, $max) {
+    $dir = dirname($file);
+    if (!is_dir($dir) && !@mkdir($dir, 0755, true)) return;   // cicho — log nie może blokować zapisu pozycji
+    $line = json_encode([
+        't'     => $data['updated'],
+        'lat'   => $data['lat'],
+        'lng'   => $data['lng'],
+        'place' => isset($data['place']) ? $data['place'] : '',
+        'label' => isset($data['label']) ? $data['label'] : '',
+        'src'   => isset($data['src']) ? $data['src'] : '',
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    @file_put_contents($file, $line . "\n", FILE_APPEND | LOCK_EX);
+
+    // Przycinamy dopiero po sporym zapasie — przy ręcznych zameldowaniach
+    // 20 000 wpisów to lata jeżdżenia, ale plik nie ma rosnąć bez końca.
+    if (@filesize($file) > 6 * 1024 * 1024) {
+        $lines = @file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines && count($lines) > $max) {
+            @file_put_contents($file, implode("\n", array_slice($lines, -$max)) . "\n", LOCK_EX);
+        }
+    }
 }
 function saveLocation($file, $data) {
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
@@ -223,6 +250,7 @@ if ($isJson) {
     // nie są nikomu potrzebne do zobaczenia, gdzie jesteśmy.
 
     saveLocation($FILE, $data);
+    appendTrack($TRACK, $data, $TRACK_MAX);
     jexit([], 200);   // OwnTracks oczekuje tablicy
 }
 
@@ -245,4 +273,5 @@ $data = [
     'src'     => 'manual',
 ];
 saveLocation($FILE, $data);
+appendTrack($TRACK, $data, $TRACK_MAX);
 jexit(['ok' => true, 'data' => $data]);

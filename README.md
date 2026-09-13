@@ -90,6 +90,27 @@ znaną pozycję** z `location.json`. Możesz też wskazać współrzędne ręczn
 PHP przyjmuje plik tylko wtedy, gdy `getimagesize()` rozpozna w nim JPEG/PNG/WEBP,
 i sam nadaje nazwę oraz rozszerzenie — nazwa z uploadu nie jest używana.
 
+### Historia zameldowań
+
+Każdy zapis pozycji (z OwnTracks i z panelu) jest dopisywany do `data/track.jsonl` —
+jedna linia na wpis, z czasem, współrzędnymi i nazwą okolicy. Dopisanie linii jest
+atomowe, więc nie trzeba wczytywać całego pliku; przy 6 MB plik jest przycinany do
+ostatnich 20 000 wpisów.
+
+```
+GET api.php?action=track[&limit=N]   -> historia jako JSON
+GET api.php?action=track&format=gpx  -> ta sama historia jako plik GPX
+```
+
+W `index.html` historia jest w zwijanej sekcji **📋 Historia zameldowań** nad rozpiską,
+a na mapie rysuje się jako biała, kropkowana linia z punktem przy każdym zameldowaniu.
+Kliknięcie wiersza przybliża mapę do tego miejsca.
+
+**Endpoint celowo nie wymaga tokenu.** Sensem tej funkcji jest odtworzenie trasy, gdyby
+coś się stało — w takiej sytuacji nikt nie powinien szukać hasła. GPX otwiera się
+w Google Earth, OsmAnd czy Garminie. Jeśli wolisz to zamknąć, wystarczy przenieść
+gałąź `action === 'track'` poniżej `requireToken()` w `api.php`.
+
 ### Tryb edycji w index.html
 
 Przycisk 🔒 w pasku narzędzi pyta o token, sprawdza go przez `action=check` i zapamiętuje

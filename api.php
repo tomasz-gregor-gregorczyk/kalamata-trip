@@ -3,6 +3,8 @@
 //
 //   GET  ?action=notes                 -> { notes:{id:tekst}, done:{id:true} }  (publiczne)
 //   GET  ?action=posts                 -> [ {id,lat,lng,text,photo,...} ]  (publiczne)
+//   GET  ?action=track[&limit=N]       -> historia zameldowań (publiczne)
+//   GET  ?action=track&format=gpx      -> ta sama historia jako plik GPX
 //   POST action=note        + token    -> zapis notatki (pusty tekst = kasowanie)
 //   POST action=done        + token    -> zaznaczenie "zaplanowane / zarezerwowane"
 //   POST action=post        + token    -> nowy wpis dziennika (opcjonalnie ze zdjęciem)
@@ -23,6 +25,7 @@ $TOKEN = (string)($cfg['token'] ?? '');
 $DIR       = __DIR__ . '/data';
 $UPLOADS   = $DIR . '/uploads';
 $NOTES     = $DIR . '/notes.json';
+$TRACK     = $DIR . '/track.jsonl';
 $POSTS     = $DIR . '/posts.json';
 $MAX_BYTES = 4 * 1024 * 1024;   // zdjęcia i tak są zmniejszane w przeglądarce przed wysyłką
 
@@ -80,6 +83,42 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         ]);
     }
     if ($action === 'posts') jexit(array_values(readJson($POSTS, [])));
+
+    // Historia zameldowań — do odtworzenia trasy, gdyby coś się stało.
+    // Celowo bez tokenu: w sytuacji awaryjnej nikt nie powinien go szukać.
+    if ($action === 'track') {
+        $rows = [];
+        if (is_file($TRACK)) {
+            $lines = file($TRACK, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            if ($lines) {
+                foreach ($lines as $l) {
+                    $r = json_decode($l, true);
+                    if (is_array($r) && isset($r['lat'], $r['lng'])) $rows[] = $r;
+                }
+            }
+        }
+        $limit = isset($_GET['limit']) ? max(1, min(20000, (int)$_GET['limit'])) : 0;
+        if ($limit && count($rows) > $limit) $rows = array_slice($rows, -$limit);
+
+        if (($_GET['format'] ?? '') === 'gpx') {
+            header('Content-Type: application/gpx+xml; charset=utf-8');
+            header('Content-Disposition: attachment; filename="kalamata-trip.gpx"');
+            echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+            echo '<gpx version="1.1" creator="kalamata-trip" xmlns="http://www.topografix.com/GPX/1/1">' . "\n";
+            echo "  <trk><name>Gdynia - Chalkidiki - Kalamata</name><trkseg>\n";
+            foreach ($rows as $r) {
+                echo '    <trkpt lat="' . htmlspecialchars((string)$r['lat'], ENT_QUOTES) . '"'
+                   . ' lon="' . htmlspecialchars((string)$r['lng'], ENT_QUOTES) . '">';
+                if (!empty($r['t'])) echo '<time>' . htmlspecialchars((string)$r['t'], ENT_QUOTES) . '</time>';
+                $nm = !empty($r['label']) ? $r['label'] : (!empty($r['place']) ? $r['place'] : '');
+                if ($nm !== '') echo '<name>' . htmlspecialchars((string)$nm, ENT_QUOTES) . '</name>';
+                echo "</trkpt>\n";
+            }
+            echo "  </trkseg></trk>\n</gpx>\n";
+            exit;
+        }
+        jexit($rows);
+    }
     jexit(['error' => 'Nieznana akcja'], 400);
 }
 
