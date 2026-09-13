@@ -163,6 +163,9 @@
   .trow:hover{background:var(--card2)}
   .trow .tt{color:var(--accent2);font-weight:700;flex:none;min-width:92px;font-size:11px}
   .trow .tp{color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .trow .tx{flex:none;background:none;border:none;color:#7f8ea3;cursor:pointer;
+    font-size:15px;line-height:1;padding:2px 4px;border-radius:5px;font-family:inherit}
+  .trow .tx:hover{background:#3a1a1a;color:#fca5a5}
   .hist .foot{padding:9px 14px 0;border-top:1px solid var(--border);font-size:11.5px;color:var(--muted);line-height:1.5}
   .hist .foot a{color:var(--accent)}
   ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-thumb{background:#2b3a5c;border-radius:5px}
@@ -215,21 +218,23 @@
       <div id="live-banner" class="live-banner" style="display:none"></div>
     </header>
 
+    <details class="hist" id="hist">
+      <summary>📋 Historia zameldowań <span class="cnt" id="hist-cnt">—</span></summary>
+      <div class="body" id="track-list">Ładowanie…</div>
+      <div class="foot">
+        Zapis każdej pozycji wysłanej z telefonu — gdyby trzeba było odtworzyć trasę.
+        Pojedyncze wpisy skasujesz krzyżykiem po włączeniu 🔒 trybu edycji.
+        <a href="api.php?action=track&amp;format=gpx">⤓ pobierz ślad jako GPX</a>
+        (otworzy się w Google Earth, OsmAnd, Garminie).
+      </div>
+    </details>
+
     <div class="toolbar">
       <button class="btn" onclick="toggleNotes(true)">Rozwiń notatki</button>
       <button class="btn" onclick="toggleNotes(false)">Zwiń</button>
       <button class="btn" id="btn-admin" onclick="toggleAdmin()">🔒 Tryb edycji</button>
     </div>
 
-    <details class="hist" id="hist">
-      <summary>📋 Historia zameldowań <span class="cnt" id="hist-cnt">—</span></summary>
-      <div class="body" id="track-list">Ładowanie…</div>
-      <div class="foot">
-        Zapis każdej pozycji wysłanej z telefonu — gdyby trzeba było odtworzyć trasę.
-        <a href="api.php?action=track&amp;format=gpx">⤓ pobierz ślad jako GPX</a>
-        (otworzy się w Google Earth, OsmAnd, Garminie).
-      </div>
-    </details>
 
     <div class="section-title leg-out">▼ Dojazd — pt–nd (2–4.10) · Woźniki → Belgrad → Chalkidiki</div>
     <div id="list-out"></div>
@@ -899,6 +904,7 @@ function setAdmin(on){
   document.querySelectorAll('input[data-done]').forEach(c=>{ c.disabled=!on; });
   const b=document.getElementById('btn-admin');
   if(b){ b.textContent = on ? '🔓 Tryb edycji: WŁĄCZONY' : '🔒 Tryb edycji'; b.classList.toggle('on',on); }
+  renderTrackList();   // krzyżyki przy zameldowaniach pojawiają się i znikają z trybem
 }
 function toggleAdmin(){
   if(ADMIN){
@@ -1008,6 +1014,8 @@ function renderTrackList(){
     '<div class="trow" onclick="flyTrack('+x.i+')">'+
     '<span class="tt">'+fmtWhen(x.r.t)+'</span>'+
     '<span class="tp">'+(esc(x.r.label)||esc(x.r.place)||(x.r.lat+', '+x.r.lng))+'</span>'+
+    (ADMIN ? '<button class="tx" title="Usuń to zameldowanie"'+
+             ' onclick="event.stopPropagation();delTrack('+x.i+')">×</button>' : '')+
     '</div>').join('');
 }
 function drawTrack(){
@@ -1026,6 +1034,18 @@ function drawTrack(){
 function flyTrack(i){
   const r=trackData[i];
   if(map&&r) map.flyTo([r.lat,r.lng],13,{duration:1});
+}
+function delTrack(i){
+  if(!ADMIN) return;
+  const r=trackData[i];
+  if(!r) return;
+  const gdzie = r.label || r.place || (r.lat+', '+r.lng);
+  if(!confirm('Usunąć zameldowanie?\n\n'+fmtWhen(r.t)+' — '+gdzie+'\n\nTego nie da się cofnąć.')) return;
+  const body=new URLSearchParams({action:'track_delete',token:adminToken(),t:r.t});
+  fetch('api.php',{method:'POST',body}).then(x=>x.json()).then(d=>{
+    if(d.ok) loadTrack();
+    else alert('Nie udało się usunąć: '+(d.error||'nieznany błąd'));
+  }).catch(e=>alert('Błąd sieci: '+e.message));
 }
 
 // ---- dziennik: zdjęcia i wpisy z trasy ----
