@@ -72,6 +72,18 @@
   .info{margin:8px 16px;background:#1a1630;border:1px solid #3b2f5c;border-radius:12px;
     padding:12px 14px;font-size:12px;line-height:1.55;color:#d6c9f0}
   .info b{color:#c4b5fd}
+  /* "Znajdź nas" — nad mapą, po prawej; lewy górny róg zajmuje zoom Leafleta */
+  .findus{position:absolute;top:14px;right:14px;z-index:1200;
+    background:linear-gradient(145deg,#7dd3fc,#0284c7);color:#04202e;
+    border:2px solid #e0f2fe;border-radius:24px;padding:10px 17px;
+    font-size:13.5px;font-weight:800;font-family:inherit;cursor:pointer;
+    box-shadow:0 3px 14px rgba(0,0,0,.55);display:flex;align-items:center;gap:8px;
+    transition:filter .15s,transform .15s}
+  .findus:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .findus:active{transform:translateY(0)}
+  .findus:disabled{opacity:.4;cursor:default;filter:grayscale(.7);transform:none}
+  .findus svg{width:17px;height:17px;fill:#04202e}
+  @media (max-width:900px){ .findus{top:10px;right:10px;padding:8px 13px;font-size:12.5px} }
   .legend{position:absolute;bottom:14px;left:14px;z-index:1000;background:rgba(15,23,42,.92);
     border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--text)}
   .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
@@ -136,6 +148,11 @@
 <body>
 <div class="wrap">
   <div id="map">
+    <button class="findus" id="findus" onclick="showLive()" disabled
+            title="Czekam na pierwszą pozycję z telefonu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.4 7.1c0-1 .8-1.8 1.8-1.8h8c1 0 1.8.8 1.8 1.8v1.4h2.4c.6 0 1.2.3 1.5.8l1.6 2.4c.2.4.3.8.3 1.2v2.5c0 .5-.4 1-1 1h-1.3a2.6 2.6 0 0 0-5 0H8.7a2.6 2.6 0 0 0-5 0H2.4c-.6 0-1-.5-1-1V7.1zm13.6 2.6v2.2h3.4l-1.4-2.2h-2z"/><circle cx="6.2" cy="16.6" r="1.8"/><circle cx="17.2" cy="16.6" r="1.8"/></svg>
+      Znajdź nas
+    </button>
     <div class="legend" id="legend">
       <button class="legend-toggle" onclick="toggleLegend()" aria-label="Pokaż/ukryj legendę">🗺️ Legenda <span id="legend-caret">▾</span></button>
       <div class="legend-body">
@@ -1028,6 +1045,8 @@ function updateLive(){
   fetch('where.php?t='+Date.now()).then(r=>r.json()).then(d=>{
     if(!d || d.lat==null) return;
     liveLL=[d.lat,d.lng];
+    const fb=document.getElementById('findus');
+    if(fb){ fb.disabled=false; fb.title='Przybliż do naszej aktualnej pozycji'; }
     const label=esc(d.label)||'w drodze', note=esc(d.note);
     const batt=(d.batt!=null)?' · 🔋'+d.batt+'%':'';
     const banner=document.getElementById('live-banner');
@@ -1042,7 +1061,13 @@ function updateLive(){
     }
   }).catch(()=>{});
 }
-function showLive(){ if(map&&liveLL){ map.flyTo(liveLL,8,{duration:.8}); liveMarker&&liveMarker.openPopup(); } }
+function showLive(){
+  if(!map||!liveLL) return;
+  // Prawie maksymalne przybliżenie — chcemy widzieć ulicę, przy której stoi bus.
+  const z=Math.min(17, map.getMaxZoom()||17);
+  map.flyTo(liveLL,z,{duration:1.4});
+  if(liveMarker) setTimeout(()=>liveMarker.openPopup(),1450);
+}
 updateLive();
 setInterval(updateLive, 60000);
 </script>
