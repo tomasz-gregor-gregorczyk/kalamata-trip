@@ -230,8 +230,7 @@
     </details>
 
     <div class="toolbar">
-      <button class="btn" onclick="toggleNotes(true)">Rozwiń notatki</button>
-      <button class="btn" onclick="toggleNotes(false)">Zwiń</button>
+      <button class="btn" id="btn-notes" onclick="toggleNotes()">▾ Rozwiń notatki</button>
       <button class="btn" id="btn-admin" onclick="toggleAdmin()">🔒 Tryb edycji</button>
     </div>
 
@@ -946,7 +945,15 @@ function saveDone(id,v){
   const body=new URLSearchParams({action:'done',token:adminToken(),id:id,value:v?'1':'0'});
   fetch('api.php',{method:'POST',body}).catch(()=>{});
 }
-function toggleNotes(open){document.querySelectorAll('.day').forEach(d=>{if(!d.classList.contains('stay')&&!d.classList.contains('work'))d.classList.toggle('open',open);});}
+let notesOpen=false;
+function toggleNotes(force){
+  notesOpen = (force===undefined) ? !notesOpen : !!force;
+  document.querySelectorAll('.day').forEach(d=>{
+    if(!d.classList.contains('stay')&&!d.classList.contains('work')) d.classList.toggle('open',notesOpen);
+  });
+  const b=document.getElementById('btn-notes');
+  if(b) b.textContent = notesOpen ? '▴ Zwiń notatki' : '▾ Rozwiń notatki';
+}
 function toggleLegend(){const l=document.getElementById('legend');const c=l.classList.toggle('collapsed');document.getElementById('legend-caret').textContent=c?'▸':'▾';}
 // na telefonie zwiń legendę domyślnie, żeby nie zasłaniała mapy
 if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
