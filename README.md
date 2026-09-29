@@ -29,7 +29,7 @@ python3 -m http.server 8000
 
 ## Założenia planu
 
-- Start: piątek 2.10.2026 po pracy (15:00), powrót we wtorek 27.10. Łącznie ~6 070 km.
+- Start: piątek 2.10.2026 po pracy (15:00), powrót we wtorek 27.10. Łącznie ~6 050 km.
 - **Dwie bazy:** Chalkidiki / Sithonia 4–10.10 (6 nocy) i Kalamata 10–23.10 (13 nocy).
 - Dni robocze: jazda dopiero po pracy (po 15:00). Dojazd 3 dni (pt–nd), powrót 5 dni (pt–wt).
 - Bez urlopu, kosztem długich weekendów: sobota 3.10 to ~975 km i ~12 h w drodze
