@@ -29,10 +29,10 @@ python3 -m http.server 8000
 
 ## Założenia planu
 
-- Start: piątek 2.10.2026 po pracy (15:00), powrót we wtorek 27.10. Łącznie ~6 060 km.
+- Start: piątek 2.10.2026 po pracy (15:00), powrót we wtorek 27.10. Łącznie ~6 070 km.
 - **Dwie bazy:** Chalkidiki / Sithonia 4–10.10 (6 nocy) i Kalamata 10–23.10 (13 nocy).
 - Dni robocze: jazda dopiero po pracy (po 15:00). Dojazd 3 dni (pt–nd), powrót 5 dni (pt–wt).
-- Bez urlopu, kosztem długich weekendów: sobota 3.10 to ~970 km i ~13 h w drodze
+- Bez urlopu, kosztem długich weekendów: sobota 3.10 to ~975 km i ~12 h w drodze
   (start 05:00), niedziela 4.10 ~790 km. Przeskok Chalkidiki → Kalamata (~895 km)
   wypada w sobotę 10.10, więc też nie kosztuje dnia wolnego.
 - Trasa na mapie liczona routerem OSRM na danych OpenStreetMap i wklejona na stałe.
@@ -54,7 +54,7 @@ python3 -m http.server 8000
 
 - Mapa wymaga internetu (kafelki + biblioteka z CDN). Rozpiska i kalkulator działają offline.
 - Dane (odległości, ceny winiet 2026, godziny granic, pogoda) są szacunkowe — przed
-  wyjazdem warto potwierdzić: winiety SK/HU, stawki opłat kat. 2, status tunelu Llogara
+  wyjazdem warto potwierdzić: winiety CZ/SK/HU, stawki opłat kat. 2, status tunelu Llogara
   (wariant adriatycki), rozkłady kamer granicznych.
 
 ## Notatki i dziennik (PHP)
