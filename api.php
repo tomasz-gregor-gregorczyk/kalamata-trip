@@ -12,9 +12,15 @@
 //   POST action=track_clear  + token   -> wyczyszczenie historii zameldowań
 //   POST action=track_delete + token   -> usunięcie jednego zameldowania (po czasie 't')
 //   POST action=check       + token    -> sprawdzenie tokenu (tryb edycji w index.html)
+//   POST action=costs       + token    -> wydatki i kursy walut (sheet.php)
+//   POST action=cost        + token    -> dodanie / zmiana wydatku (z 'id' = zmiana)
+//   POST action=cost_delete + token    -> kasowanie wydatku
+//   POST action=cost_rates  + token    -> zapis kursów walut (JSON w 'rates')
 //
 // Zapis wymaga tokenu z 'token' w config.php — tego samego co panel.
 // Odczyt jest publiczny: znajomi mają widzieć notatki i zdjęcia, ale nie ruszać.
+// Wyjątek: wydatki. To nie jest treść dla znajomych, więc nawet odczyt idzie
+// POST-em z tokenem.
 
 // Bez tego hosting z serialize_precision=17 zapisuje 40.085 jako
 // 40.08500000000000085265128291212022304534912109375.
@@ -33,6 +39,7 @@ $UPLOADS   = $DIR . '/uploads';
 $NOTES     = $DIR . '/notes.json';
 $TRACK     = $DIR . '/track.jsonl';
 $POSTS     = $DIR . '/posts.json';
+$COSTS     = $DIR . '/costs.json';
 $MAX_BYTES = 4 * 1024 * 1024;   // zdjęcia i tak są zmniejszane w przeglądarce przed wysyłką
 
 function jexit($payload, $code = 200) {
@@ -275,6 +282,78 @@ if ($action === 'track_clear' || $action === 'track_delete') {
         jexit(['error' => 'Nie mogę zapisać track.jsonl.'], 500);
     }
     jexit(['ok' => true, 'removed' => $n]);
+}
+
+// --- wydatki (sheet.php) ---------------------------------------------------
+// Kwota zostaje w walucie, w której zapłaciliście; na złotówki przelicza
+// arkusz po kursach z 'rates'. Zmiana kursu przelicza więc wszystkie wpisy.
+$CURRENCIES = ['PLN', 'EUR', 'CZK', 'HUF', 'RSD', 'MKD'];
+$DEF_RATES  = ['PLN' => 1, 'EUR' => 4.40, 'CZK' => 0.176, 'HUF' => 0.0113, 'RSD' => 0.0376, 'MKD' => 0.0715];
+
+function costsData($file, $defRates) {
+    $d = (array)readJson($file, []);
+    $items = isset($d['items']) && is_array($d['items']) ? array_values($d['items']) : [];
+    $rates = isset($d['rates']) && is_array($d['rates']) ? $d['rates'] + $defRates : $defRates;
+    return ['items' => $items, 'rates' => $rates];
+}
+
+if ($action === 'costs') {
+    jexit(costsData($COSTS, $DEF_RATES));
+}
+
+if ($action === 'cost') {
+    $amount = (float)str_replace([',', ' '], ['.', ''], (string)($_POST['amount'] ?? ''));
+    $cur    = strtoupper((string)($_POST['cur'] ?? 'PLN'));
+    $date   = (string)($_POST['date'] ?? '');
+    $name   = clean($_POST['name'] ?? '', 120);
+    if ($name === '')                         jexit(['error' => 'Podaj nazwę wydatku.'], 400);
+    if ($amount <= 0 || $amount > 10000000)   jexit(['error' => 'Niepoprawna kwota.'], 400);
+    if (!in_array($cur, $CURRENCIES, true))   jexit(['error' => 'Nieznana waluta.'], 400);
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) $date = date('Y-m-d');
+
+    $data = costsData($COSTS, $DEF_RATES);
+    $id   = (string)($_POST['id'] ?? '');
+    $row  = [
+        'id'     => $id !== '' ? $id : date('Ymd-His') . '-' . bin2hex(random_bytes(3)),
+        'date'   => $date,
+        'name'   => $name,
+        'cat'    => clean($_POST['cat'] ?? '', 30),
+        'amount' => round($amount, 2),
+        'cur'    => $cur,
+    ];
+    $found = false;
+    foreach ($data['items'] as $i => $it) {
+        if (isset($it['id']) && $it['id'] === $id) { $data['items'][$i] = $row; $found = true; break; }
+    }
+    if ($id !== '' && !$found) jexit(['error' => 'Nie ma takiego wydatku (skasowany?).'], 404);
+    if (!$found) $data['items'][] = $row;
+    writeJson($COSTS, $data);
+    jexit(['ok' => true, 'item' => $row]);
+}
+
+if ($action === 'cost_delete') {
+    $id   = (string)($_POST['id'] ?? '');
+    $data = costsData($COSTS, $DEF_RATES);
+    $kept = array_values(array_filter($data['items'], function ($it) use ($id) {
+        return !isset($it['id']) || $it['id'] !== $id;
+    }));
+    if (count($kept) === count($data['items'])) jexit(['error' => 'Nie ma takiego wydatku'], 404);
+    $data['items'] = $kept;
+    writeJson($COSTS, $data);
+    jexit(['ok' => true, 'id' => $id]);
+}
+
+if ($action === 'cost_rates') {
+    $in   = json_decode((string)($_POST['rates'] ?? ''), true);
+    $data = costsData($COSTS, $DEF_RATES);
+    if (!is_array($in)) jexit(['error' => 'Niepoprawne kursy'], 400);
+    foreach ($CURRENCIES as $c) {
+        if ($c === 'PLN' || !isset($in[$c])) continue;
+        $r = (float)str_replace(',', '.', (string)$in[$c]);
+        if ($r > 0 && $r < 100) $data['rates'][$c] = $r;
+    }
+    writeJson($COSTS, $data);
+    jexit(['ok' => true, 'rates' => $data['rates']]);
 }
 
 jexit(['error' => 'Nieznana akcja'], 400);

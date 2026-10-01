@@ -118,6 +118,18 @@ w `localStorage`. Dopóki jest włączony, pola notatek i checkboxy są aktywne 
 na serwer (notatki z opóźnieniem 700 ms, żeby nie wysyłać po znaku). Dla pozostałych
 odwiedzających notatki są zwykłym tekstem, bez możliwości edycji.
 
+## Wydatki (`sheet.php`)
+
+Arkusz rzeczywistych kosztów: data, co, kategoria, kwota i waluta (PLN/EUR/CZK/HUF/RSD/MKD).
+Kwota zostaje w walucie płatności, a na złotówki przelicza się po kursach zapisanych
+w arkuszu, więc zmiana kursu przelicza wszystkie wpisy. U góry suma i porównanie
+z domyślnymi wartościami kalkulatora (stała `CATS` w `sheet.php`), na dole eksport CSV
+dla Excela (średnik + BOM).
+
+**W odróżnieniu od notatek wydatki nie są publiczne:** nawet odczyt (`action=costs`) idzie
+POST-em z tokenem. Token jest wspólny z trybem edycji w `index.html` (`kalamata_admin`
+w `localStorage`). Dane: `data/costs.json`.
+
 ## Śledzenie na żywo (PHP) — „gdzie teraz jesteśmy"
 
 Znajomi otwierają `index.html` na serwerze i widzą znacznik 🚐 z Waszą aktualną
