@@ -205,7 +205,7 @@
       <button class="legend-toggle" onclick="toggleLegend()" aria-label="Pokaż/ukryj legendę">🗺️ Legenda <span id="legend-caret">▾</span></button>
       <div class="legend-body">
         <div><span class="dot" style="background:var(--out)"></span> Dojazd (pt–nd 2–4.10)</div>
-        <div><span class="dot" style="background:var(--ret)"></span> Powrót (pt–wt 23–27.10)</div>
+        <div><span class="dot" style="background:var(--ret)"></span> Powrót (czw–nd 29.10–1.11)</div>
         <div><span class="dot" style="background:var(--green);height:12px;width:12px;border-radius:50%"></span> Start / meta</div>
         <div><span class="dot" style="background:var(--accent);height:12px;width:12px;border-radius:50%"></span> Nocleg w drodze</div>
         <div><span class="dot" style="background:var(--brd);height:12px;width:12px;border-radius:3px"></span> Granica (klik = kamera live)</div>
@@ -220,12 +220,12 @@
   <div class="side">
     <header>
       <h1>💻 Workation Gdynia → Chalkidiki → Kalamata</h1>
-      <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Dojazd MOP Woźniki → Belgrad → <b>Chalkidiki</b> (1. tydzień pracy nad morzem), w weekend 10–11.10 przeskok do Kalamaty z noclegiem w Atenach. Powrót CAŁY przez Ateny (bez Pindos).</p>
+      <p>Dni robocze: jazda dopiero po pracy (po 15:00). Weekendy: długie dni przez Bałkany. Dojazd MOP Woźniki → Belgrad → <b>Chalkidiki</b> (1. tydzień pracy nad morzem), w weekend 10–11.10 przeskok do Kalamaty z noclegiem w Atenach. Powrót czw 29.10 – nd 1.11 przez Larisę, Belgrad (Camp Dunav) i Brno, bez Pindos i bez pracy w trasie.</p>
       <div class="stats">
-        <div class="stat"><b>26</b><span>dni łącznie</span></div>
-        <div class="stat"><b>~6 010</b><span>km w obie str.</span></div>
-        <div class="stat"><b>10</b><span>dni jazdy</span></div>
-        <div class="stat"><b>7</b><span>nocy w drodze</span></div>
+        <div class="stat"><b>31</b><span>dni łącznie</span></div>
+        <div class="stat"><b>~5 960</b><span>km w obie str.</span></div>
+        <div class="stat"><b>9</b><span>dni jazdy</span></div>
+        <div class="stat"><b>6</b><span>nocy w drodze</span></div>
       </div>
       <div id="live-banner" class="live-banner" style="display:none"></div>
     </header>
@@ -254,7 +254,7 @@
     <div class="section-title" style="color:var(--green)">■ Pobyt / workation — Chalkidiki, przeskok, Kalamata</div>
     <div id="list-stay"></div>
 
-    <div class="section-title leg-ret">▲ Powrót — pt–wt (23–27.10) · przez Ateny, BEZ Pindos</div>
+    <div class="section-title leg-ret">▲ Powrót — czw–nd (29.10–1.11) · Larisa, Camp Dunav, Brno</div>
     <div id="list-ret"></div>
 
     <div class="section-title">🌡️ Temperatury dzień po dniu</div>
@@ -267,12 +267,11 @@
       <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>Tydzień pracy w Chalkidiki (5–9.10)</span><b>~23°/15° (morze ~23°)</b></div>
       <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>4 · sb 10.10 Neos Marmaras→Ateny</span><b>~24°/16°</b></div>
       <div class="row"><span>5 · nd 11.10 →KALAMATA 🏖️</span><b>~24°/16°</b></div>
-      <h3 style="margin:14px 0 6px">Powrót (23–27.10) — bez Pindos</h3>
-      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>6 · Kalamata→Ateny</span><b>~21°/13°</b></div>
-      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>7 · →Skopje (przez Thessaloniki)</span><b>~16°/7°</b></div>
-      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>8 · →Budapeszt (przez Belgrad)</span><b>~13°/5°</b></div>
-      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>9 · →Częstochowa</span><b>~12°/4°</b></div>
-      <div class="row"><span>10 · →GDYNIA 🏠</span><b>~11°/5°</b></div>
+      <h3 style="margin:14px 0 6px">Powrót (29.10–1.11) — bez Pindos</h3>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>6 · czw 29.10 Kalamata→Larisa</span><b>~21°/12°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>7 · pt 30.10 →Belgrad (Camp Dunav)</span><b>~14°/5°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>8 · sb 31.10 →Brno</span><b>~11°/3°</b></div>
+      <div class="row"><span>9 · nd 1.11 →GDYNIA 🏠</span><b>~10°/4°</b></div>
       <p style="font-size:11px;color:var(--muted);margin:10px 0 0">Powrót jest chłodniejszy niż dojazd z dwóch powodów: koniec października (~4–6° mniej niż na początku miesiąca) i kierunek na północ. Trasa przez Ateny pomija Pindos (~1100 m, tam bywałoby ~0–10°) — cała reszta trasy (Serbia, Węgry, Polska) ma tę samą temperaturę niezależnie od wyboru drogi.</p>
     </div>
 
@@ -280,12 +279,12 @@
     <div class="calc">
       <h3>Paliwo i opłaty — Vivaro L2H2 (kat. 2)</h3>
       <div class="row"><label>Dojazd + przeskok — km (suma z rozpiski)</label><input id="c-km" type="number" value="3119"></div>
-      <div class="row"><label>Powrót — km (suma z rozpiski)</label><input id="c-km-ret" type="number" value="2895"></div>
+      <div class="row"><label>Powrót — km (suma z rozpiski)</label><input id="c-km-ret" type="number" value="2841"></div>
       <div class="row"><label>Spalanie (l/100 km)</label><input id="c-cons" type="number" value="10" step="0.5"></div>
       <div class="row"><label>Cena paliwa ON (zł/l, śr. ważona)</label><input id="c-price" type="number" value="9.20" step="0.05"></div>
       <div class="row"><label>Opłaty+winiety / 1 stronę (zł)</label><input id="c-toll" type="number" value="770"></div>
       <div class="row"><label>Nocleg w drodze (zł/noc)</label><input id="c-hotel" type="number" value="300"></div>
-      <div class="row"><label>Nocy w drodze płatnych (bez MOP-u)</label><input id="c-nights" type="number" value="6"></div>
+      <div class="row"><label>Nocy w drodze płatnych (bez MOP-u)</label><input id="c-nights" type="number" value="5"></div>
       <h3 style="margin:14px 0 6px">Nocleg w Chalkidiki (1. tydzień)</h3>
       <div class="row"><label>Christos House — średnio za dobę (EUR)</label><input id="c-chal-hot-eur" type="number" value="34.17" step="0.5"></div>
       <div class="row"><label>Nocy pod dachem (nd 4.10 – wt 6.10)</label><input id="c-chal-hot-nights" type="number" value="3"></div>
@@ -293,7 +292,7 @@
       <div class="row"><label>Nocy na kempingu (śr 7.10 – sb 10.10)</label><input id="c-chal-nights" type="number" value="3"></div>
       <h3 style="margin:14px 0 6px">Nocleg w Kalamacie — Camping Fare</h3>
       <div class="row"><label>Cena za dobę (EUR)</label><input id="c-kal-eur" type="number" value="25" step="1"></div>
-      <div class="row"><label>Nocy w Kalamacie</label><input id="c-kal-nights" type="number" value="12"></div>
+      <div class="row"><label>Nocy w Kalamacie</label><input id="c-kal-nights" type="number" value="18"></div>
       <div class="row"><label>Kurs EUR (zł)</label><input id="c-eur" type="number" value="4.40" step="0.01"></div>
       <div class="row"><span>Paliwo (dojazd + powrót)</span><span id="r-fuel">—</span></div>
       <div class="row"><span>Opłaty drogowe (×2)</span><span id="r-toll">—</span></div>
@@ -303,21 +302,21 @@
       <div class="row"><span>Chalkidiki — kemping Stavros</span><span id="r-chal">—</span></div>
       <div class="row"><span>Nocleg w Kalamacie (Camping Fare)</span><span id="r-kal">—</span></div>
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Neos Marmaras→Ateny 617 km + Ateny→Kalamata 242 km = 3 119 km, powrót 2 895 km — powrót jest inną drogą, przez Thessaloniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i Ateny (nocleg sb 10.10), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noc 1 (pt 2.10) jest darmowa</b> — śpicie w busie na MOP Woźniki Zachód, stąd 6 płatnych nocy w drodze (Belgrad, Ateny ×2, Skopje, Budapeszt, Częstochowa). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>35 €/dobę</b>. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 12 nocy (11–23.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Neos Marmaras→Ateny 617 km + Ateny→Kalamata 242 km = 3 119 km, powrót 587 + 782 + 692 + 780 = 2 841 km przez Larisę, Belgrad i Brno). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i Ateny (nocleg sb 10.10), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noc 1 (pt 2.10) jest darmowa</b> — śpicie w busie na MOP Woźniki Zachód, stąd 5 płatnych nocy w drodze (Camp Dunav ×2, Ateny, Larisa, Brno). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>35 €/dobę</b>. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 18 nocy (11–29.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
     <div class="info">
-      <b>💻 Praca a roaming:</b> Polska, Czechy, Słowacja, Węgry i Grecja są w UE — net działa jak w kraju. <b>Serbia i Macedonia to strefa roamingu</b> (czerwony odcinek). Dlatego cały ten odcinek przejeżdżamy w <b>weekend</b> (sob+niedz), a w Grecji jesteś już w niedzielę wieczorem — od poniedziałku pracujesz z pełnym netem. W powrocie tak samo: pracujesz w piątek z Grecji, weekend na przejazd, w Polsce w niedzielę wieczorem.<br><br>
-      <b>Dni robocze:</b> jazda dopiero <b>po pracy, po 15:00</b> — rano nie ruszamy. Dotyczy dni 7, 9 i 10 (powrót). W dojeździe <b>nie musisz brać urlopu na jazdę</b>: cały odcinek Gdynia→Chalkidiki mieści się w pt po pracy + weekend, a przeskok Chalkidiki→Ateny→Kalamata wypada w weekend 10–11.10. Jedyny wyjątek to <b>poniedziałek 5.10: pracujesz 07:00–13:00, a 13:00–15:00 bierzesz jako 2 h wolnego</b> (albo odrabiasz wieczorem) — to czas na objazd kempingów za dnia.<br><br>
-      <b>⚠️ Weekendy są bardzo długie — to świadomy wybór:</b> po urealnieniu dystansów <b>sobota 3.10 to ~975 km i ~12 h w drodze</b> (Woźniki → Belgrad), a niedziela 4.10 ~790 km i ~11 h. Zrezygnowaliśmy z dnia urlopu w piątek, więc cała nadwyżka wylądowała na weekendzie. Konsekwencje, z którymi trzeba się liczyć: start w sobotę o <b>05:00</b>, jazda na zmianę, granica Horgoš ok. 13:50 (w oknie, ale w sobotę), Belgrad ok. 17:00, jeszcze za dnia. Przeskok do Kalamaty jest za to rozbity na dwa dni z noclegiem w Atenach (sb ~617 km od 11:00, nd ~242 km). Granice: sb Horgoš (dojazd, do Serbii), sb/nd Evzoni + Preševo + Röszke (powrót) — sprawdzaj kamery, backup Kelebija.<br><br>
+      <b>💻 Praca a roaming:</b> Polska, Czechy, Słowacja, Węgry i Grecja są w UE — net działa jak w kraju. <b>Serbia i Macedonia to strefa roamingu</b> (czerwony odcinek). Dlatego cały ten odcinek przejeżdżamy w <b>weekend</b> (sob+niedz), a w Grecji jesteś już w niedzielę wieczorem — od poniedziałku pracujesz z pełnym netem. W powrocie: czwartek po pracy jeszcze w Grecji, przez Macedonię i Serbię jedziecie w piątek (urlop), od soboty po południu znów UE.<br><br>
+      <b>Dni robocze:</b> jazda dopiero <b>po pracy, po 15:00</b> — rano nie ruszamy. W powrocie dotyczy tylko czwartku 29.10; piątek 30.10 to urlop. W dojeździe <b>nie musisz brać urlopu na jazdę</b>: cały odcinek Gdynia→Chalkidiki mieści się w pt po pracy + weekend, a przeskok Chalkidiki→Ateny→Kalamata wypada w weekend 10–11.10. Jedyny wyjątek to <b>poniedziałek 5.10: pracujesz 07:00–13:00, a 13:00–15:00 bierzesz jako 2 h wolnego</b> (albo odrabiasz wieczorem) — to czas na objazd kempingów za dnia.<br><br>
+      <b>⚠️ Weekendy są bardzo długie — to świadomy wybór:</b> po urealnieniu dystansów <b>sobota 3.10 to ~975 km i ~12 h w drodze</b> (Woźniki → Belgrad), a niedziela 4.10 ~790 km i ~11 h. Zrezygnowaliśmy z dnia urlopu w piątek, więc cała nadwyżka wylądowała na weekendzie. Konsekwencje, z którymi trzeba się liczyć: start w sobotę o <b>05:00</b>, jazda na zmianę, granica Horgoš ok. 13:50 (w oknie, ale w sobotę), Belgrad ok. 17:00, jeszcze za dnia. Przeskok do Kalamaty jest za to rozbity na dwa dni z noclegiem w Atenach (sb ~617 km od 11:00, nd ~242 km). Granice: sb Horgoš (dojazd, do Serbii), pt Evzoni + Preševo i sb Röszke (powrót) — sprawdzaj kamery, backup Kelebija.<br><br>
       <b>🌙 Nocleg na MOP-ie (noc 1):</b> spanie w pojeździe na MOP-ie jest w Polsce <b>legalne i bez limitu czasu</b> — MOP jest z definicji miejscem odpoczynku. Granica przebiega przy biwakowaniu: <b>wszystko zostaje w środku</b>, żadnych krzesełek, stolika, markizy ani klinów poziomujących na zewnątrz. Realne ryzyko to nie napaść, tylko włamanie — a kluczową zmienną jest to, czy MOP ma <b>całodobową obsługę</b>. Dlatego wybieramy Woźniki Zachód (Circle K + McDonald\'s 24/7, światło, nieprzerwany ruch), a nie ciche parkingi na obwodnicy Częstochowy. Zasady: parkuj w części osobowej w świetle, w zasięgu wzroku od wejścia; zamknij centralnie od środka; kluczyki i dokumenty przy sobie; nic widocznego w kabinie; nic nie zostaje na zewnątrz ani na bagażniku; okna uchylone na szczelinę, nie otwarte; zasłonki zaciągnięte. Pies w busie to realny plus. Zatyczki do uszu na agregaty chłodni.<br><br>
       <b>Granice poza UE:</b> Serbia i Macedonia — dowody/paszporty + <b>Zielona Karta</b>. Kliknij żółty znacznik → kamera live + najlepsze godziny.<br><br>
       <b>Winiety:</b> Czechy + Słowacja + Węgry (10-dniowe, wszystkie elektroniczne: edalnice.cz, eznamka.sk, ematrica.nemzetiutdij.hu — tylko oficjalne strony) — <b>drugi komplet na powrót</b> (pierwszy wygaśnie). Słowacka potrzebna mimo trasy przez Brno: D2 przez Bratysławę jest płatna.<br><br>
       <b>EES:</b> wjazd do UE (Evzoni w dojeździe, Röszke w powrocie) — biometria, paszporty gotowe.<br><br>
       <b>⛰️ Wysokości — BEZ PINDOS:</b> cała trasa idzie nizinami: dojazd korytarzem E-75 do Salonik, potem A1 do Aten i A7 na Peloponez. Pindos (Egnatia, ~1100 m) w ogóle nie jest na trasie, a od kiedy jedziemy przez Ostrawę i Brno, odpadły też Beskidy na granicy PL/SK — najwyżej jest Brama Morawska (~300 m). Dzięki temu powrót nie ma ryzyka śniegu/mgły na wysokości.<br><br>
       <b>🚐 Vivaro L2H2 (kamper ≤3,5 t):</b> wysoki bus → kat. 2 w Serbii, Macedonii i Grecji (opłaty ~40% wyższe niż osobówka, stąd ~770 zł/stronę z czeską winietą). Winiety CZ/SK/HU po masie ≤3,5 t — bez zmian. Spalanie realnie ~10 l/100. Możesz spać na kempingach/aire zamiast hoteli — taniej.<br><br>
-      <b>Długość pobytu — dwie bazy:</b> <b>Chalkidiki 6 nocy (4–10.10)</b> + <b>Kalamata 12 nocy (11–23.10)</b>. Dojazd skraca się do 3 dni (pt–nd), bo Chalkidiki leży tuż za Salonikami — do pracy w poniedziałek jesteście na miejscu w niedzielę wieczorem, bez brania urlopu. Cały pierwszy tydzień pracujesz z Chalkidiki (Grecja = UE, net działa), a przeskok do Kalamaty (~859 km, z noclegiem w Atenach) robicie w weekend 10–11.10, więc też nie kosztuje dnia wolnego. Powrót bez zmian: 5 dni (pt 23.10 – wt 27.10) przez Ateny. Łącznie ~6 010 km.<br><br>
+      <b>Długość pobytu — dwie bazy:</b> <b>Chalkidiki 6 nocy (4–10.10)</b> + <b>Kalamata 18 nocy (11–29.10)</b>. Dojazd skraca się do 3 dni (pt–nd), bo Chalkidiki leży tuż za Salonikami — do pracy w poniedziałek jesteście na miejscu w niedzielę wieczorem, bez brania urlopu. Cały pierwszy tydzień pracujesz z Chalkidiki (Grecja = UE, net działa), a przeskok do Kalamaty (~859 km, z noclegiem w Atenach) robicie w weekend 10–11.10, więc też nie kosztuje dnia wolnego. Powrót: 4 dni (czw 29.10 po pracy – nd 1.11), pt 30.10 urlop, bez pracy w trasie. Łącznie ~5 960 km.<br><br>
       <b>⚠️ Chalkidiki — nocleg w dwóch krokach</b> (finalnie: Christos House 4–7.10, kemping Stavros 7–10.10): pierwszą noc (nd 4.10) śpicie <b>pod dachem</b>, w pokoju zarezerwowanym z góry jeszcze z Polski — w Serbii i Macedonii masz roaming, więc w drodze niczego nie dobookujesz, a przyjeżdżacie po ~11 h jazdy. Pokój jest wzięty <b>na dwie noce (nd + pn), ze zwrotem</b>, bo większość kempingów w Chalkidiki zamyka sezon między końcem września a połową października — kempingu szukacie w poniedziałek 13:00–17:00, a wprowadzacie się we wtorek rano. Gdyby w poniedziałek nic nie było otwarte, macie dach i cały wtorek na plan B (całoroczne obiekty bliżej Nea Moudania). Koszt tej polisy to jedna noc, którą i tak da się odwołać. Każdy nocleg — pokój czy kemping — musi mieć <b>parking naziemny</b>: bus 2,5 m nie wjedzie do podziemnego (limit ~2 m).
     </div>
   </div>
@@ -334,6 +333,8 @@ const CITIES = {
   ateny:       {name:"Ateny", ll:[37.9838,23.7275]},
   skopje:      {name:"Skopje", ll:[41.9981,21.4254]},
   budapeszt:   {name:"Budapeszt", ll:[47.4979,19.0402]},
+  larisa:      {name:"Larisa", ll:[39.6390,22.4191]},
+  brno:        {name:"Brno", ll:[49.1951,16.6068]},
   kalamata:    {name:"Kalamata — Camping Fare", ll:[37.0213,22.1434]},
 };
 
@@ -738,13 +739,12 @@ const GEO = {
 const STOPS = [
   {key:"gdynia",     label:"S", cls:"start", txt:"Start · pt 2.10 po pracy · meta pobytu"},
   {key:"wozniki",    label:"1", cls:"",      txt:"Nocleg: <b>pt 2.10 (dojazd)</b> · <b>MOP Woźniki Zachód</b>, A1 km 461+300, jezdnia w kierunku Ostrawy — ~30 km ZA Częstochową, bez odbijania z trasy. Circle K + McDonald\'s <b>czynne 24/7</b>, toalety i <b>prysznice całodobowo</b>, ładowarka EV, bankomat. 85 miejsc osobowych / 40 TIR / 8 autokarów. Nocleg w busie za darmo. ⚠️ Śpicie w środku — <b>nic nie wystawiacie na zewnątrz</b> (krzesełka, markiza, kliny = biwakowanie, tego na MOP-ie nie wolno). Parkuj w części osobowej w zasięgu wzroku od wejścia do budynku, w świetle. Zatyczki do uszu — agregaty chłodni w części TIR-owej chodzą całą noc. ⛔ NIE nocuj na MOP-ach na samej obwodnicy Częstochowy (Gorzelanka, Wierzchowisko) — to gołe parkingi bez obsługi i bez stacji, nocą puste i nieoświetlone."},
-  {key:"czestochowa",label:"1↩", cls:"",     txt:"Nocleg: <b>pon 26.10 (tylko powrót)</b>. Uwaga: w powrocie jedziecie jezdnią wschodnią, więc odpowiednikiem Woźnik jest <b>MOP Woźniki Wschód</b> — nie jest tak rozbudowany jak Zachód, sprawdź go przed wyjazdem albo weź nocleg w Częstochowie."},
-  {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 (dojazd) · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com. W powrocie Belgrad mijany przelotowo."},
+  {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 (dojazd) · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com. <b>W powrocie nocleg drugi raz: pt 30.10</b> — ostatni weekend sezonu, potwierdź termin."},
   {key:"chalkidiki", label:"3", cls:"end",   txt:"<b>1. tydzień workation: 4–10.10 (6 nocy)</b> · <b>Imeri Elia</b> — przysiółek tuż przy <b>Neos Marmaras</b>, od strony Porto Carras, ~20 km na płd. od Nikiti, ~120 km za Salonikami. Grecja = UE, net działa → od pn 5.10 pracujesz normalnie znad morza. Obiekt leży <b>1,9 km od plaży</b> (Porto Carras Main Beach), lekko w głębi, z widokiem na zbocza. Zaplecze pod ręką: <b>Masoutis 1,3 km — 16 min pieszo</b>, tawerny i kawiarnie 3–5 km, kompleks Porto Carras z golfem w promieniu 3 km. W zasięgu popołudnia: Porto Koufo i Toroni (~25–35 min), Kavourotrypes i Vourvourou na wschodnim brzegu (~30–40 min), Kassandra ~1 h 15, Saloniki ~1 h 45. 🛏️ <b>nd 4.10 – wt 6.10 (3 noce): <a href='https://maps.app.goo.gl/Veouai5PZE4GEop19' target='_blank' rel='noopener'>Christos House – Holiday Home</a>, Imeri Elia / Neos Marmaras 630 81 — dwie noce opłacone przez Booking (319 zł), trzecia przedłużona na miejscu za 30 €.</b> ✅ Bezpłatny parking prywatny na terenie, bez rezerwacji. ✅ Darmowe wifi w całym obiekcie. Domek z ogrodem, tarasem, klimatyzacją i grillem. Zameldowanie 15:00–21:00, <b>gospodarz wpuszcza osobiście</b> — napisz mu godzinę przyjazdu. Wymeldowanie do 12:00. 🐕 <b>Pies „on request”, możliwa dopłata</b> — zgłoś przed przyjazdem i miej gotówkę. 🏕️ <b>śr 7.10: przeprowadzka na kemping Stavros</b> — 3 noce (7–10.10), <a href='https://www.google.com/maps/search/?api=1&query=Camping+Stavros+Agia+Kiriaki+Neos+Marmaras' target='_blank' rel='noopener'>Agia Kiriaki Sithonias, 630 81 Neos Marmaras</a>, 35 €/doba. Wyjazd sb 10.10 rano na Kalamatę. (Powrót idzie inną drogą — przez Ateny.)"},
-  {key:"ateny",      label:"4", cls:"",      txt:"Nocleg: <b>sb 10.10 (w drodze do Kalamaty) i pt 23.10 (powrót)</b>. Apartament z psem. ⚠️ PARKING: bus ~2,5 m NIE zmieści się w parkingach podziemnych (limit ~2 m) — bierz nocleg z parkingiem naziemnym/na ulicy; najlepiej przy stacji metra na obrzeżu + metro do centrum, albo Koukaki. CO ZWIEDZIĆ wieczorem (bez Akropolu też super): Plaka i Anafiotika, Monastiraki, promenada Dionysiou Areopagitou (podświetlony Akropol, pies OK), Filopappou/Areopag (widok gratis), Lykabettos. Kolacja: Plaka / Psyrri."},
-  {key:"skopje",     label:"5", cls:"",      txt:"Nocleg: sb 24.10 (tylko powrót). Macedonia Płn. — poza UE (roaming, korzystaj z wifi hotelu). Weekend, więc bez wpływu na pracę."},
-  {key:"budapeszt",  label:"6", cls:"",      txt:"Nocleg: nd 25.10 (tylko powrót). Węgry — znów w UE, net działa na poniedziałkową pracę. W nocy zmiana czasu na zimowy +1 h."},
-  {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — 2. baza workation (12 nocy, 11–23.10) · <b>Camping Fare</b>, koniec ul. Navarinou (Anatolikos Synoikismos), 241 33 Kalamata — przy samej plaży, ~4 km od centrum. Otwarty CAŁY ROK (październik OK). Cennik: kamper 6 € + 2×6 € osoba + prąd 4 € = <b>~22 €/dobę</b> (w kalkulatorze 25 € z zapasem). Bar/tawerna, prysznice, psy OK (z książeczką szczepień). ⚠️ Mały kemping — <b>bez obsługi kamperów &gt;8–8,5 m</b>; Vivaro L2H2 (~5,3 m) wchodzi bez problemu. Tel. +30 27210 29520 / +30 697 918 8290 · dimitrisfoudeas@hotmail.com · camping-fare.com. Rezerwuj na 12 nocy z góry (przyjazd nd 11.10 po południu, po noclegu w Atenach)."},
+  {key:"ateny",      label:"4", cls:"",      txt:"Nocleg: <b>sb 10.10 (w drodze do Kalamaty)</b>; w powrocie Ateny przelotowo. Apartament z psem. ⚠️ PARKING: bus ~2,5 m NIE zmieści się w parkingach podziemnych (limit ~2 m) — bierz nocleg z parkingiem naziemnym/na ulicy; najlepiej przy stacji metra na obrzeżu + metro do centrum, albo Koukaki. CO ZWIEDZIĆ wieczorem (bez Akropolu też super): Plaka i Anafiotika, Monastiraki, promenada Dionysiou Areopagitou (podświetlony Akropol, pies OK), Filopappou/Areopag (widok gratis), Lykabettos. Kolacja: Plaka / Psyrri."},
+  {key:"larisa",     label:"5", cls:"",      txt:"Nocleg: <b>czw 29.10 (powrót)</b>. Po pracy z Kalamaty, przyjazd ~22:30. Ostatnia noc w Grecji (UE, net działa). Nocleg z parkingiem naziemnym."},
+  {key:"brno",       label:"6", cls:"",      txt:"Nocleg: <b>sb 31.10 (powrót)</b>. Czechy — UE. Ostatnia noc w drodze; w niedzielę ~780 km do domu."},
+  {key:"kalamata",   label:"M", cls:"end",   txt:"Cel — 2. baza workation (18 nocy, 11–29.10) · <b>Camping Fare</b>, koniec ul. Navarinou (Anatolikos Synoikismos), 241 33 Kalamata — przy samej plaży, ~4 km od centrum. Otwarty CAŁY ROK (październik OK). Cennik: kamper 6 € + 2×6 € osoba + prąd 4 € = <b>~22 €/dobę</b> (w kalkulatorze 25 € z zapasem). Bar/tawerna, prysznice, psy OK (z książeczką szczepień). ⚠️ Mały kemping — <b>bez obsługi kamperów &gt;8–8,5 m</b>; Vivaro L2H2 (~5,3 m) wchodzi bez problemu. Tel. +30 27210 29520 / +30 697 918 8290 · dimitrisfoudeas@hotmail.com · camping-fare.com. Rezerwuj na 18 nocy z góry (przyjazd nd 11.10 po południu, po noclegu w Atenach)."},
 ];
 
 // ---- rozpiska ----
@@ -782,51 +782,38 @@ const STAY = [
    km:242, temp:"~24°/16°", dep:"~12:00", arr:"~15:30",
    note:"Rano Ateny (Akropol najlepiej na otwarcie, 08:00), potem drugi etap: A8 Elefsina → Korynt → A7 „Moreas” przez Tripoli → Kalamata. ~242 km, ~3 h jazdy. Na miejscu po południu, jest czas się rozłożyć przed pracą w poniedziałek. 🏖️ Nocleg: <b>Camping Fare</b>, koniec ul. Navarinou przy plaży — wjazd wschodnią promenadą, nie przez centrum. Kalamata to na razie plan — możliwa zmiana na inny kemping na południu Peloponezu."},
 
-  {type:"stay", date:"11–23.10", to:"Kalamata — Camping Fare (12 nocy)", temp:"~24°/16° na start (do 14.10 nawet 27–28°) → ~21° pod koniec (morze ~25° → ~23°)",
-   note:"Baza: <b>Camping Fare</b>, koniec ul. Navarinou przy plaży (tel. +30 27210 29520, camping-fare.com) — otwarty cały rok, ~22 €/dobę z prądem, psy OK. Praca zdalna z Kalamaty (UE, net działa). W zasięgu: Mesenia, Mystras, Pylos, Mani, plaże. Przyjazd nd 11.10 po południu, praca pn 12.10 – pt 23.10. Kalamata to na razie plan — możliwa zmiana na inny kemping na południu. Wyjazd powrotny w piątek 23.10 po pracy, żeby weekend znów przypadł na Bałkany."},
+  {type:"stay", date:"11–29.10", to:"Kalamata — Camping Fare (18 nocy)", temp:"~24°/16° na start (do 14.10 nawet 27–28°) → ~21° pod koniec (morze ~25° → ~23°)",
+   note:"Baza: <b>Camping Fare</b>, koniec ul. Navarinou przy plaży (tel. +30 27210 29520, camping-fare.com) — otwarty cały rok, ~22 €/dobę z prądem, psy OK. Praca zdalna z Kalamaty (UE, net działa). W zasięgu: Mesenia, Mystras, Pylos, Mani, plaże. Przyjazd nd 11.10 po południu, praca pn 12.10 – czw 29.10. Kalamata to na razie plan — możliwa zmiana na inny kemping na południu. Wyjazd powrotny w czwartek 29.10 po pracy, piątek 30.10 urlop — w domu w niedzielę 1.11."},
 ];
 
 const RET = [
-  {day:"DZIEŃ 6", date:"pt 23.10 · praca", type:"work",
+  {day:"DZIEŃ 6", date:"czw 29.10 · praca", type:"work",
    to:"💻 Praca zdalna 07:00–15:00 · Kalamata (ostatni dzień)",
-   note:"Rano bez jazdy — pracujesz z Kalamaty. Po 15:00 ruszacie trasą przez Ateny (BEZ Pindos)."},
-  {day:"DZIEŃ 6", date:"pt 23.10 · praca", type:"drive", from:"Kalamata (po 15:00)", to:"Ateny (nocleg)", key:"ateny",
-   km:240, temp:"~21°/13°", dep:"15:00", arr:"~17:45",
-   note:"A7 „Moreas” przez Tripoli → Korynt → Ateny. Płasko, bez gór (Pindos omijamy). ~240 km, ~2 h 45. Nocleg w Atenach — <b>drugi raz na trasie</b> (pierwszy był sb 10.10 w drodze do Kalamaty), więc to wieczór na to, czego wtedy nie zdążyliście. ⚠️ Nocleg z parkingiem naziemnym — bus 2,5 m nie wjedzie do podziemnego (limit ~2 m). Grecja = net jeszcze działa."},
+   note:"Rano bez jazdy — pracujesz z Kalamaty. Po 15:00 ruszacie na północ. Piątek 30.10 = urlop, więc to jedyny dzień jazdy po pracy w całym powrocie."},
+  {day:"DZIEŃ 6", date:"czw 29.10 · praca", type:"drive", from:"Kalamata (po 15:00)", to:"Larisa (nocleg)", key:"larisa",
+   km:587, temp:"~21°/12°", dep:"15:00", arr:"~22:30",
+   note:"A7 „Moreas” przez Tripoli → Korynt → Ateny (przelotowo) → <b>A1 przez Lamię</b> → Larisa. ~587 km, ~7 h jazdy, autostrada i płasko (Pindos omijamy). Długi wieczór, ale dzięki niemu piątek kończy się w Belgradzie. ⚠️ Nocleg z parkingiem naziemnym — bus 2,5 m nie wjedzie do podziemnego. Grecja = net działa."},
 
-  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"drive", from:"Ateny", to:"Thessaloniki (przelotowo)", key:"evzoni_b",
-   km:500, temp:"~17°/8°", dep:"06:30", arr:"~12:00",
-   note:"Autostrada A1 przez Lamię i Larisę — płasko, szybko. Długi dzień bez pracy."},
-  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"toborder", from:"Thessaloniki", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
-   km:80, temp:"~16°/7°", dep:"~12:30", arr:"~13:15", badge:"granica GR→MK",
-   note:"📵 Wyjazd z Grecji — wyłącz dane (wchodzisz w strefę roamingu; weekend, więc bez wpływu na pracę)."},
-  {day:"DZIEŃ 7", date:"sb 24.10 · weekend", type:"fromborder", from:"Evzoni–Bogorodica", to:"Skopje", key:"skopje",
-   km:155, temp:"~16°/6°", dep:"~13:45", arr:"~16:00",
-   note:"Nocleg w Skopje (Macedonia, roaming — wifi hotelu). W nocy zmiana czasu na zimowy → +1 h snu."},
+  {day:"DZIEŃ 7", date:"pt 30.10 · urlop", type:"toborder", from:"Larisa (06:30)", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
+   km:195, temp:"~16°/7°", dep:"06:30", arr:"~09:00", badge:"granica GR→MK",
+   note:"A1 → obwodnica Salonik → Evzoni. 📶 <b>Grecki net działa do granicy (~09:00)</b> — ostatnia stacja przed Evzoni to dobre miejsce na mapy offline Macedonii i Serbii. 📵 Za granicą wyłącz dane. 🕐 <b>Po wjeździe do Macedonii zegarki −1 h</b> (Grecja ma czas o godzinę późniejszy)."},
+  {day:"DZIEŃ 7", date:"pt 30.10 · urlop", type:"toborder", from:"Bogorodica (~08:45 czasu lok.)", to:"granica Tabanovce–Preševo", key:"presevo_b",
+   km:189, temp:"~15°/6°", dep:"~08:45", arr:"~11:15", badge:"granica MK→RS",
+   note:"Przez Macedonię autostradą obok Skopje, bez zatrzymywania. Godziny od tej pory w czasie lokalnym (Macedonia i Serbia = czas polski). Preševo w piątek przed południem — w oknie (unikać trzeba pt wieczorem)."},
+  {day:"DZIEŃ 7", date:"pt 30.10 · urlop", type:"fromborder", from:"Preševo (~12:00)", to:"Belgrad · Camp Dunav (Zemun)", key:"belgrad",
+   km:398, temp:"~14°/5°", dep:"~12:00", arr:"~17:00",
+   note:"E-75 przez Nisz, ~4 h 30. 🏕️ <b>Camp Dunav</b> — ten sam co w dojeździe (sb 3.10), z prądem, więc noc z grzejnikiem (na kempingach bywa 6–10 A, bezpieczniej ~1 kW). ⚠️ <b>To ostatni weekend ich sezonu — potwierdź termin 30/31.10 z wyprzedzeniem</b> (campdunav.com). Wifi na kempingu — w Serbii roaming. Zapas: Campuccino w Kovilj pod Nowym Sadem (~70 km dalej po E-75, do 1.11)."},
 
-  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"toborder", from:"Skopje", to:"granica Tabanovce–Preševo", key:"presevo_b",
-   km:80, temp:"~15°/6°", dep:"06:00", arr:"~06:50", badge:"granica MK→RS",
-   note:"Granica tuż za Skopje — rano pusto."},
-  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"toborder", from:"Preševo–Tabanovce", to:"granica Röszke (przez Belgrad)", key:"horgos_b",
-   km:550, temp:"~14°/5°", dep:"~07:10", arr:"~14:00", badge:"granica RS→HU · EES",
-   note:"Przez Serbię: Belgrad mijasz ~11:00. Wjazd do UE + EES. Niedziela — sprawdź kamery, backup Kelebija. 📶 Po wjeździe na Węgry — WŁĄCZ dane."},
-  {day:"DZIEŃ 8", date:"nd 25.10 · weekend", type:"fromborder", from:"Röszke", to:"Budapeszt", key:"budapeszt",
-   km:190, temp:"~13°/5°", dep:"~15:00", arr:"~17:30",
-   note:"Nocleg w Budapeszcie (Węgry, UE — net na jutrzejszą pracę)."},
+  {day:"DZIEŃ 8", date:"sb 31.10 · weekend", type:"toborder", from:"Camp Dunav (~09:00)", to:"granica Röszke (HU)", key:"horgos_b",
+   km:183, temp:"~13°/4°", dep:"~09:00", arr:"~11:00", badge:"granica RS→HU · EES",
+   note:"Wyjazd ok. 09:00, żeby trafić na Röszke po 11:00 (07–11 jest najgorzej). Wjazd do UE + EES — paszporty gotowe. Sobota — sprawdź kamery, backup Kelebija. 📶 Po wjeździe na Węgry — WŁĄCZ dane."},
+  {day:"DZIEŃ 8", date:"sb 31.10 · weekend", type:"fromborder", from:"Röszke (~12:00)", to:"Brno (nocleg)", key:"brno",
+   km:509, temp:"~11°/3°", dep:"~12:00", arr:"~17:30",
+   note:"M5 → Budapeszt (obwodnica M0) → M1 → Bratysława → D2 → Brno. ~509 km, ~5 h 30. Ta sama droga co w dojeździe, drugi komplet winiet HU+SK+CZ. ⚠️ Nocleg z parkingiem naziemnym."},
 
-  {day:"DZIEŃ 9", date:"pn 26.10 · praca", type:"work",
-   to:"💻 Praca zdalna 07:00–15:00 · Budapeszt",
-   note:"Rano bez jazdy — pracujesz z Budapesztu (net działa). Po 15:00 ruszasz."},
-  {day:"DZIEŃ 9", date:"pn 26.10 · praca", type:"drive", from:"Budapeszt (po 15:00)", to:"Częstochowa", key:"czestochowa",
-   km:640, temp:"~12°/4°", dep:"15:00", arr:"~21:20",
-   note:"⚠️ <b>To jest 640 km, nie 460 — po ośmiu godzinach pracy.</b> Budapeszt→Częstochowa tą samą drogą co w dojeździe (M1 → Bratysława → D2 → <b>Brno → D1 przez Ostrawę</b> → Gorzyczki → A1), cały czas autostradą, drugi komplet winiet CZ+SK+HU. Wyjazd 15:00 oznacza przyjazd ok. <b>21:20</b> — ponad sześć godzin jazdy po pracy, w nocy, pod koniec 26-dniowej trasy. Jeśli tego dnia będzie ciężko, rozsądny plan B to zatrzymać się wcześniej (Brno albo Ostrawa) i nadrobić we wtorek rano — wtorek i tak kończycie w domu."},
-
-  {day:"DZIEŃ 10", date:"wt 27.10 · praca", type:"work",
-   to:"💻 Praca zdalna 07:00–15:00 · Częstochowa (PL)",
-   note:"Ostatni dzień pracy w trasie. Po 15:00 ostatni odcinek do domu."},
-  {day:"DZIEŃ 10", date:"wt 27.10 · praca", type:"drive", from:"Częstochowa (po 15:00)", to:"GDYNIA", key:"gdynia",
-   km:460, temp:"~11°/5°", dep:"15:00", arr:"~20:30",
-   note:"Po pracy → dom ~20:30. 🏠"},
+  {day:"DZIEŃ 9", date:"nd 1.11 · weekend", type:"drive", from:"Brno (~08:00)", to:"GDYNIA", key:"gdynia",
+   km:780, temp:"~10°/4°", dep:"~08:00", arr:"~17:00",
+   note:"D1 przez Ostrawę → Gorzyczki → A1 przez Częstochowę i Łódź → dom. ~780 km, ~8 h jazdy + postoje. 1.11 to Wszystkich Świętych — w Polsce duży ruch przy cmentarzach i na drogach dojazdowych, ale A1 zwykle przejezdna. 🏠"},
 ];
 
 // ---- render listy NAJPIERW (działa też offline, bez mapy) ----
@@ -1193,14 +1180,14 @@ function initMap(){
     // powrot pod spodem, dojazd na wierzchu - na wspolnych odcinkach widac obie
     L.polyline(GEO.ret,{color:'#f472b6',weight:11,opacity:.12}).addTo(map);
     L.polyline(GEO.ret,{color:'#f472b6',weight:4,opacity:.85}).addTo(map)
-      .bindPopup('▲ <b>Powrót</b> — pt 23.10 – wt 27.10, przez Ateny i Thessaloniki (~2 895 km).');
+      .bindPopup('▲ <b>Powrót</b> — czw 29.10 – nd 1.11, przez Larisę, Belgrad (Camp Dunav) i Brno (~2 841 km).');
     L.polyline(GEO.out,{color:'#38bdf8',weight:11,opacity:.12}).addTo(map);
     L.polyline(GEO.out,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map)
       .bindPopup('▼ <b>Dojazd</b> — pt 2.10 – nd 4.10, przez Ostrawę, Brno, Bratysławę i Budapeszt (~2 260 km).');
     L.polyline(GEO.transfer,{color:'#34d399',weight:4,opacity:.9}).addTo(map)
       .bindPopup('■ <b>Przeskok Chalkidiki → Ateny → Kalamata</b> — sb 10.10 do Aten (~617 km), nd 11.10 do Kalamaty (~242 km). Pindos omijamy.');
     L.polyline(GEO.roam,{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
-      .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE), ~776 km. Przejeżdżamy ją w weekend, gdy nie pracujecie.');
+      .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE), ~776 km. W dojeździe w weekend, w powrocie w piątek 30.10 (urlop).');
     ELEV.forEach(m=>{
       const ic=L.divIcon({className:'',html:'<div class="emk">⛰️</div>',iconSize:[22,22],iconAnchor:[11,11]});
       L.marker(m.ll,{icon:ic}).addTo(map).bindPopup(`<b>⛰️ ${m.name}</b><br><b>${m.alt}</b><br>${m.note}`);
