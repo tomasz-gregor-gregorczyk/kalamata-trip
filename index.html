@@ -42,6 +42,9 @@
   .day:hover{background:var(--card2);transform:translateX(-3px)}
   .day.stay:hover,.day.work:hover{transform:none;background:#1e1b31}
   .day.active{outline:2px solid var(--accent);background:var(--card2)}
+  /* klocek z dzisiejszą datą — "gdzie teraz jesteśmy" */
+  .day.now,.day.now:hover{background:#12352a;border-color:#1f6b45;border-left-color:var(--green)}
+  .day.now .day-date::before{content:"● DZIŚ · ";color:var(--green)}
   .day-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
   .day-num{font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.3px}
   .day-date{font-size:10.5px;color:var(--accent2);font-weight:700}
@@ -849,18 +852,30 @@ function chips(d){
 function icon(d){
   return d.type==="toborder"?"🚗 → 🛂":d.type==="fromborder"?"🛂 → 🏨":"🚗";
 }
+// Daty w rozpisce: "sb 10.10 · weekend" (jeden dzień) albo "4–10.10" (pobyt: noce od 4. do 9.,
+// 10. to już dzień wyjazdu, więc koniec zakresu się nie liczy).
+const TRIP_YEAR = 2026;
+function isNow(date){
+  const t=new Date(), today=t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate();
+  const k=(d,m)=>TRIP_YEAR*10000+m*100+d;
+  let m=String(date||'').match(/(\d{1,2})\s*[–-]\s*(\d{1,2})\.(\d{1,2})/);
+  if(m) return today>=k(+m[1],+m[3]) && today<k(+m[2],+m[3]);
+  m=String(date||'').match(/(\d{1,2})\.(\d{1,2})/);
+  return !!m && today===k(+m[1],+m[2]);
+}
 function dayCard(d, cls, idx){
   const id = cls+idx;
+  const now = isNow(d.date)?' now':'';
   const noteVal = (SRV.notes[id]!=null)?SRV.notes[id]:d.note;
   if(d.type==="stay"){
-    return `<div class="day stay">
+    return `<div class="day stay${now}">
       <div class="day-top"><span class="day-num">🏖️ POBYT</span><span class="day-date">${d.date}</span></div>
       <div class="day-route">${d.to}</div>
       ${d.temp?`<div class="day-meta"><span>🌡️ ${d.temp}</span></div>`:''}
       <div class="note">${noteVal}</div></div>`;
   }
   if(d.type==="work"){
-    return `<div class="day work">
+    return `<div class="day work${now}">
       <div class="day-top"><span class="day-num">💻 PRACA</span><span class="day-date">${d.date||''}</span></div>
       <div class="day-route">${d.to}</div>
       <div class="note">${noteVal}</div></div>`;
@@ -868,7 +883,7 @@ function dayCard(d, cls, idx){
   const done = !!SRV.done[id];
   const brd = (d.type==="toborder"||d.type==="fromborder")?" brd":"";
   const bw = d.badge?`<span class="badge">${d.badge}</span>`:'';
-  return `<div class="day ${cls}${brd}" data-key="${d.key}" data-id="${id}" onclick="focusDay(this,event)">
+  return `<div class="day ${cls}${brd}${now}" data-key="${d.key}" data-id="${id}" onclick="focusDay(this,event)">
     <div class="day-top">
       <span class="day-num">${d.day} · ${icon(d)}</span>
       <span class="day-date">${d.date}</span>
