@@ -16,7 +16,9 @@
 //   POST action=cost        + token    -> dodanie / zmiana wydatku (z 'id' = zmiana)
 //   POST action=cost_delete + token    -> kasowanie wydatku
 //   POST action=cost_rates  + token    -> zapis kursów walut (JSON w 'rates')
-//   POST action=cost_clear  + token    -> kasowanie wszystkich wydatków (kursy zostają, kopia w costs.bak.json)
+//   POST action=cost_clear  + token    -> kasowanie wszystkich wydatków albo jednego dnia ('date');
+//                                         kursy zostają, poprzedni stan idzie do costs.bak.json
+//   POST action=cost_restore + token   -> zamiana wydatków z costs.bak.json (drugi raz = cofnięcie)
 //   POST action=cost_import + token    -> wiele wydatków naraz (JSON w 'items'), np. z CSV Revoluta
 //
 // Zapis wymaga tokenu z 'token' w config.php — tego samego co panel.
@@ -42,6 +44,7 @@ $NOTES     = $DIR . '/notes.json';
 $TRACK     = $DIR . '/track.jsonl';
 $POSTS     = $DIR . '/posts.json';
 $COSTS     = $DIR . '/costs.json';
+$COSTS_BAK = $DIR . '/costs.bak.json';
 $MAX_BYTES = 4 * 1024 * 1024;   // zdjęcia i tak są zmniejszane w przeglądarce przed wysyłką
 
 function jexit($payload, $code = 200) {
@@ -300,7 +303,8 @@ function costsData($file, $defRates) {
 }
 
 if ($action === 'costs') {
-    jexit(costsData($COSTS, $DEF_RATES));
+    $bak = is_file($COSTS_BAK) ? costsData($COSTS_BAK, $DEF_RATES) : null;
+    jexit(costsData($COSTS, $DEF_RATES) + ['backup' => $bak ? count($bak['items']) : 0]);
 }
 
 if ($action === 'cost') {
@@ -387,13 +391,31 @@ if ($action === 'cost_import') {
 }
 
 if ($action === 'cost_clear') {
+    $date = (string)($_POST['date'] ?? '');
+    if ($date !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) jexit(['error' => 'Niepoprawna data.'], 400);
     $data = costsData($COSTS, $DEF_RATES);
-    // Kopia na wypadek pomyłki — do przywrócenia ręcznie przez FTP.
-    if ($data['items']) writeJson($DIR . '/costs.bak.json', $data);
-    $n = count($data['items']);
-    $data['items'] = [];
+    $kept = $date === '' ? [] : array_values(array_filter($data['items'], function ($it) use ($date) {
+        return ($it['date'] ?? '') !== $date;
+    }));
+    $n = count($data['items']) - count($kept);
+    if ($n === 0) jexit(['ok' => true, 'removed' => 0]);
+    // Kopia na wypadek pomyłki — przywraca ją cost_restore.
+    writeJson($COSTS_BAK, $data);
+    $data['items'] = $kept;
     writeJson($COSTS, $data);
-    jexit(['ok' => true, 'removed' => $n]);
+    jexit(['ok' => true, 'removed' => $n, 'backup' => $n + count($kept)]);
+}
+
+// Zamiana zamiast nadpisania: obecny stan trafia do kopii, więc przywrócenie też da się cofnąć.
+if ($action === 'cost_restore') {
+    if (!is_file($COSTS_BAK)) jexit(['error' => 'Nie ma kopii do przywrócenia.'], 404);
+    $bak  = costsData($COSTS_BAK, $DEF_RATES);
+    $data = costsData($COSTS, $DEF_RATES);
+    writeJson($COSTS_BAK, $data);
+    $prev = count($data['items']);
+    $data['items'] = $bak['items'];
+    writeJson($COSTS, $data);
+    jexit(['ok' => true, 'items' => $data['items'], 'backup' => $prev]);
 }
 
 if ($action === 'cost_rates') {

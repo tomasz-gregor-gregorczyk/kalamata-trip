@@ -63,6 +63,9 @@
   tr.day td{padding:10px 4px 4px;border-bottom:none;font-size:11px;color:var(--accent);font-weight:700;
     text-transform:uppercase;letter-spacing:.4px}
   tr.day td span{float:right;color:var(--muted);font-weight:600}
+  tr.day td button{width:auto;margin:0 0 0 8px;padding:1px 7px;font-size:11px;font-weight:600;background:transparent;
+    border-color:var(--border);color:var(--muted);text-transform:none;letter-spacing:0}
+  tr.day td button:hover{color:var(--red);border-color:#6b1f1f}
   .empty{color:var(--muted);font-size:13px;padding:12px 0}
   .rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
   .rates label{margin-top:0}
@@ -128,6 +131,7 @@
       <div class="empty" id="empty">Jeszcze nic. Pierwszy wpis to pewnie winiety albo Amber One.</div>
       <button type="button" class="btn-sec" onclick="exportCsv()">⤓ Eksport CSV (Excel / Numbers)</button>
       <button type="button" class="btn-sec" style="color:var(--red)" onclick="clearAll()">🗑 Wyczyść wszystkie wydatki</button>
+      <button type="button" class="btn-sec" id="restore" style="display:none" onclick="restoreBackup()"></button>
     </div>
 
     <div class="card">
@@ -180,7 +184,7 @@ const CATS = [
 ];
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 
-let TOKEN='', ITEMS=[], RATES={PLN:1};
+let TOKEN='', ITEMS=[], RATES={PLN:1}, BACKUP=0;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const zl=n=>Math.round(n).toLocaleString('pl-PL')+' zł';
@@ -212,7 +216,7 @@ function lock(){ ls('kalamata_admin',null); location.reload(); }
 
 async function load(){
   const d=await api({action:'costs'});
-  ITEMS=d.items||[]; RATES=Object.assign({PLN:1},d.rates||{});
+  ITEMS=d.items||[]; RATES=Object.assign({PLN:1},d.rates||{}); BACKUP=d.backup||0;
   $('lock').style.display='none'; $('app').style.display='block';
   renderRates(); render();
 }
@@ -272,7 +276,8 @@ function render(){
       lastDay=it.date;
       const dayTotal=sorted.filter(x=>x.date===it.date).reduce((s,x)=>s+pln(x),0);
       const label=new Date(it.date+'T12:00').toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'numeric'});
-      html+='<tr class="day"><td colspan="7">'+esc(label)+'<span>'+zl(dayTotal)+'</span></td></tr>';
+      html+='<tr class="day"><td colspan="7">'+esc(label)+'<span><b>'+zl(dayTotal)+'</b>'+
+        '<button type="button" data-clearday="'+esc(it.date)+'" title="Usuń wszystkie wydatki z tego dnia">wyczyść dzień</button></span></td></tr>';
     }
     html+='<tr data-id="'+esc(it.id)+'">'+
       '<td><input type="date" data-f="date" value="'+esc(it.date)+'"></td>'+
@@ -284,6 +289,8 @@ function render(){
       '<td class="x"><button type="button" title="Usuń" data-del>✕</button></td></tr>';
   });
   $('rows').innerHTML=html;
+  $('restore').style.display=BACKUP?'block':'none';
+  $('restore').textContent='↺ Przywróć stan sprzed ostatniego czyszczenia ('+BACKUP+' wpisów)';
 }
 
 $('rows').addEventListener('change',async e=>{
@@ -306,10 +313,18 @@ function renderDayTotals(){
   document.querySelectorAll('#rows tr.day').forEach(tr=>{
     let s=0, n=tr.nextElementSibling;
     while(n&&!n.classList.contains('day')){ const it=ITEMS.find(x=>x.id===n.dataset.id); if(it) s+=pln(it); n=n.nextElementSibling; }
-    tr.querySelector('span').textContent=zl(s);
+    tr.querySelector('span b').textContent=zl(s);
   });
 }
 $('rows').addEventListener('click',async e=>{
+  const day=e.target.dataset.clearday;
+  if(day){
+    const list=ITEMS.filter(x=>x.date===day);
+    if(!confirm('Usunąć wszystkie wydatki z '+day+' ('+list.length+' wpisów, '+zl(list.reduce((s,x)=>s+pln(x),0))+')?')) return;
+    try{ const d=await api({action:'cost_clear',date:day}); ITEMS=ITEMS.filter(x=>x.date!==day); BACKUP=d.backup||BACKUP; afterClear(); }
+    catch(err){ alert(err.message); }
+    return;
+  }
   if(!e.target.hasAttribute('data-del')) return;
   const tr=e.target.closest('tr'), it=ITEMS.find(x=>x.id===tr.dataset.id); if(!it) return;
   if(!confirm('Usunąć „'+it.name+'” ('+zl(pln(it))+')?')) return;
@@ -320,11 +335,19 @@ $('rows').addEventListener('click',async e=>{
 async function clearAll(){
   if(!ITEMS.length) return;
   if(!confirm('Usunąć wszystkie wydatki ('+ITEMS.length+' wpisów, '+zl(ITEMS.reduce((s,x)=>s+pln(x),0))+')? Kursy zostają.')) return;
-  try{
-    await api({action:'cost_clear'});
-    ITEMS=[]; IMP.forEach(x=>{ x.dup=false; x.on=x.okCur&&!REV_SKIP.test(x.type)&&!REV_SKIP.test(x.name); });
-    render(); if(IMP.length) renderImport();
-  }catch(err){ alert(err.message); }
+  try{ const d=await api({action:'cost_clear'}); ITEMS=[]; BACKUP=d.backup||BACKUP; afterClear(); }
+  catch(err){ alert(err.message); }
+}
+async function restoreBackup(){
+  if(!confirm('Przywrócić '+BACKUP+' wpisów z kopii? Obecne wpisy ('+ITEMS.length+') trafią do kopii, więc to też da się cofnąć.')) return;
+  try{ const d=await api({action:'cost_restore'}); ITEMS=d.items||[]; BACKUP=d.backup||0; afterClear(); }
+  catch(err){ alert(err.message); }
+}
+// Po zmianie zawartości arkusza podgląd importu musi na nowo wiedzieć, co już jest zaimportowane.
+function afterClear(){
+  const known=new Set(ITEMS.map(x=>x.src).filter(Boolean));
+  IMP.forEach(x=>{ const dup=known.has(x.src); if(x.dup&&!dup) x.on=x.okCur&&!REV_SKIP.test(x.type)&&!REV_SKIP.test(x.name); x.dup=dup; });
+  render(); if(IMP.length) renderImport();
 }
 
 // ---- kursy ----
