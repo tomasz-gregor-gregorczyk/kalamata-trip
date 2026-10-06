@@ -67,6 +67,10 @@
   .rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
   .rates label{margin-top:0}
   #lock{display:none}
+  .chips{display:flex;gap:6px;margin-top:6px}
+  .chips button{margin:0;padding:5px 0;font-size:12px;font-weight:600;background:#22304d}
+  .chips button.on{background:var(--accent);border-color:var(--accent);color:#04202e}
+  input.past{border-color:var(--amber);color:var(--amber)}
 </style>
 </head>
 <body>
@@ -94,7 +98,8 @@
       </div>
       <div class="row2">
         <div><label>Kategoria</label><select id="n-cat"></select></div>
-        <div><label>Data</label><input id="n-date" type="date"></div>
+        <div><label>Data</label><input id="n-date" type="date">
+          <div class="chips"><button type="button" data-ago="0">Dziś</button><button type="button" data-ago="1">Wczoraj</button></div></div>
       </div>
       <button type="button" class="btn-add" onclick="addItem()">Dodaj</button>
       <div class="status" id="nstatus"></div>
@@ -107,7 +112,7 @@
 
     <div class="card">
       <h2>Arkusz</h2>
-      <p class="hint" style="margin:-4px 0 8px">Kliknij komórkę, żeby poprawić. Zapis leci sam po wyjściu z pola.</p>
+      <p class="hint" style="margin:-4px 0 8px">Kliknij komórkę (także datę), żeby poprawić. Zapis leci sam po wyjściu z pola.</p>
       <div class="sheetwrap">
         <table>
           <thead><tr><th style="width:128px">Data</th><th>Co</th><th style="width:130px">Kategoria</th>
@@ -156,7 +161,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const zl=n=>Math.round(n).toLocaleString('pl-PL')+' zł';
 const num=s=>parseFloat(String(s).replace(/\s/g,'').replace(',','.'));
 const pln=it=>(+it.amount||0)*(RATES[it.cur]||0);
-function today(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function today(ago){ const d=new Date(); d.setDate(d.getDate()-(ago||0)); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){ return null; } }
 function msg(id,text,ok){ const e=$(id); e.className='status '+(ok?'ok':'err'); e.textContent=text; if(ok) setTimeout(()=>{ e.className='status'; },2500); }
 
@@ -192,8 +197,17 @@ function initForm(){
   $('n-cur').innerHTML=opts(CURS,ls('costs_cur')||'PLN');
   $('n-cat').innerHTML=opts(CAT_NAMES,ls('costs_cat')||'Paliwo');
   $('n-date').value=today();
+  $('n-date').addEventListener('change',markDate);
+  document.querySelectorAll('[data-ago]').forEach(b=>b.addEventListener('click',()=>{ $('n-date').value=today(+b.dataset.ago); markDate(); }));
+  markDate();
   $('n-name').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('n-amount').focus(); } });
   $('n-amount').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addItem(); } });
+}
+// Wpis z innego dnia niż dziś świeci się na żółto, żeby nie dopisać dzisiejszych wydatków pod wczoraj.
+function markDate(){
+  const v=$('n-date').value;
+  $('n-date').classList.toggle('past',!!v&&v!==today());
+  document.querySelectorAll('[data-ago]').forEach(b=>b.classList.toggle('on',v===today(+b.dataset.ago)));
 }
 async function addItem(){
   const name=$('n-name').value.trim(), amount=num($('n-amount').value);
@@ -205,7 +219,7 @@ async function addItem(){
     ITEMS.push(d.item);
     ls('costs_cur',it.cur); ls('costs_cat',it.cat);
     $('n-name').value=''; $('n-amount').value='';
-    msg('nstatus','Dodane: '+name+' — '+zl(pln(d.item)),true);
+    msg('nstatus','Dodane'+(it.date!==today()?' ('+it.date+')':'')+': '+name+' — '+zl(pln(d.item)),true);
     render(); $('n-name').focus();
   }catch(e){ msg('nstatus',e.message,false); }
 }
