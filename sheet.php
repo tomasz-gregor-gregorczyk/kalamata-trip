@@ -180,6 +180,7 @@ const CATS = [
   ['Jedzenie',         null],
   ['Zakupy',           null],
   ['Atrakcje',         null],
+  ['Internet',         null],
   ['Inne',             null],
 ];
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
@@ -381,6 +382,7 @@ const REV_BAD_STATE = /revert|declin|fail|cofni|odrzuc|anulow/i;
 const CAT_GUESS = [
   ['Paliwo',           /orlen|shell|\bbp\b|omv|\bmol\b|lukoil|circle ?k|\beko\b|avin|aegean|revoil|elin|petrol|benzin|nis |makpetrol|\bina\b|tankstel|fuel|gas station|stacja/i],
   ['Opłaty i winiety', /toll|vinet|winiet|matrica|znamk|e-?vignette|putevi|autoput|autocest|nea odos|egnatia|olympia odos|moreas|attiki|kentriki|aodos|motorway|autostrad|parking|ferry|prom/i],
+  ['Internet',         /e-?sim|airalo|holafly|nomad|ubigi|saily|yesim|roaming|cosmote|vodafone|\bwind\b|nova\b|t-?mobile|orange|\bplay\b|plus ?gsm|starlink|wi-?fi/i],
   ['Noclegi',          /booking|airbnb|hotel|camping|kemping|apartment|apartament|rooms|studios|villa|hostel|guest ?house|pension/i],
   ['Jedzenie',         /restaur|taverna|tavern|cafe|caf[eé]|coffee|bakery|piekar|pizz|grill|gyros|souvlaki|bistro|bar\b|mcdonald|kfc|burger|lidl|carrefour|sklavenitis|masoutis|\bab\b|kritikos|my market|bazaar|spar|billa|tesco|penny|kaufland|biedronka|żabka|zabka|market|food/i],
   ['Atrakcje',         /museum|muzeum|ticket|bilet|tour|beach|archaeolog|castle|zamek|park/i],
