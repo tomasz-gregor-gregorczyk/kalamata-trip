@@ -16,6 +16,7 @@
 //   POST action=cost        + token    -> dodanie / zmiana wydatku (z 'id' = zmiana)
 //   POST action=cost_delete + token    -> kasowanie wydatku
 //   POST action=cost_rates  + token    -> zapis kursów walut (JSON w 'rates')
+//   POST action=cost_import + token    -> wiele wydatków naraz (JSON w 'items'), np. z CSV Revoluta
 //
 // Zapis wymaga tokenu z 'token' w config.php — tego samego co panel.
 // Odczyt jest publiczny: znajomi mają widzieć notatki i zdjęcia, ale nie ruszać.
@@ -323,7 +324,11 @@ if ($action === 'cost') {
     ];
     $found = false;
     foreach ($data['items'] as $i => $it) {
-        if (isset($it['id']) && $it['id'] === $id) { $data['items'][$i] = $row; $found = true; break; }
+        if (isset($it['id']) && $it['id'] === $id) {
+            // 'src' (klucz transakcji z importu) musi przetrwać edycję, inaczej ponowny import zrobi duplikat.
+            if (isset($it['src'])) $row['src'] = $it['src'];
+            $data['items'][$i] = $row; $found = true; break;
+        }
     }
     if ($id !== '' && !$found) jexit(['error' => 'Nie ma takiego wydatku (skasowany?).'], 404);
     if (!$found) $data['items'][] = $row;
@@ -341,6 +346,43 @@ if ($action === 'cost_delete') {
     $data['items'] = $kept;
     writeJson($COSTS, $data);
     jexit(['ok' => true, 'id' => $id]);
+}
+
+// Import: każdy wpis ma 'src' — klucz transakcji z wyciągu. Wpis o kluczu, który już
+// jest w arkuszu, jest pomijany, więc ten sam (albo nakładający się) CSV można wgrać drugi raz.
+if ($action === 'cost_import') {
+    $in = json_decode((string)($_POST['items'] ?? ''), true);
+    if (!is_array($in) || !$in)  jexit(['error' => 'Brak wpisów do importu.'], 400);
+    if (count($in) > 1000)       jexit(['error' => 'Za dużo wpisów naraz (max 1000).'], 400);
+    $data  = costsData($COSTS, $DEF_RATES);
+    $known = [];
+    foreach ($data['items'] as $it) if (isset($it['src'])) $known[$it['src']] = true;
+    $added = []; $skipped = 0;
+    foreach ($in as $n => $r) {
+        if (!is_array($r)) continue;
+        $src    = clean($r['src'] ?? '', 300);
+        $amount = (float)($r['amount'] ?? 0);
+        $cur    = strtoupper((string)($r['cur'] ?? ''));
+        $date   = (string)($r['date'] ?? '');
+        $name   = clean($r['name'] ?? '', 120);
+        if ($src === '' || isset($known[$src])) { $skipped++; continue; }
+        if ($name === '' || $amount <= 0 || $amount > 10000000 || !in_array($cur, $CURRENCIES, true)
+            || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) { $skipped++; continue; }
+        $row = [
+            'id'     => date('Ymd-His') . '-' . bin2hex(random_bytes(3)),
+            'date'   => $date,
+            'name'   => $name,
+            'cat'    => clean($r['cat'] ?? '', 30),
+            'amount' => round($amount, 2),
+            'cur'    => $cur,
+            'src'    => $src,
+        ];
+        $known[$src] = true;
+        $data['items'][] = $row;
+        $added[] = $row;
+    }
+    if ($added) writeJson($COSTS, $data);
+    jexit(['ok' => true, 'added' => $added, 'skipped' => $skipped]);
 }
 
 if ($action === 'cost_rates') {

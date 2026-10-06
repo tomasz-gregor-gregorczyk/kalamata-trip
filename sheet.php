@@ -67,9 +67,14 @@
   .rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
   .rates label{margin-top:0}
   #lock{display:none}
-  .chips{display:flex;gap:6px;margin-top:6px}
-  .chips button{margin:0;padding:5px 0;font-size:12px;font-weight:600;background:#22304d}
-  .chips button.on{background:var(--accent);border-color:var(--accent);color:#04202e}
+  #imp-list td{font-size:12.5px;padding:5px 4px}
+  #imp-list td input[type=checkbox]{width:auto;margin:0 4px}
+  #imp-list td select{padding:4px;font-size:12.5px}
+  #imp-list tr.dup td,#imp-list tr.off td{opacity:.45}
+  #imp-list td.amt{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .impbar{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+  .impbar>div{flex:1;min-width:140px}
+  .impbar button{width:auto;flex:0 0 auto;padding:10px 14px}
   input.past{border-color:var(--amber);color:var(--amber)}
 </style>
 </head>
@@ -98,8 +103,7 @@
       </div>
       <div class="row2">
         <div><label>Kategoria</label><select id="n-cat"></select></div>
-        <div><label>Data</label><input id="n-date" type="date">
-          <div class="chips"><button type="button" data-ago="0">Dziś</button><button type="button" data-ago="1">Wczoraj</button></div></div>
+        <div><label>Data</label><input id="n-date" type="date"></div>
       </div>
       <button type="button" class="btn-add" onclick="addItem()">Dodaj</button>
       <div class="status" id="nstatus"></div>
@@ -123,6 +127,26 @@
       </div>
       <div class="empty" id="empty">Jeszcze nic. Pierwszy wpis to pewnie winiety albo Amber One.</div>
       <button type="button" class="btn-sec" onclick="exportCsv()">⤓ Eksport CSV (Excel / Numbers)</button>
+    </div>
+
+    <div class="card">
+      <h2>Import z Revoluta</h2>
+      <p class="hint" style="margin:-4px 0 4px">W aplikacji: konto → ⋯ → Wyciąg → format Excel (CSV), okres wyjazdu.
+      Wgraj plik, sprawdź listę i kategorie, zaimportuj. Te same transakcje drugi raz się nie dodadzą,
+      więc możesz wgrywać cały wyciąg co kilka dni.</p>
+      <input type="file" id="imp-file" accept=".csv,text/csv" style="margin-top:8px">
+      <div id="imp-box" style="display:none">
+        <div class="impbar">
+          <div><label>Tylko od dnia</label><input type="date" id="imp-from"></div>
+          <button type="button" class="btn-add" id="imp-go" onclick="runImport()">Importuj</button>
+        </div>
+        <div class="sheetwrap" style="margin-top:10px">
+          <table style="min-width:520px"><thead><tr><th style="width:30px"></th><th style="width:88px">Data</th><th>Opis</th>
+            <th style="width:130px">Kategoria</th><th style="width:110px;text-align:right">Kwota</th></tr></thead>
+            <tbody id="imp-list"></tbody></table>
+        </div>
+      </div>
+      <div class="status" id="istatus"></div>
     </div>
 
     <div class="card">
@@ -161,7 +185,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const zl=n=>Math.round(n).toLocaleString('pl-PL')+' zł';
 const num=s=>parseFloat(String(s).replace(/\s/g,'').replace(',','.'));
 const pln=it=>(+it.amount||0)*(RATES[it.cur]||0);
-function today(ago){ const d=new Date(); d.setDate(d.getDate()-(ago||0)); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
+function today(){ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); }
 function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){ return null; } }
 function msg(id,text,ok){ const e=$(id); e.className='status '+(ok?'ok':'err'); e.textContent=text; if(ok) setTimeout(()=>{ e.className='status'; },2500); }
 
@@ -198,7 +222,6 @@ function initForm(){
   $('n-cat').innerHTML=opts(CAT_NAMES,ls('costs_cat')||'Paliwo');
   $('n-date').value=today();
   $('n-date').addEventListener('change',markDate);
-  document.querySelectorAll('[data-ago]').forEach(b=>b.addEventListener('click',()=>{ $('n-date').value=today(+b.dataset.ago); markDate(); }));
   markDate();
   $('n-name').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('n-amount').focus(); } });
   $('n-amount').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addItem(); } });
@@ -207,7 +230,6 @@ function initForm(){
 function markDate(){
   const v=$('n-date').value;
   $('n-date').classList.toggle('past',!!v&&v!==today());
-  document.querySelectorAll('[data-ago]').forEach(b=>b.classList.toggle('on',v===today(+b.dataset.ago)));
 }
 async function addItem(){
   const name=$('n-name').value.trim(), amount=num($('n-amount').value);
@@ -303,6 +325,122 @@ async function saveRates(){
   const r={}; document.querySelectorAll('[data-rate]').forEach(i=>{ const v=num(i.value); if(v>0) r[i.dataset.rate]=v; });
   try{ const d=await api({action:'cost_rates',rates:JSON.stringify(r)}); RATES=Object.assign({PLN:1},d.rates); renderRates(); render(); msg('rstatus','Kursy zapisane.',true); }
   catch(e){ msg('rstatus',e.message,false); }
+}
+
+// ---- import z Revoluta ----
+// Wyciąg CSV z Revoluta: Type, Product, Started Date, Completed Date, Description, Amount, Fee,
+// Currency, State, Balance (w polskiej wersji aplikacji nagłówki mogą być po polsku —
+// stąd kilka nazw na kolumnę). Kwota wydatku jest ujemna, opłata dodatnia.
+const REV_COLS = {
+  type:  ['type','typ'],
+  date:  ['started date','data rozpoczęcia','completed date','data zakończenia','date','data'],
+  desc:  ['description','opis'],
+  amount:['amount','kwota'],
+  fee:   ['fee','opłata','prowizja'],
+  cur:   ['currency','waluta'],
+  state: ['state','stan','status'],
+};
+// Przelewy, doładowania i wymiany walut to przesuwanie pieniędzy, nie wydatek — domyślnie odznaczone.
+const REV_SKIP = /transfer|topup|top-up|exchange|przelew|doładowanie|wymiana/i;
+const REV_BAD_STATE = /revert|declin|fail|cofni|odrzuc|anulow/i;
+// Zgadywanie kategorii po nazwie sprzedawcy; i tak da się poprawić przed importem.
+const CAT_GUESS = [
+  ['Paliwo',           /orlen|shell|\bbp\b|omv|\bmol\b|lukoil|circle ?k|\beko\b|avin|aegean|revoil|elin|petrol|benzin|nis |makpetrol|\bina\b|tankstel|fuel|gas station|stacja/i],
+  ['Opłaty i winiety', /toll|vinet|winiet|matrica|znamk|e-?vignette|putevi|autoput|autocest|nea odos|egnatia|olympia odos|moreas|attiki|kentriki|aodos|motorway|autostrad|parking|ferry|prom/i],
+  ['Noclegi',          /booking|airbnb|hotel|camping|kemping|apartment|apartament|rooms|studios|villa|hostel|guest ?house|pension/i],
+  ['Jedzenie',         /restaur|taverna|tavern|cafe|caf[eé]|coffee|bakery|piekar|pizz|grill|gyros|souvlaki|bistro|bar\b|mcdonald|kfc|burger|lidl|carrefour|sklavenitis|masoutis|\bab\b|kritikos|my market|bazaar|spar|billa|tesco|penny|kaufland|biedronka|żabka|zabka|market|food/i],
+  ['Atrakcje',         /museum|muzeum|ticket|bilet|tour|beach|archaeolog|castle|zamek|park/i],
+];
+function guessCat(desc){ const g=CAT_GUESS.find(([,re])=>re.test(desc)); return g?g[0]:'Inne'; }
+
+function parseCsv(text){
+  text=text.replace(/^\uFEFF/,'');
+  const first=text.split(/\r?\n/)[0]||'';
+  const sep=(first.match(/;/g)||[]).length>(first.match(/,/g)||[]).length?';':',';
+  const rows=[]; let row=[], cell='', q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=c; }
+    else if(c==='"') q=true;
+    else if(c===sep){ row.push(cell); cell=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=''; }
+    else cell+=c;
+  }
+  if(cell!==''||row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r=>r.some(x=>x.trim()!==''));
+}
+const revNum=s=>{ s=String(s||'').replace(/\s/g,''); if(/,\d{1,2}$/.test(s)) s=s.replace(/\./g,'').replace(',','.'); else s=s.replace(/,/g,''); return parseFloat(s)||0; };
+function revDate(s){
+  s=String(s||'').trim(); let m;
+  if((m=s.match(/^(\d{4})-(\d{2})-(\d{2})/))) return m[1]+'-'+m[2]+'-'+m[3];
+  if((m=s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{4})/))) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  return '';
+}
+
+let IMP=[];
+$('imp-file').addEventListener('change',async e=>{
+  const f=e.target.files[0]; if(!f) return;
+  $('imp-box').style.display='none'; IMP=[];
+  try{
+    const rows=parseCsv(await f.text());
+    const head=(rows.shift()||[]).map(h=>h.trim().toLowerCase());
+    const col={}; for(const k in REV_COLS){ col[k]=REV_COLS[k].map(n=>head.indexOf(n)).find(i=>i>=0); }
+    if(col.date===undefined||col.amount===undefined||col.desc===undefined)
+      throw new Error('Nie rozpoznaję kolumn. Nagłówek pliku: '+head.join(' | '));
+    const known=new Set(ITEMS.map(x=>x.src).filter(Boolean));
+    rows.forEach(r=>{
+      const raw=revNum(r[col.amount]); if(!(raw<0)) return;           // tylko obciążenia
+      const cur=(col.cur!==undefined?r[col.cur]:'PLN').trim().toUpperCase();
+      const desc=(r[col.desc]||'').trim(), date=revDate(r[col.date]);
+      const type=col.type!==undefined?r[col.type]||'':'', state=col.state!==undefined?r[col.state]||'':'';
+      if(!date||REV_BAD_STATE.test(state)) return;
+      const fee=col.fee!==undefined?Math.abs(revNum(r[col.fee])):0;
+      const amount=Math.round((-raw+fee)*100)/100;
+      const src='rev|'+String(r[col.date]).trim()+'|'+raw+'|'+cur+'|'+desc;
+      const dup=known.has(src), okCur=CURS.includes(cur);
+      IMP.push({date,name:desc||type||'Revolut',amount,cur,cat:guessCat(desc),src,dup,okCur,
+                on:!dup&&okCur&&!REV_SKIP.test(type)&&!REV_SKIP.test(desc),type});
+    });
+    if(!IMP.length) throw new Error('W pliku nie ma żadnych obciążeń.');
+    IMP.sort((a,b)=>a.date.localeCompare(b.date));
+    const firstItem=ITEMS.map(x=>x.date).sort()[0];
+    $('imp-from').value=firstItem||IMP[0].date;
+    $('imp-box').style.display='block'; renderImport();
+  }catch(err){ msg('istatus',err.message,false); }
+  e.target.value='';
+});
+$('imp-from').addEventListener('change',renderImport);
+function impVisible(){ const from=$('imp-from').value; return IMP.filter(x=>!from||x.date>=from); }
+function renderImport(){
+  const vis=impVisible();
+  $('imp-list').innerHTML=vis.map(x=>{
+    const i=IMP.indexOf(x), note=x.dup?' <small>(już jest)</small>':!x.okCur?' <small>(waluta spoza arkusza)</small>':'';
+    return '<tr class="'+(x.dup?'dup':x.on?'':'off')+'" data-i="'+i+'">'+
+      '<td><input type="checkbox" data-k="on"'+(x.on?' checked':'')+(x.dup||!x.okCur?' disabled':'')+'></td>'+
+      '<td>'+esc(x.date.slice(5).split('-').reverse().join('.'))+'</td>'+
+      '<td>'+esc(x.name)+(x.type?' <small style="color:var(--muted)">'+esc(x.type)+'</small>':'')+note+'</td>'+
+      '<td><select data-k="cat">'+opts(CAT_NAMES,x.cat)+'</select></td>'+
+      '<td class="amt">'+esc(String(x.amount).replace('.',','))+' '+esc(x.cur)+'</td></tr>';
+  }).join('')||'<tr><td colspan="5" class="empty">Nic od tego dnia.</td></tr>';
+  const n=vis.filter(x=>x.on&&!x.dup).length;
+  $('imp-go').textContent='Importuj ('+n+')'; $('imp-go').disabled=!n;
+}
+$('imp-list').addEventListener('change',e=>{
+  const k=e.target.dataset.k, tr=e.target.closest('tr'); if(!k||!tr) return;
+  const x=IMP[+tr.dataset.i]; x[k]=k==='on'?e.target.checked:e.target.value;
+  if(k==='on') renderImport();
+});
+async function runImport(){
+  const sel=impVisible().filter(x=>x.on&&!x.dup);
+  if(!sel.length) return;
+  $('imp-go').disabled=true;
+  try{
+    const d=await api({action:'cost_import',items:JSON.stringify(sel.map(({date,name,cat,amount,cur,src})=>({date,name,cat,amount,cur,src})))});
+    ITEMS=ITEMS.concat(d.added);
+    const srcs=new Set(d.added.map(x=>x.src)); IMP.forEach(x=>{ if(srcs.has(x.src)) x.dup=true; });
+    render(); renderImport();
+    msg('istatus','Zaimportowane: '+d.added.length+(d.skipped?' (pominięte: '+d.skipped+')':'')+'. Popraw w arkuszu, jeśli coś trzeba.',true);
+  }catch(err){ msg('istatus',err.message,false); $('imp-go').disabled=false; }
 }
 
 // ---- CSV ----
