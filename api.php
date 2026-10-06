@@ -16,6 +16,7 @@
 //   POST action=cost        + token    -> dodanie / zmiana wydatku (z 'id' = zmiana)
 //   POST action=cost_delete + token    -> kasowanie wydatku
 //   POST action=cost_rates  + token    -> zapis kursów walut (JSON w 'rates')
+//   POST action=cost_clear  + token    -> kasowanie wszystkich wydatków (kursy zostają, kopia w costs.bak.json)
 //   POST action=cost_import + token    -> wiele wydatków naraz (JSON w 'items'), np. z CSV Revoluta
 //
 // Zapis wymaga tokenu z 'token' w config.php — tego samego co panel.
@@ -383,6 +384,16 @@ if ($action === 'cost_import') {
     }
     if ($added) writeJson($COSTS, $data);
     jexit(['ok' => true, 'added' => $added, 'skipped' => $skipped]);
+}
+
+if ($action === 'cost_clear') {
+    $data = costsData($COSTS, $DEF_RATES);
+    // Kopia na wypadek pomyłki — do przywrócenia ręcznie przez FTP.
+    if ($data['items']) writeJson($DIR . '/costs.bak.json', $data);
+    $n = count($data['items']);
+    $data['items'] = [];
+    writeJson($COSTS, $data);
+    jexit(['ok' => true, 'removed' => $n]);
 }
 
 if ($action === 'cost_rates') {

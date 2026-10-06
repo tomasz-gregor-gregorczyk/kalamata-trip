@@ -127,6 +127,7 @@
       </div>
       <div class="empty" id="empty">Jeszcze nic. Pierwszy wpis to pewnie winiety albo Amber One.</div>
       <button type="button" class="btn-sec" onclick="exportCsv()">⤓ Eksport CSV (Excel / Numbers)</button>
+      <button type="button" class="btn-sec" style="color:var(--red)" onclick="clearAll()">🗑 Wyczyść wszystkie wydatki</button>
     </div>
 
     <div class="card">
@@ -315,6 +316,16 @@ $('rows').addEventListener('click',async e=>{
   try{ await api({action:'cost_delete',id:it.id}); ITEMS=ITEMS.filter(x=>x!==it); render(); }
   catch(err){ alert(err.message); }
 });
+
+async function clearAll(){
+  if(!ITEMS.length) return;
+  if(!confirm('Usunąć wszystkie wydatki ('+ITEMS.length+' wpisów, '+zl(ITEMS.reduce((s,x)=>s+pln(x),0))+')? Kursy zostają.')) return;
+  try{
+    await api({action:'cost_clear'});
+    ITEMS=[]; IMP.forEach(x=>{ x.dup=false; x.on=x.okCur&&!REV_SKIP.test(x.type)&&!REV_SKIP.test(x.name); });
+    render(); if(IMP.length) renderImport();
+  }catch(err){ alert(err.message); }
+}
 
 // ---- kursy ----
 function renderRates(){
