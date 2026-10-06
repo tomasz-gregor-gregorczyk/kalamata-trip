@@ -170,13 +170,13 @@
 <script>
 const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 6 050 km × 10 l × 9,20 zł,
-// opłaty 770 zł × 2, noclegi w drodze 5 × 300 zł + Christos House 319 zł
-// + kemping Chalkidiki 4 × 28 € + Kalamata 13 × 25 €, kurs 4,40).
+// opłaty 770 zł × 2, noclegi w drodze 5 × 300 zł + Christos House 3 × 36,25 €
+// + kemping Stavros 3 × 35 € + Kalamata 13 × 25 €, kurs 4,40).
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
   ['Paliwo',           5566],
   ['Opłaty i winiety', 1540],
-  ['Noclegi',          3742],
+  ['Noclegi',          3871],
   ['Jedzenie',         null],
   ['Zakupy',           null],
   ['Atrakcje',         null],
