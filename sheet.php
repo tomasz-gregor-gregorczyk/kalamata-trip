@@ -185,6 +185,11 @@ const CATS = [
   ['Inne',              200],
 ];
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
+// Prognoza dla kategorii bez stałej ceny: średnia na dzień od startu × cały wyjazd.
+// Zakupy idą „górkami” (zapas na kilka dni), więc liczymy po dniach kalendarzowych,
+// a nie po dniach z wydatkami — dni „na zapasach” obniżają średnią, jak w rzeczywistości.
+const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
+const FORECAST = ['Jedzenie','Zakupy'];
 
 let TOKEN='', ITEMS=[], RATES={PLN:1}, BACKUP=0;
 const $=id=>document.getElementById(id);
@@ -258,12 +263,19 @@ function renderSummary(){
   const by={}; let total=0;
   ITEMS.forEach(it=>{ const v=pln(it); total+=v; const c=CAT_NAMES.includes(it.cat)?it.cat:'Inne'; by[c]=(by[c]||0)+v; });
   $('sum').textContent=zl(total);
-  $('sumplan').textContent='plan przejazdu i noclegów: '+zl(PLAN_TOTAL);
+  $('sumplan').textContent='plan całego wyjazdu: '+zl(PLAN_TOTAL);
+  const dayMs=864e5, t0=Date.parse(TRIP_FROM+'T12:00'), t1=Date.parse(TRIP_TO+'T12:00');
+  const tripDays=Math.round((t1-t0)/dayMs)+1;
+  const passed=Math.max(1,Math.min(tripDays,Math.round((Date.parse(today()+'T12:00')-t0)/dayMs)+1));
   $('cats').innerHTML=CATS.filter(([c,p])=>p||by[c]).map(([c,p])=>{
     const v=by[c]||0, pct=p?Math.min(100,v/p*100):0;
     return '<div class="cat"><span>'+esc(c)+'</span><span class="v">'+zl(v)+
       (p?' <small>/ '+zl(p)+'</small>':'')+'</span>'+
-      (p?'<div class="bar"><i class="'+(v>p?'over':'')+'" style="width:'+pct+'%"></i></div>':'')+'</div>';
+      (p?'<div class="bar"><i class="'+(v>p?'over':'')+'" style="width:'+pct+'%"></i></div>':'')+
+      (FORECAST.includes(c)&&v&&passed<tripDays
+        ? (()=>{ const avg=v/passed, fc=avg*tripDays;
+            return '<small style="display:block;opacity:.75;margin-top:2px">śr. '+zl(avg)+'/dzień ('+passed+' z '+tripDays+' dni) → prognoza na koniec: <b style="color:'+(p&&fc>p?'var(--red)':'inherit')+'">'+zl(fc)+'</b></small>'; })()
+        : '')+'</div>';
   }).join('');
 }
 
