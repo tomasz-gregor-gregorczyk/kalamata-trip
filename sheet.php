@@ -171,17 +171,18 @@
 const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 5 958 km × 10 l × 9,20 zł,
 // opłaty 855 zł × 2, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 115 zł, MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
-// + kemping Stavros 3 × 36 € + Kalamata 18 × 25 €, kurs 4,40).
+// + kemping Stavros 3 × 36 € + Kalamata 18 × 25 €, kurs 4,40)
+// + szacunek z pierwszych dni: jedzenie 4 500 zł, internet 229 zł (zamknięty), inne 200 zł.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
   ['Paliwo',           5481],
   ['Opłaty i winiety', 1710],
   ['Noclegi',          3281],
-  ['Jedzenie',         null],
+  ['Jedzenie',         4500],
   ['Zakupy',           null],
   ['Atrakcje',         null],
-  ['Internet',         null],
-  ['Inne',             null],
+  ['Internet',          229],
+  ['Inne',              200],
 ];
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 
