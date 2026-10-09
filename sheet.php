@@ -377,7 +377,8 @@ const REV_COLS = {
   state: ['state','stan','status'],
 };
 // Przelewy, doładowania i wymiany walut to przesuwanie pieniędzy, nie wydatek — domyślnie odznaczone.
-const REV_SKIP = /transfer|topup|top-up|exchange|przelew|doładowanie|wymiana/i;
+// Wypłaty z bankomatu też: wydatki z gotówki wpisujemy ręcznie, więc wypłata policzyłaby je drugi raz.
+const REV_SKIP = /transfer|topup|top-up|exchange|przelew|doładowanie|wymiana|\batm\b|cash withdrawal|wypłata|bankomat/i;
 const REV_BAD_STATE = /revert|declin|fail|cofni|odrzuc|anulow/i;
 // Zgadywanie kategorii po nazwie sprzedawcy; i tak da się poprawić przed importem.
 const CAT_GUESS = [
