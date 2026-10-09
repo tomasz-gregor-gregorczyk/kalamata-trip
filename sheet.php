@@ -172,13 +172,13 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 5 958 km × 10 l × 9,20 zł,
 // opłaty 855 zł × 2, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 115 zł, MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Kalamata 18 × 25 €, kurs 4,40)
-// + szacunek z pierwszych dni: jedzenie 4 500 zł, internet 229 zł (zamknięty), inne 200 zł.
+// + szacunek z pierwszych dni: konsumpcja 4 500 zł, internet 229 zł (zamknięty), inne 200 zł.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
   ['Paliwo',           5481],
   ['Opłaty i winiety', 1710],
   ['Noclegi',          3281],
-  ['Jedzenie',         4500],
+  ['Konsumpcja',       4500],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
   ['Inne',              200],
@@ -188,7 +188,10 @@ const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // Zakupy idą „górkami” (zapas na kilka dni), więc liczymy po dniach kalendarzowych,
 // a nie po dniach z wydatkami — dni „na zapasach” obniżają średnią, jak w rzeczywistości.
 const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
-const FORECAST = ['Jedzenie'];   // jedzenie = też zakupy spożywcze i drobne, bez osobnej kategorii
+const FORECAST = ['Konsumpcja'];
+// Stare nazwy kategorii (przed 9.10) — pokazujemy je jako Konsumpcję.
+const CAT_ALIAS = {'Jedzenie':'Konsumpcja','Zakupy':'Konsumpcja'};
+const fixCat = it => { if(CAT_ALIAS[it.cat]) it.cat=CAT_ALIAS[it.cat]; return it; };
 
 let TOKEN='', ITEMS=[], RATES={PLN:1}, BACKUP=0;
 const $=id=>document.getElementById(id);
@@ -222,7 +225,7 @@ function lock(){ ls('kalamata_admin',null); location.reload(); }
 
 async function load(){
   const d=await api({action:'costs'});
-  ITEMS=d.items||[]; RATES=Object.assign({PLN:1},d.rates||{}); BACKUP=d.backup||0;
+  ITEMS=(d.items||[]).map(fixCat); RATES=Object.assign({PLN:1},d.rates||{}); BACKUP=d.backup||0;
   $('lock').style.display='none'; $('app').style.display='block';
   renderRates(); render();
 }
@@ -353,7 +356,7 @@ async function clearAll(){
 }
 async function restoreBackup(){
   if(!confirm('Przywrócić '+BACKUP+' wpisów z kopii? Obecne wpisy ('+ITEMS.length+') trafią do kopii, więc to też da się cofnąć.')) return;
-  try{ const d=await api({action:'cost_restore'}); ITEMS=d.items||[]; BACKUP=d.backup||0; afterClear(); }
+  try{ const d=await api({action:'cost_restore'}); ITEMS=(d.items||[]).map(fixCat); BACKUP=d.backup||0; afterClear(); }
   catch(err){ alert(err.message); }
 }
 // Po zmianie zawartości arkusza podgląd importu musi na nowo wiedzieć, co już jest zaimportowane.
@@ -400,7 +403,7 @@ const CAT_GUESS = [
   ['Opłaty i winiety', /toll|vinet|winiet|matrica|znamk|e-?vignette|putevi|autoput|autocest|nea odos|egnatia|olympia odos|moreas|attiki|kentriki|aodos|motorway|autostrad|parking|ferry|prom/i],
   ['Internet',         /e-?sim|airalo|holafly|nomad|ubigi|saily|yesim|roaming|cosmote|vodafone|\bwind\b|nova\b|t-?mobile|orange|\bplay\b|plus ?gsm|starlink|wi-?fi/i],
   ['Noclegi',          /booking|airbnb|hotel|camping|kemping|apartment|apartament|rooms|studios|villa|hostel|guest ?house|pension/i],
-  ['Jedzenie',         /restaur|taverna|tavern|cafe|caf[eé]|coffee|bakery|piekar|pizz|grill|gyros|souvlaki|bistro|bar\b|mcdonald|kfc|burger|lidl|carrefour|sklavenitis|masoutis|\bab\b|kritikos|my market|bazaar|spar|billa|tesco|penny|kaufland|biedronka|żabka|zabka|market|food/i],
+  ['Konsumpcja',       /restaur|taverna|tavern|cafe|caf[eé]|coffee|bakery|piekar|pizz|grill|gyros|souvlaki|bistro|bar\b|mcdonald|kfc|burger|lidl|carrefour|sklavenitis|masoutis|\bab\b|kritikos|my market|bazaar|spar|billa|tesco|penny|kaufland|biedronka|żabka|zabka|market|food/i],
   ['Atrakcje',         /museum|muzeum|ticket|bilet|tour|beach|archaeolog|castle|zamek|park/i],
 ];
 function guessCat(desc){ const g=CAT_GUESS.find(([,re])=>re.test(desc)); return g?g[0]:'Inne'; }
