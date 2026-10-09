@@ -1,0 +1,9 @@
+# Tymczasowe (302) przekierowanie na przekaźnik Cloudflare — certyfikat grecja.gofamily.pl
+# wygasł 7.10.2026. Po odnowieniu certyfikatu ten plik można usunąć.
+# Zapytania z samego workera (nagłówek X-Via-Worker: 1) przechodzą bez przekierowania,
+# inaczej byłaby pętla. Przekierowujemy tylko GET/HEAD — POST-y (OwnTracks, panel)
+# po 302 zamieniłyby się w GET i dane by przepadły.
+RewriteEngine On
+RewriteCond %{HTTP:X-Via-Worker} !^1$
+RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+RewriteRule ^ https://grecja.egregorcom.workers.dev%{REQUEST_URI} [R=302,L]
