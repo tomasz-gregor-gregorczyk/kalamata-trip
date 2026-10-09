@@ -136,6 +136,9 @@
   .emk{background:#64748b;border-radius:50%;width:22px;height:22px;
     display:flex;align-items:center;justify-content:center;font-size:12px;
     border:2px solid #cbd5e1;box-shadow:0 1px 6px rgba(0,0,0,.5)}
+  .tmk{display:inline-block;white-space:nowrap;border-radius:9px;padding:2px 6px;font-size:11px;font-weight:700;
+    color:#0b1220;border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 5px rgba(0,0,0,.45)}
+  .tmk i{font-style:normal;font-weight:500;opacity:.75}
   .toolbar{padding:10px 16px 2px;display:flex;gap:8px}
   .btn{flex:1;background:var(--card2);border:1px solid var(--border);color:var(--text);
     border-radius:8px;padding:7px;font-size:12px;cursor:pointer}
@@ -1192,6 +1195,66 @@ function addTiles(){
   });
 }
 
+// ---- Temperatury z Open-Meteo (bez klucza) ----
+// Dla każdego punktu bierzemy dzień, w którym tam będziemy (dla baz: dziś, jeśli trwa pobyt).
+// Do 15 dni naprzód — prognoza; dalej — średnia z lat 2016–2025 (±3 dni wokół tej daty).
+// Min to temperatura nocy, czyli to, co liczy się przy spaniu w busie.
+const TEMP_PTS = [
+  {name:'Kamena Vourla — Camping Venezuela', ll:[38.8228,22.7167], from:'2026-10-10', to:'2026-10-10', what:'nocleg sb 10.10'},
+  {name:'Kalamata — Camping Fare',          ll:[37.0213,22.1434], from:'2026-10-11', to:'2026-10-29', what:'baza 11–29.10'},
+  {name:'Larisa (kotlina)',                  ll:[39.6390,22.4191], from:'2026-10-29', to:'2026-10-29', what:'nocleg czw 29.10 — obecny plan'},
+  {name:'Platamonas (wybrzeże pod Olimpem)', ll:[40.0050,22.5970], from:'2026-10-29', to:'2026-10-29', what:'nocleg czw 29.10 — alternatywa'},
+  {name:'Belgrad — Camp Dunav',              ll:[44.8580,20.3300], from:'2026-10-30', to:'2026-10-30', what:'nocleg pt 30.10'},
+  {name:'MOP Woźniki',                       ll:[50.5980,19.0000], from:'2026-10-31', to:'2026-10-31', what:'nocleg sb 31.10 w busie'},
+];
+let tempLayer=null;
+function isoDay(d){ return d.toISOString().slice(0,10); }
+function tempColor(t){ return t<3?'#93c5fd':t<8?'#bae6fd':t<13?'#bbf7d0':t<18?'#fde68a':'#fdba74'; }
+function loadTemps(){
+  if(!map) return;
+  tempLayer=L.layerGroup().addTo(map);
+  L.control.layers(null,{'🌡️ Temperatury (Open-Meteo)':tempLayer},{collapsed:true,position:'topright'}).addTo(map);
+  const today=isoDay(new Date()), limit=isoDay(new Date(Date.now()+15*864e5));
+  const pts=TEMP_PTS.map(p=>({...p, day: today<p.from?p.from:(today>p.to?p.to:today)}))
+                    .filter(p=>p.day>=today);
+  if(!pts.length) return;
+  const lat=pts.map(p=>p.ll[0]).join(','), lon=pts.map(p=>p.ll[1]).join(',');
+  const asArr=d=>Array.isArray(d)?d:[d];
+  const fc=fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_min,temperature_2m_max&timezone=auto&forecast_days=16`)
+    .then(r=>r.json()).then(asArr);
+  const years=[]; for(let y=2016;y<=2025;y++) years.push(y);
+  const arch=Promise.all(years.map(y=>fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${y}-09-25&end_date=${y}-11-10&daily=temperature_2m_min,temperature_2m_max&timezone=auto`)
+    .then(r=>r.json()).then(asArr).catch(()=>null)));
+  Promise.all([fc.catch(()=>null),arch]).then(([f,a])=>{
+    pts.forEach((p,i)=>{
+      let mn,mx,src,cold=null;
+      const di = (p.day<=limit && f && f[i] && f[i].daily) ? f[i].daily.time.indexOf(p.day) : -1;
+      if(di>=0){
+        mn=f[i].daily.temperature_2m_min[di]; mx=f[i].daily.temperature_2m_max[di]; src='prognoza';
+      } else {
+        const md=new Date(p.day+'T12:00:00Z'), mins=[], maxs=[];
+        (a||[]).forEach((ya,yi)=>{
+          const d=ya&&ya[i]&&ya[i].daily; if(!d) return;
+          d.time.forEach((t,k)=>{
+            const td=new Date(t+'T12:00:00Z'); td.setUTCFullYear(md.getUTCFullYear());
+            if(Math.abs(td-md)<=3*864e5 && d.temperature_2m_min[k]!=null){ mins.push(d.temperature_2m_min[k]); maxs.push(d.temperature_2m_max[k]); }
+          });
+        });
+        if(!mins.length) return;
+        const avg=x=>x.reduce((s,v)=>s+v,0)/x.length;
+        mn=avg(mins); mx=avg(maxs); cold=Math.min(...mins); src='średnia 2016–2025';
+      }
+      const dd=p.day.slice(8,10)+'.'+p.day.slice(5,7);
+      const ic=L.divIcon({className:'',iconSize:null,iconAnchor:[-15,9],
+        html:`<div class="tmk" style="background:${tempColor(mn)}">🌙${Math.round(mn)}° <i>☀️${Math.round(mx)}°</i></div>`});
+      L.marker(p.ll,{icon:ic,zIndexOffset:300}).addTo(tempLayer).bindPopup(
+        `<b>🌡️ ${p.name}</b><br>${p.what} · <b>${dd}</b><br>Noc: <b>${mn.toFixed(1)}°</b> · dzień: <b>${mx.toFixed(1)}°</b><br>`+
+        (cold!=null?`Najzimniejsza noc w tym oknie (10 lat): <b>${cold.toFixed(1)}°</b><br>`:'')+
+        `<span style="opacity:.7">Źródło: Open-Meteo, ${src}${src==='prognoza'?'':' — prognoza pojawi się ~15 dni przed datą'}</span>`);
+    });
+  });
+}
+
 function initMap(){
   const mapEl=document.getElementById('map');
   if(typeof L==='undefined'){
@@ -1226,6 +1289,7 @@ function initMap(){
       markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
+    loadTemps();
     fitAll();
     // Domyślnie o jeden stopień bliżej niż samo dopasowanie do trasy — cała trasa
     // mieści się dopiero przy bardzo małym powiększeniu i mapa robi się nieczytelna.
