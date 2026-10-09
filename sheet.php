@@ -348,7 +348,7 @@ async function restoreBackup(){
 // Po zmianie zawartości arkusza podgląd importu musi na nowo wiedzieć, co już jest zaimportowane.
 function afterClear(){
   const known=new Set(ITEMS.map(x=>x.src).filter(Boolean));
-  IMP.forEach(x=>{ const dup=known.has(x.src); if(x.dup&&!dup) x.on=x.okCur&&!REV_SKIP.test(x.type)&&!REV_SKIP.test(x.name); x.dup=dup; });
+  IMP.forEach(x=>{ const dup=known.has(x.src); if(x.dup&&!dup) x.on=x.okCur&&!x.pend&&!REV_SKIP.test(x.type)&&!REV_SKIP.test(x.name); x.dup=dup; });
   render(); if(IMP.length) renderImport();
 }
 
@@ -380,6 +380,9 @@ const REV_COLS = {
 // Wypłaty z bankomatu też: wydatki z gotówki wpisujemy ręcznie, więc wypłata policzyłaby je drugi raz.
 const REV_SKIP = /transfer|topup|top-up|exchange|przelew|doładowanie|wymiana|\batm\b|cash withdrawal|wypłata|bankomat/i;
 const REV_BAD_STATE = /revert|declin|fail|cofni|odrzuc|anulow/i;
+// Transakcje w toku: kwota w PLN przy płatności w EUR może się jeszcze zmienić, a wtedy
+// przy kolejnym imporcie wpadłyby drugi raz (inny 'src'). Domyślnie odznaczone — wejdą, gdy się zaksięgują.
+const REV_PENDING = /pending|oczek|w toku/i;
 // Zgadywanie kategorii po nazwie sprzedawcy; i tak da się poprawić przed importem.
 const CAT_GUESS = [
   ['Paliwo',           /orlen|shell|\bbp\b|omv|\bmol\b|lukoil|circle ?k|\beko\b|avin|aegean|revoil|elin|petrol|benzin|nis |makpetrol|\bina\b|tankstel|fuel|gas station|stacja/i],
@@ -436,8 +439,9 @@ $('imp-file').addEventListener('change',async e=>{
       const amount=Math.round((-raw+fee)*100)/100;
       const src='rev|'+String(r[col.date]).trim()+'|'+raw+'|'+cur+'|'+desc;
       const dup=known.has(src), okCur=CURS.includes(cur);
-      IMP.push({date,name:desc||type||'Revolut',amount,cur,cat:guessCat(desc),src,dup,okCur,
-                on:!dup&&okCur&&!REV_SKIP.test(type)&&!REV_SKIP.test(desc),type});
+      const pend=REV_PENDING.test(state);
+      IMP.push({date,name:desc||type||'Revolut',amount,cur,cat:guessCat(desc),src,dup,okCur,pend,
+                on:!dup&&okCur&&!pend&&!REV_SKIP.test(type)&&!REV_SKIP.test(desc),type});
     });
     if(!IMP.length) throw new Error('W pliku nie ma żadnych obciążeń.');
     IMP.sort((a,b)=>a.date.localeCompare(b.date));
@@ -452,7 +456,7 @@ function impVisible(){ const from=$('imp-from').value; return IMP.filter(x=>!fro
 function renderImport(){
   const vis=impVisible();
   $('imp-list').innerHTML=vis.map(x=>{
-    const i=IMP.indexOf(x), note=x.dup?' <small>(już jest)</small>':!x.okCur?' <small>(waluta spoza arkusza)</small>':'';
+    const i=IMP.indexOf(x), note=x.dup?' <small>(już jest)</small>':!x.okCur?' <small>(waluta spoza arkusza)</small>':x.pend?' <small>(w toku — zaimportuj po zaksięgowaniu)</small>':'';
     return '<tr class="'+(x.dup?'dup':x.on?'':'off')+'" data-i="'+i+'">'+
       '<td><input type="checkbox" data-k="on"'+(x.on?' checked':'')+(x.dup||!x.okCur?' disabled':'')+'></td>'+
       '<td>'+esc(x.date.slice(5).split('-').reverse().join('.'))+'</td>'+
