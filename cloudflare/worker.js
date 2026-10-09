@@ -10,6 +10,8 @@ export default {
     const url = new URL(req.url);
     const headers = new Headers(req.headers);
     headers.delete('host');
+    // Podpis dla .htaccess: zapytania z workera NIE są przekierowywane z powrotem na workera
+    headers.set('X-Via-Worker', '1');
     const init = { method: req.method, headers, redirect: 'manual' };
     if (req.method !== 'GET' && req.method !== 'HEAD') init.body = req.body;
 
