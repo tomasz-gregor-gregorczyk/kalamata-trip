@@ -172,7 +172,8 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 5 958 km × 10 l × 9,20 zł,
 // opłaty 855 zł × 2, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 115 zł, MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Kalamata 18 × 25 €, kurs 4,40)
-// + szacunek z pierwszych dni: konsumpcja 4 500 zł, internet 229 zł (zamknięty), inne 200 zł.
+// + szacunek z pierwszych dni: konsumpcja 4 500 zł, internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
+// „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
   ['Paliwo',           5481],
@@ -181,8 +182,10 @@ const CATS = [
   ['Konsumpcja',       4500],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
-  ['Inne',              200],
+  ['Inne',              200],   // zapas na coś ekstra w trakcie wyjazdu
+  ['Poza wyjazdem',    null],   // np. subskrypcja podpięta pod kartę — widać ją, ale nie wlicza się do sum
 ];
+const OUT_CAT = 'Poza wyjazdem';
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // Prognoza dla kategorii bez stałej ceny: średnia na dzień od startu × cały wyjazd.
 // Zakupy idą „górkami” (zapas na kilka dni), więc liczymy po dniach kalendarzowych,
@@ -263,7 +266,7 @@ async function addItem(){
 // ---- podsumowanie ----
 function renderSummary(){
   const by={}; let total=0;
-  ITEMS.forEach(it=>{ const v=pln(it); total+=v; const c=CAT_NAMES.includes(it.cat)?it.cat:'Inne'; by[c]=(by[c]||0)+v; });
+  ITEMS.forEach(it=>{ const v=pln(it); if(it.cat!==OUT_CAT) total+=v; const c=CAT_NAMES.includes(it.cat)?it.cat:'Inne'; by[c]=(by[c]||0)+v; });
   $('sum').textContent=zl(total);
   $('sumplan').textContent='plan całego wyjazdu: '+zl(PLAN_TOTAL);
   const dayMs=864e5, t0=Date.parse(TRIP_FROM+'T12:00'), t1=Date.parse(TRIP_TO+'T12:00');
@@ -271,7 +274,7 @@ function renderSummary(){
   const passed=Math.max(1,Math.min(tripDays,Math.round((Date.parse(today()+'T12:00')-t0)/dayMs)+1));
   $('cats').innerHTML=CATS.filter(([c,p])=>p||by[c]).map(([c,p])=>{
     const v=by[c]||0, pct=p?Math.min(100,v/p*100):0;
-    return '<div class="cat"><span>'+esc(c)+'</span><span class="v">'+zl(v)+
+    return '<div class="cat"'+(c===OUT_CAT?' style="opacity:.55"':'')+'><span>'+esc(c)+(c===OUT_CAT?' <small>(nie wlicza się)</small>':'')+'</span><span class="v">'+zl(v)+
       (p?' <small>/ '+zl(p)+'</small>':'')+'</span>'+
       (p?'<div class="bar"><i class="'+(v>p?'over':'')+'" style="width:'+pct+'%"></i></div>':'')+
       (FORECAST.includes(c)&&v&&passed<tripDays
@@ -290,7 +293,7 @@ function render(){
   sorted.forEach(it=>{
     if(it.date!==lastDay){
       lastDay=it.date;
-      const dayTotal=sorted.filter(x=>x.date===it.date).reduce((s,x)=>s+pln(x),0);
+      const dayTotal=sorted.filter(x=>x.date===it.date&&x.cat!==OUT_CAT).reduce((s,x)=>s+pln(x),0);
       const label=new Date(it.date+'T12:00').toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'numeric'});
       html+='<tr class="day"><td colspan="7">'+esc(label)+'<span><b>'+zl(dayTotal)+'</b>'+
         '<button type="button" data-clearday="'+esc(it.date)+'" title="Usuń wszystkie wydatki z tego dnia">wyczyść dzień</button></span></td></tr>';
