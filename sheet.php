@@ -179,7 +179,6 @@ const CATS = [
   ['Opłaty i winiety', 1710],
   ['Noclegi',          3281],
   ['Jedzenie',         4500],
-  ['Zakupy',           null],
   ['Atrakcje',         null],
   ['Internet',          229],
   ['Inne',              200],
@@ -189,7 +188,7 @@ const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // Zakupy idą „górkami” (zapas na kilka dni), więc liczymy po dniach kalendarzowych,
 // a nie po dniach z wydatkami — dni „na zapasach” obniżają średnią, jak w rzeczywistości.
 const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
-const FORECAST = ['Jedzenie','Zakupy'];
+const FORECAST = ['Jedzenie'];   // jedzenie = też zakupy spożywcze i drobne, bez osobnej kategorii
 
 let TOKEN='', ITEMS=[], RATES={PLN:1}, BACKUP=0;
 const $=id=>document.getElementById(id);
