@@ -170,7 +170,7 @@
 <script>
 const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 5 958 km × 10 l × 9,20 zł,
-// opłaty 855 zł × 2, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 115 zł, MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
+// opłaty 855 zł × 2, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI), MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Stoupa (Camping Kalogria) 18 × 25 €, kurs 4,40)
 // + szacunek z pierwszych dni: konsumpcja 4 500 zł, internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
 // „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
@@ -178,7 +178,7 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 const CATS = [
   ['Paliwo',           5481],
   ['Opłaty i winiety', 1710],
-  ['Noclegi',          3281],
+  ['Noclegi',          3267],
   ['Konsumpcja',       4500],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
