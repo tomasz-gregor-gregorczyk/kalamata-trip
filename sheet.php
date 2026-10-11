@@ -178,6 +178,7 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 const CATS = [
   ['Paliwo',           5540],
   ['Opłaty i winiety', 1710],
+  ['Transport i parkingi', null],   // komunikacja miejska, taxi, parkingi, promy
   ['Noclegi',          3206],
   ['Konsumpcja',       4500],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
@@ -403,7 +404,8 @@ const REV_PENDING = /pending|oczek|w toku/i;
 // Zgadywanie kategorii po nazwie sprzedawcy; i tak da się poprawić przed importem.
 const CAT_GUESS = [
   ['Paliwo',           /orlen|shell|\bbp\b|omv|\bmol\b|lukoil|circle ?k|\beko\b|avin|aegean|revoil|elin|petrol|benzin|nis |makpetrol|\bina\b|tankstel|fuel|gas station|stacja/i],
-  ['Opłaty i winiety', /toll|vinet|winiet|matrica|znamk|e-?vignette|putevi|autoput|autocest|nea odos|egnatia|olympia odos|moreas|attiki|kentriki|aodos|motorway|autostrad|parking|ferry|prom/i],
+  ['Transport i parkingi', /parking|\bpark\b|oasa|stasy|metro|public transport|\bbus\b|ktel|taxi|uber|bolt|freenow|ferry|prom|ticket ?machine/i],
+  ['Opłaty i winiety', /toll|vinet|winiet|matrica|znamk|e-?vignette|putevi|autoput|autocest|nea odos|egnatia|olympia odos|moreas|attiki|kentriki|aodos|motorway|autostrad/i],
   ['Internet',         /e-?sim|airalo|holafly|nomad|ubigi|saily|yesim|roaming|cosmote|vodafone|\bwind\b|nova\b|t-?mobile|orange|\bplay\b|plus ?gsm|starlink|wi-?fi/i],
   ['Noclegi',          /booking|airbnb|hotel|camping|kemping|apartment|apartament|rooms|studios|villa|hostel|guest ?house|pension/i],
   ['Konsumpcja',       /restaur|taverna|tavern|cafe|caf[eé]|coffee|bakery|piekar|pizz|grill|gyros|souvlaki|bistro|bar\b|mcdonald|kfc|burger|lidl|carrefour|sklavenitis|masoutis|\bab\b|kritikos|my market|bazaar|spar|billa|tesco|penny|kaufland|biedronka|żabka|zabka|market|food/i],
