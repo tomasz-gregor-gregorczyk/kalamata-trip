@@ -172,7 +172,7 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 6 098 km × 10 l × 9,20 zł,
 // opłaty: dojazd 976 zł zapłacone + powrót ~740 zł, noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI), MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Aginara 3 × 25 € + Navarino Beach 15 × 29 €, kurs 4,40)
-// + szacunek z pierwszych dni: konsumpcja 4 500 zł, internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
+// + szacunek z pierwszych dni: konsumpcja 4 300 zł (przeliczone 13.10: ~139 zł/dzień), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
 // „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
@@ -180,7 +180,7 @@ const CATS = [
   ['Opłaty i winiety', 1716],
   ['Transport i parkingi', null],   // komunikacja miejska, taxi, parkingi, promy
   ['Noclegi',          3531],
-  ['Konsumpcja',       4500],   // jedzenie, restauracje, zakupy spożywcze i drobne
+  ['Konsumpcja',       4300],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
   ['Inne',              200],   // zapas na coś ekstra w trakcie wyjazdu
