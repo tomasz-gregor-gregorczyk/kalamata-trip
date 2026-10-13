@@ -226,7 +226,7 @@
         <div><span class="dot" style="background:var(--work);height:10px;width:10px;border-radius:50%"></span> Zdjęcie / wpis z trasy</div>
         <div><span class="dot" style="background:#e2e8f0;height:0;border-top:3px dotted #e2e8f0;width:14px"></span> Przebyta trasa (zameldowania)</div>
         <div style="margin-top:6px"><a href="#" onclick="fitAll();return false;" style="color:var(--accent)">🗺️ pokaż całą trasę</a></div>
-        <div><span class="dot" style="background:var(--green)"></span> Przeskok Chalkidiki → Kamena Vourla → Ateny → Glyfa (10–11.10)</div>
+        <div><span class="dot" style="background:var(--green)"></span> Przeskok Chalkidiki → Kamena Vourla → Ateny → Glyfa (10–11.10) → Gialova (14.10)</div>
       </div>
     </div>
   </div>
@@ -264,7 +264,7 @@
     <div class="section-title leg-out">▼ Dojazd — pt–nd (2–4.10) · Woźniki → Belgrad → Chalkidiki</div>
     <div id="list-out"></div>
 
-    <div class="section-title" style="color:var(--green)">■ Pobyt / workation — Chalkidiki, przeskok, Glyfa</div>
+    <div class="section-title" style="color:var(--green)">■ Pobyt / workation — Chalkidiki, przeskok, Glyfa, Gialova</div>
     <div id="list-stay"></div>
 
     <div class="section-title leg-ret">▲ Powrót — czw–nd (29.10–1.11) · Platamonas, Camp Dunav, MOP Woźniki</div>
@@ -281,7 +281,7 @@
       <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>4 · sb 10.10 Stavros→Kamena Vourla</span><b>~24°/16°</b></div>
       <div class="row"><span>5 · nd 11.10 →GLYFA 🏖️</span><b>~24°/16°</b></div>
       <h3 style="margin:14px 0 6px">Powrót (29.10–1.11) — bez Pindos</h3>
-      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>6 · czw 29.10 Glyfa→Platamonas</span><b>~21°/12°</b></div>
+      <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>6 · czw 29.10 Gialova→Platamonas</span><b>~21°/12°</b></div>
       <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>7 · pt 30.10 →Belgrad (Camp Dunav)</span><b>~14°/5°</b></div>
       <div class="row" style="border-bottom:1px solid var(--border);padding-bottom:6px"><span>8 · sb 31.10 →MOP Woźniki (noc w busie)</span><b>~10°/2°</b></div>
       <div class="row"><span>9 · nd 1.11 →GDYNIA 🏠</span><b>~10°/4°</b></div>
@@ -291,8 +291,8 @@
     <div class="section-title">Kalkulator kosztów (obie strony)</div>
     <div class="calc">
       <h3>Paliwo i opłaty — Vivaro L2H2 (kat. 2)</h3>
-      <div class="row"><label>Dojazd + przeskok — km (suma z rozpiski)</label><input id="c-km" type="number" value="3185"></div>
-      <div class="row"><label>Powrót — km (suma z rozpiski)</label><input id="c-km-ret" type="number" value="2656"></div>
+      <div class="row"><label>Dojazd + przeskok — km (suma z rozpiski)</label><input id="c-km" type="number" value="3330"></div>
+      <div class="row"><label>Powrót — km (suma z rozpiski)</label><input id="c-km-ret" type="number" value="2768"></div>
       <div class="row"><label>Spalanie (l/100 km)</label><input id="c-cons" type="number" value="10" step="0.5"></div>
       <div class="row"><label>Cena paliwa ON (zł/l, śr. ważona)</label><input id="c-price" type="number" value="9.20" step="0.05"></div>
       <div class="row"><label>Opłaty+winiety — dojazd i przeskok (zł, zapłacone wg wyciągu)</label><input id="c-toll" type="number" value="976"></div>
@@ -306,7 +306,7 @@
       <div class="row"><label>Nocy pod dachem (nd 4.10 – wt 6.10)</label><input id="c-chal-hot-nights" type="number" value="3"></div>
       <div class="row"><label>Kemping Stavros — za dobę (EUR)</label><input id="c-chal-eur" type="number" value="36" step="1"></div>
       <div class="row"><label>Nocy na kempingu (śr 7.10 – sb 10.10)</label><input id="c-chal-nights" type="number" value="3"></div>
-      <h3 style="margin:14px 0 6px">Nocleg na Peloponezie — Camping Aginara Beach (25 €/dobę, długość pobytu otwarta)</h3>
+      <h3 style="margin:14px 0 6px">Nocleg na Peloponezie — Aginara Beach 3 noce (25 €) + Navarino Beach od 14.10 (cena do potwierdzenia, przyjęte 25 €)</h3>
       <div class="row"><label>Średnio za dobę (EUR)</label><input id="c-kal-eur" type="number" value="25" step="0.5"></div>
       <div class="row"><label>Nocy na Peloponezie (11–29.10)</label><input id="c-kal-nights" type="number" value="18"></div>
       <div class="row"><label>Konsumpcja (jedzenie i zakupy) — cały wyjazd (zł)</label><input id="c-food" type="number" value="4500" step="100"></div>
@@ -319,12 +319,12 @@
       <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
       <div class="row"><span>Christos House, Neos Marmaras (3 noce)</span><span id="r-chal-hot">—</span></div>
       <div class="row"><span>Chalkidiki — kemping Stavros</span><span id="r-chal">—</span></div>
-      <div class="row"><span>Aginara Beach (18 nocy)</span><span id="r-kal">—</span></div>
+      <div class="row"><span>Aginara + Navarino Beach (18 nocy)</span><span id="r-kal">—</span></div>
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
       <div class="row"><span>Konsumpcja + internet + inne</span><span id="r-living">—</span></div>
       <div class="row total"><span>RAZEM cały wyjazd (szacunek)</span><b id="r-all">—</b></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0"><b>Konsumpcja (jedzenie i zakupy) — szacunek z wydatków (9.10):</b> dojazd ~290 zł za 3 dni (w tym jedna kolacja ~200 zł), duże zakupy 5–6.10 ~630 zł starczyły na 5 dni → <b>~125 zł/dzień na miejscu</b>. Do tego 17 dni w Kalamacie × ~130 zł + 6 dni w drodze × ~100 zł + restauracja raz w tygodniu → ~3 700–4 300 zł; w kalkulatorze <b>4 500 zł z zapasem</b> — jak wyjdzie mniej, tym lepiej. Wydatki idą „górkami” (zakupy co kilka dni), więc patrz na sumę tygodniową, nie dzienną. Internet zamknięty: 2 greckie karty SIM (185 zł) + Orange Flex + 1Global, starczy do końca wyjazdu.</p>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Agia Kiriaki (kemping Stavros)→Kamena Vourla 442 km + Kamena Vourla→Ateny→Patras→Glyfa (Camping Aginara Beach) 483 km = 3 185 km, powrót 458 + 730 + 973 + 495 = 2 656 km przez most Rio–Antirrio, Platamonas, Belgrad i MOP Woźniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i obwodnicę Aten (nocleg sb 10.10 w Kamena Vourla), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noce 1 (pt 2.10) i 8 (sb 31.10) są darmowe</b> — śpicie w busie na MOP Woźniki (Zachód w dojeździe, Wschód w powrocie), a <b>w Platamonasie (czw 29.10) śpicie na dziko w busie</b>, stąd tylko 3 płatne noce w drodze: Camp Dunav ×2 po <b>130 zł</b> i <b>Camping Venezuela w Kamena Vourla</b> (<b>23 € z kartą ACSI</b> ≈ 101 zł). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>36 €/dobę</b>. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 18 nocy (11–29.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Agia Kiriaki (kemping Stavros)→Kamena Vourla 442 km + Kamena Vourla→Ateny→Patras→Glyfa (Camping Aginara Beach) 483 km + Glyfa→Gialova (Navarino Beach) 145 km = 3 330 km, powrót 570 + 730 + 973 + 495 = 2 768 km zachodnim wybrzeżem przez Pyrgos, most Rio–Antirrio, Platamonas, Belgrad i MOP Woźniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i obwodnicę Aten (nocleg sb 10.10 w Kamena Vourla), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noce 1 (pt 2.10) i 8 (sb 31.10) są darmowe</b> — śpicie w busie na MOP Woźniki (Zachód w dojeździe, Wschód w powrocie), a <b>w Platamonasie (czw 29.10) śpicie na dziko w busie</b>, stąd tylko 3 płatne noce w drodze: Camp Dunav ×2 po <b>130 zł</b> i <b>Camping Venezuela w Kamena Vourla</b> (<b>23 € z kartą ACSI</b> ≈ 101 zł). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>36 €/dobę</b>. Nocleg w Kalamacie: <b>Camping Fare</b> (koniec ul. Navarinou, przy plaży) — cennik kamper 6 € + 2 osoby 12 € + prąd 4 € = ~22 €/dobę; w kalkulatorze 25 €/dobę z zapasem × 18 nocy (11–29.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
@@ -338,7 +338,7 @@
       <b>EES:</b> wjazd do UE (Evzoni w dojeździe, Röszke w powrocie) — biometria, paszporty gotowe.<br><br>
       <b>⛰️ Wysokości — BEZ PINDOS:</b> cała trasa idzie nizinami: dojazd korytarzem E-75 do Salonik, potem A1 do Aten i A7 na Peloponez. Pindos (Egnatia, ~1100 m) w ogóle nie jest na trasie, a od kiedy jedziemy przez Ostrawę i Brno, odpadły też Beskidy na granicy PL/SK — najwyżej jest Brama Morawska (~300 m). Dzięki temu powrót nie ma ryzyka śniegu/mgły na wysokości.<br><br>
       <b>🚐 Vivaro L2H2 (kamper ≤3,5 t):</b> wysoki bus → kat. 2 w Serbii i Macedonii, a w Grecji <b>kat. 3</b> (pow. 2,20 m — ~2,5–3× stawka osobówki; samo Saloniki→Ateny ~90 €). Grecja wg ΔΙΟΔΙΑ (kat. 3, cała autostrada): Chalkidiki→Kamena Vourla <b>~40 €</b> + Kamena Vourla→Kalamata <b>~73 €</b> = ~113 € przy liczeniu odcinkami, a cała trasa Neos Marmaras→Kalamata w jednym przebiegu <b>~102 € ≈ 450 zł na stronę</b> (Diodia wybiera wtedy nieco inną drogę; z objazdami „smart” na odcinku do Kalamaty ~62 € zamiast 73 €). Reszta wg faktycznych wydatków z dojazdu: winiety HU 127 + CZ 57 + SK 50 = 234 zł, Serbia 125 zł (St. Pazova + Putevi Srbije), Macedonia 30 zł (5 bramek), Evzoni→Chalkidiki ~16 zł → <b>~390 zł</b> poza Grecją. <b>Faktycznie (wyciąg do 11.10): dojazd + przeskok 976 zł</b> — winiety 234 zł, Serbia 125 zł, Macedonia 30 zł, Evzoni 13 zł, Chalkidiki→Kamena Vourla 239 zł, Kamena Vourla→Ateny→Patras→Glyfa 335 zł (Grecja wyszła ~1,5× drożej niż szacunek z ΔΙΟΔΙΑ). <b>Powrót — szacunek 740 zł</b>: znów winiety 234 zł + Serbia i Macedonia ~155 zł + Grecja ~350 zł (A5 do Patras ~40 zł, most Rio–Antirrio ~90 zł, A1 Lamia→Platamonas ~130 zł, Platamonas→Evzoni ~90 zł — stawki z wyciągu z 10.10). Wariant oszczędny (stara droga do Patras, prom Rio–Antirrio, stara EO1 Lamia–Larisa wybrzeżem) to ~150–180 zł mniej. Bramki da się częściowo objechać starą EO1 (aplikacja ΔΙΟΔΙΑ). Winiety CZ/SK/HU po masie ≤3,5 t — bez zmian. Spalanie realnie ~10 l/100. Możesz spać na kempingach/aire zamiast hoteli — taniej.<br><br>
-      <b>Długość pobytu — dwie bazy:</b> <b>Chalkidiki 6 nocy (4–10.10)</b> + <b>Peloponez: Glyfa (Aginara Beach) od 11.10 — w planie do 29.10 (18 nocy), długość jeszcze otwarta</b>. Dojazd skraca się do 3 dni (pt–nd), bo Chalkidiki leży tuż za Salonikami — do pracy w poniedziałek jesteście na miejscu w niedzielę wieczorem, bez brania urlopu. Cały pierwszy tydzień pracujesz z Chalkidiki (Grecja = UE, net działa), a przeskok na Peloponez (~925 km, z noclegiem w Kamena Vourla) robicie w weekend 10–11.10, więc też nie kosztuje dnia wolnego. Powrót: 4 dni (czw 29.10 po pracy – nd 1.11), pt 30.10 urlop, bez pracy w trasie. Łącznie ~5 840 km.<br><br>
+      <b>Długość pobytu — dwie bazy:</b> <b>Chalkidiki 6 nocy (4–10.10)</b> + <b>Peloponez 18 nocy (11–29.10): Glyfa (Aginara Beach) 3 + Gialova (Navarino Beach) 15</b>. Dojazd skraca się do 3 dni (pt–nd), bo Chalkidiki leży tuż za Salonikami — do pracy w poniedziałek jesteście na miejscu w niedzielę wieczorem, bez brania urlopu. Cały pierwszy tydzień pracujesz z Chalkidiki (Grecja = UE, net działa), a przeskok na Peloponez (~925 km, z noclegiem w Kamena Vourla) robicie w weekend 10–11.10, więc też nie kosztuje dnia wolnego. Powrót: 4 dni (czw 29.10 po pracy – nd 1.11), pt 30.10 urlop, bez pracy w trasie. Łącznie ~6 100 km.<br><br>
       <b>⚠️ Chalkidiki — nocleg w dwóch krokach</b> (finalnie: Christos House 4–7.10, kemping Stavros 7–10.10): pierwszą noc (nd 4.10) śpicie <b>pod dachem</b>, w pokoju zarezerwowanym z góry jeszcze z Polski — w Serbii i Macedonii masz roaming, więc w drodze niczego nie dobookujesz, a przyjeżdżacie po ~11 h jazdy. Pokój jest wzięty <b>na dwie noce (nd + pn), ze zwrotem</b>, bo większość kempingów w Chalkidiki zamyka sezon między końcem września a połową października — kempingu szukacie w poniedziałek 13:00–17:00, a wprowadzacie się we wtorek rano. Gdyby w poniedziałek nic nie było otwarte, macie dach i cały wtorek na plan B (całoroczne obiekty bliżej Nea Moudania). Koszt tej polisy to jedna noc, którą i tak da się odwołać. Każdy nocleg — pokój czy kemping — musi mieć <b>parking naziemny</b>: bus 2,5 m nie wjedzie do podziemnego (limit ~2 m).<br><br>
       <b>💡 Pomysł na później (NIE w planie): Ateny w powrocie.</b> Z Aten do Belgradu jest ~1 090 km + 2 granice, więc Ateny muszą wypaść przed piątkiem. <b>Wariant A (bez urlopu):</b> śr 28.10 po pracy Kalamata→Ateny (~250 km, ~3 h 15, wieczór Plaka/Akropol podświetlony), czw 29.10 praca z apartamentu, zwiedzanie od 15:00, wieczorem Ateny→Platamonas (~390 km, ~4 h 30, przyjazd ~23:30) — na styk. <b>Wariant B (+1 dzień urlopu, np. pn 2.11):</b> czw po pracy Kalamata→Ateny, pt cały dzień w Atenach (Akropol na otwarcie 8:00), w południe →Platamonas, sb →Belgrad, nd →MOP Woźniki, pn do domu. <b>Nocleg:</b> Kifisia — koniec linii 1 metra (zielonej), przy A1, ~40–45 min metrem do Monastiraki bez przesiadki; apartament z <b>parkingiem naziemnym</b>. <b>Pies w metrze</b> (wg przewodników, nie oficjalnie STASY): mały do ~10 kg w transporterze; większy poza szczytem, na smyczy i w kagańcu. Na Akropol psa raczej nie wpuszczą — ktoś zostaje z nim na promenadzie pod wzgórzem.
     </div>
@@ -361,6 +361,7 @@ const CITIES = {
   platamonas:  {name:"Platamonas — wybrzeże pod Olimpem", ll:[40.0050,22.5970]},
   brno:        {name:"Brno", ll:[49.1951,16.6068]},
   aginara:     {name:"Glyfa — Camping Aginara Beach", ll:[37.8372,21.1288]},
+  navarino:    {name:"Gialova — Camping Navarino Beach", ll:[36.9468,21.7074]},
 };
 
 const BORDERS = [
@@ -383,7 +384,8 @@ BORDERS.forEach(b=>CITIES[b.key]={name:b.name, ll:b.ll});
 // Wygenerowana raz i wklejona na stale: bez klucza API, bez limitow, dziala offline.
 // Przeskok do Kalamaty wymuszony przez A1 i obwodnice Aten (Attiki Odos) -
 // router sam wybieral krotsza droge przez Pindos i most Rio-Antirrio, ktorej plan unika.
-// Powrot startuje z Glyfy (Aginara Beach), wiec tam most Rio-Antirrio jest najkrotsza droga na A1 (OSRM, 11.10.2026).
+// Powrot startuje z Gialovy (Navarino Beach) zachodnim wybrzezem przez Pyrgos i most Rio-Antirrio (wymuszone punktami, OSRM 13.10.2026) -
+// router sam wybieral A7/Ateny (~663 km, wiecej bramek).
 const GEO = {
   out: [
     [54.4654,18.4851],[54.4657,18.4825],[54.4669,18.482],[54.4688,18.4813],[54.4697,18.4843],[54.4711,18.4847],
@@ -551,44 +553,62 @@ const GEO = {
     [38.1279,21.553],[38.1213,21.5353],[38.1113,21.5223],[38.0917,21.4638],[38.0724,21.4402],[38.0352,21.3817],
     [38.0184,21.3738],[38.003,21.3563],[37.9219,21.3346],[37.8645,21.3368],[37.8544,21.2558],[37.858,21.2274],
     [37.8639,21.2165],[37.8635,21.1969],[37.8685,21.1757],[37.8651,21.155],[37.8499,21.1528],[37.8412,21.144],
-    [37.8417,21.1316],[37.8372,21.1287]
+    [37.8417,21.1316],[37.8372,21.1287],
+    [37.8417,21.1316],[37.8412,21.144],[37.8499,21.1528],[37.8651,21.155],[37.8685,21.1757],[37.8635,21.1969],
+    [37.8639,21.2165],[37.858,21.2274],[37.8552,21.2522],[37.8494,21.2547],[37.8282,21.2859],[37.8178,21.2912],
+    [37.8068,21.3039],[37.7563,21.3314],[37.7367,21.3597],[37.7256,21.3635],[37.7188,21.37],[37.7141,21.3794],
+    [37.6906,21.404],[37.6652,21.4573],[37.6353,21.4809],[37.594,21.5472],[37.5505,21.5954],[37.5393,21.5969],
+    [37.5362,21.5935],[37.5226,21.5922],[37.5142,21.5944],[37.4928,21.6173],[37.4861,21.6317],[37.4856,21.6453],
+    [37.4819,21.6494],[37.458,21.6593],[37.4379,21.6617],[37.4034,21.6767],[37.392,21.6923],[37.3773,21.6938],
+    [37.3731,21.6912],[37.3354,21.7031],[37.2856,21.7022],[37.2691,21.6941],[37.2463,21.6675],[37.2318,21.6705],
+    [37.2192,21.6624],[37.208,21.6357],[37.2094,21.6325],[37.2019,21.6237],[37.2087,21.6117],[37.192,21.5928],
+    [37.1653,21.582],[37.1604,21.5837],[37.1597,21.5884],[37.1536,21.5876],[37.1534,21.5906],[37.133,21.593],
+    [37.1215,21.5887],[37.1015,21.5962],[37.0971,21.5953],[37.0969,21.6007],[37.0851,21.6099],[37.0765,21.623],
+    [37.0616,21.6281],[37.0419,21.6252],[37.0237,21.6349],[37.01,21.6572],[36.9845,21.6829],[36.9682,21.6921],
+    [36.9597,21.7012],[36.9508,21.7019],[36.9469,21.7075]
   ],
   ret: [
-    [37.8372,21.1287],[37.8417,21.1316],[37.8412,21.144],[37.8499,21.1528],[37.8651,21.155],[37.8685,21.1757],
-    [37.8635,21.1969],[37.8639,21.2165],[37.858,21.2274],[37.8544,21.2558],[37.8632,21.3161],[37.8624,21.3389],
-    [37.9219,21.3347],[38.0034,21.3566],[38.0184,21.374],[38.0355,21.3822],[38.0723,21.4403],[38.0921,21.4647],
-    [38.1112,21.5224],[38.1212,21.5354],[38.1278,21.5531],[38.1426,21.5676],[38.1421,21.6052],[38.1601,21.656],
-    [38.1587,21.6697],[38.1624,21.6769],[38.19,21.6984],[38.1992,21.7665],[38.2115,21.7774],[38.2389,21.7747],
-    [38.2771,21.7831],[38.2879,21.7765],[38.2977,21.7932],[38.3081,21.7801],[38.3402,21.7625],[38.3444,21.7698],
-    [38.3745,21.7826],[38.3856,21.7959],[38.391,21.7968],[38.3959,21.7925],[38.3999,21.7988],[38.4037,21.8072],
-    [38.3991,21.8233],[38.4007,21.8345],[38.4137,21.8429],[38.4113,21.8528],[38.4057,21.8579],[38.4107,21.8929],
-    [38.4035,21.917],[38.4084,21.946],[38.4057,21.9828],[38.3936,22.0287],[38.3955,22.0607],[38.3818,22.0919],
-    [38.3711,22.0976],[38.369,22.1276],[38.3601,22.1282],[38.3588,22.1393],[38.349,22.1422],[38.348,22.1374],
-    [38.3444,22.1439],[38.3435,22.1506],[38.3509,22.1531],[38.3506,22.1587],[38.3376,22.1733],[38.3314,22.1906],
-    [38.3365,22.1894],[38.3659,22.2276],[38.3703,22.2271],[38.375,22.2464],[38.3768,22.2407],[38.3811,22.2487],
-    [38.3815,22.2402],[38.3924,22.2592],[38.3904,22.2693],[38.3991,22.2635],[38.4004,22.2519],[38.4054,22.2508],
-    [38.4002,22.274],[38.4055,22.2871],[38.4046,22.2951],[38.4147,22.2929],[38.4218,22.3073],[38.426,22.3044],
-    [38.4305,22.3073],[38.4355,22.3012],[38.4416,22.3043],[38.4484,22.299],[38.4514,22.3213],[38.4728,22.3313],
-    [38.4828,22.3496],[38.48,22.3558],[38.4826,22.3659],[38.5034,22.3679],[38.5099,22.3799],[38.5109,22.3722],
-    [38.5093,22.3833],[38.5156,22.3771],[38.5259,22.3778],[38.5297,22.382],[38.531,22.4085],[38.5359,22.4209],
-    [38.5443,22.4078],[38.5514,22.4068],[38.5506,22.4168],[38.5631,22.4012],[38.5596,22.406],[38.5699,22.3967],
-    [38.5864,22.3904],[38.6049,22.3729],[38.6096,22.3778],[38.6229,22.3715],[38.6348,22.3764],[38.6443,22.3963],
-    [38.6401,22.3959],[38.6465,22.4019],[38.6419,22.4028],[38.6423,22.4097],[38.651,22.4188],[38.6614,22.4267],
-    [38.6829,22.421],[38.6882,22.4381],[38.7152,22.4632],[38.7221,22.4629],[38.7225,22.4684],[38.7414,22.4473],
-    [38.7498,22.4574],[38.7597,22.446],[38.7784,22.4562],[38.7733,22.4662],[38.7758,22.4751],[38.785,22.4835],
-    [38.785,22.4902],[38.788,22.4941],[38.7914,22.4926],[38.7882,22.4834],[38.7925,22.4738],[38.7932,22.483],
-    [38.801,22.4901],[38.7983,22.5121],[38.8049,22.5006],[38.8667,22.4596],[38.8757,22.4619],[38.8913,22.4785],
-    [38.9041,22.5203],[38.9036,22.5713],[38.9157,22.5937],[38.9239,22.6353],[38.905,22.6786],[38.8988,22.7294],
-    [38.8846,22.7683],[38.8932,22.8218],[38.8909,22.8303],[38.895,22.8364],[38.9071,22.8339],[38.9133,22.8373],
-    [38.9383,22.8705],[38.9608,22.8821],[38.965,22.889],[38.9852,22.8892],[38.9929,22.8935],[39.0018,22.9118],
-    [39.0185,22.9159],[39.0279,22.9113],[39.043,22.8946],[39.0703,22.8863],[39.1332,22.8399],[39.1788,22.782],
-    [39.2377,22.734],[39.2696,22.7379],[39.2801,22.7454],[39.2955,22.7444],[39.3124,22.75],[39.3181,22.7548],
-    [39.3221,22.7668],[39.3385,22.7837],[39.345,22.782],[39.3506,22.7727],[39.361,22.7739],[39.3953,22.7636],
-    [39.4146,22.712],[39.4673,22.6655],[39.4916,22.6331],[39.496,22.5961],[39.5298,22.5467],[39.5501,22.4958],
-    [39.5775,22.4827],[39.6175,22.5039],[39.642,22.5093],[39.6591,22.5056],[39.7003,22.487],[39.7522,22.4751],
-    [39.8153,22.5084],[39.8457,22.5152],[39.8567,22.5361],[39.8688,22.5488],[39.8729,22.5805],[39.8855,22.6065],
-    [39.9429,22.6507],[39.9539,22.6457],[39.963,22.6469],[39.9737,22.6381],[39.9867,22.6103],[40.0022,22.6024],
-    [40.0042,22.5967],[40.0567,22.5574],
+    [36.9469,21.7075],[36.9508,21.7019],[36.9597,21.7012],[36.9845,21.6829],[37.01,21.6572],[37.0237,21.6349],
+    [37.0419,21.6252],[37.0616,21.6281],[37.0765,21.623],[37.0969,21.6007],[37.0971,21.5953],[37.1215,21.5887],
+    [37.133,21.593],[37.1534,21.5906],[37.1653,21.582],[37.192,21.5928],[37.2087,21.6117],[37.2019,21.6237],
+    [37.2094,21.6325],[37.2191,21.6623],[37.2318,21.6705],[37.2463,21.6675],[37.2745,21.6984],[37.2876,21.7025],
+    [37.3343,21.7032],[37.3731,21.6912],[37.392,21.6923],[37.4034,21.6767],[37.4379,21.6617],[37.458,21.6593],
+    [37.4828,21.6487],[37.4928,21.6173],[37.5147,21.594],[37.5362,21.5935],[37.5393,21.5969],[37.5558,21.5917],
+    [37.5578,21.5845],[37.594,21.5472],[37.6353,21.4809],[37.6652,21.4573],[37.6698,21.4402],[37.6723,21.4413],
+    [37.6906,21.404],[37.7065,21.3883],[37.7116,21.394],[37.7368,21.3617],[37.7488,21.3573],[37.7736,21.3707],
+    [37.7998,21.3751],[37.8253,21.3672],[37.8395,21.3384],[37.9175,21.3342],[38.0034,21.3566],[38.0184,21.374],
+    [38.0355,21.3822],[38.0723,21.4403],[38.0911,21.463],[38.1112,21.5224],[38.1212,21.5354],[38.1278,21.5531],
+    [38.142,21.5663],[38.1421,21.6052],[38.1601,21.656],[38.1587,21.6697],[38.1624,21.6769],[38.19,21.6984],
+    [38.1992,21.7665],[38.2115,21.7774],[38.2389,21.7747],[38.2771,21.7831],[38.2879,21.7765],[38.2977,21.7932],
+    [38.3081,21.7801],[38.3402,21.7625],[38.3299,21.7654],[38.3423,21.767],[38.3745,21.7826],[38.3864,21.7963],
+    [38.3959,21.7925],[38.4035,21.8065],[38.3991,21.8233],[38.4007,21.8345],[38.4137,21.8429],[38.4113,21.8528],
+    [38.4057,21.8579],[38.4107,21.8929],[38.4035,21.917],[38.4084,21.946],[38.4057,21.9828],[38.3936,22.0287],
+    [38.3955,22.0607],[38.3818,22.0919],[38.3711,22.0976],[38.369,22.1276],[38.3601,22.1282],[38.3588,22.1393],
+    [38.349,22.1422],[38.348,22.1374],[38.3444,22.1439],[38.3435,22.1506],[38.3509,22.1531],[38.3506,22.1587],
+    [38.3376,22.1733],[38.3314,22.1906],[38.3365,22.1894],[38.3659,22.2276],[38.3703,22.2271],[38.375,22.2464],
+    [38.3768,22.2407],[38.3811,22.2487],[38.3815,22.2402],[38.3924,22.2592],[38.3904,22.2693],[38.3991,22.2635],
+    [38.4004,22.2519],[38.4054,22.2508],[38.4002,22.274],[38.405,22.2955],[38.4147,22.2929],[38.4218,22.3073],
+    [38.426,22.3044],[38.4305,22.3073],[38.4355,22.3012],[38.4416,22.3043],[38.4484,22.299],[38.4514,22.3213],
+    [38.4728,22.3313],[38.4828,22.3496],[38.48,22.3558],[38.4826,22.3659],[38.5034,22.3679],[38.5099,22.3799],
+    [38.5109,22.3722],[38.5093,22.3833],[38.5156,22.3771],[38.5259,22.3778],[38.5297,22.382],[38.531,22.4085],
+    [38.5359,22.4209],[38.5443,22.4078],[38.5514,22.4068],[38.5506,22.4168],[38.5631,22.4012],[38.5596,22.406],
+    [38.5699,22.3967],[38.5864,22.3904],[38.6049,22.3729],[38.6096,22.3778],[38.6229,22.3715],[38.6348,22.3764],
+    [38.6443,22.3963],[38.6401,22.3959],[38.6465,22.4019],[38.6419,22.4028],[38.6423,22.4097],[38.651,22.4188],
+    [38.6614,22.4267],[38.6829,22.421],[38.6882,22.4381],[38.7152,22.4632],[38.7221,22.4629],[38.7225,22.4684],
+    [38.7414,22.4473],[38.7498,22.4574],[38.7597,22.446],[38.7784,22.4562],[38.7733,22.4662],[38.7758,22.4751],
+    [38.785,22.4835],[38.785,22.4902],[38.788,22.4941],[38.7914,22.4926],[38.7882,22.4834],[38.7925,22.4738],
+    [38.7932,22.483],[38.801,22.4901],[38.7983,22.5121],[38.8049,22.5006],[38.8667,22.4596],[38.8744,22.461],
+    [38.887,22.4731],[38.895,22.4862],[38.9035,22.5168],[38.9035,22.5708],[38.9157,22.5937],[38.9239,22.6321],
+    [38.905,22.6786],[38.8988,22.7294],[38.8845,22.7689],[38.8932,22.8218],[38.8912,22.8316],[38.8957,22.8366],
+    [38.9071,22.8339],[38.9133,22.8373],[38.9383,22.8705],[38.9608,22.8821],[38.965,22.889],[38.9852,22.8892],
+    [38.9932,22.8937],[39.0012,22.9115],[39.0206,22.9152],[39.0433,22.8944],[39.0701,22.8864],[39.0981,22.8681],
+    [39.1342,22.8389],[39.1788,22.782],[39.2377,22.734],[39.2696,22.7379],[39.2801,22.7454],[39.2955,22.7444],
+    [39.3124,22.75],[39.3181,22.7548],[39.3221,22.7668],[39.3385,22.7837],[39.345,22.782],[39.3506,22.7727],
+    [39.361,22.7739],[39.3953,22.7636],[39.4146,22.712],[39.4673,22.6655],[39.4916,22.6331],[39.496,22.5961],
+    [39.5298,22.5467],[39.5501,22.4958],[39.5775,22.4827],[39.6175,22.5039],[39.642,22.5093],[39.6591,22.5056],
+    [39.7003,22.487],[39.7522,22.4751],[39.8153,22.5084],[39.8457,22.5152],[39.8567,22.5361],[39.8688,22.5488],
+    [39.8729,22.5805],[39.8855,22.6065],[39.9429,22.6507],[39.9539,22.6457],[39.963,22.6469],[39.9737,22.6381],
+    [39.9867,22.6103],[40.0022,22.6024],[40.0042,22.5967],[40.0567,22.5574],
     [40.1092,22.5554],[40.1485,22.5411],[40.1872,22.5509],[40.2578,22.5312],[40.2749,22.5216],[40.2816,22.5244],
     [40.3227,22.5758],[40.3708,22.606],[40.39,22.6049],[40.4117,22.5929],[40.4641,22.5776],[40.4906,22.5649],
     [40.5292,22.5768],[40.5636,22.608],[40.5966,22.6701],[40.6072,22.7298],[40.6505,22.816],[40.6553,22.8902],
@@ -759,8 +779,9 @@ const STOPS = [
   {key:"belgrad",    label:"2", cls:"",      txt:"Nocleg: sb 3.10 (dojazd) · <b>Camp Dunav</b>, Zemun — 1 km od E-75, prąd, wifi, prysznice. Czynny do 1.11. REZERWUJ przed granicą (w Serbii roaming). campdunav.com. <b>W powrocie nocleg drugi raz: pt 30.10</b> — ostatni weekend sezonu, potwierdź termin."},
   {key:"chalkidiki", label:"3", cls:"end",   txt:"<b>1. tydzień workation: 4–10.10 (6 nocy)</b> · <b>Imeri Elia</b> — przysiółek tuż przy <b>Neos Marmaras</b>, od strony Porto Carras, ~20 km na płd. od Nikiti, ~120 km za Salonikami. Grecja = UE, net działa → od pn 5.10 pracujesz normalnie znad morza. Obiekt leży <b>1,9 km od plaży</b> (Porto Carras Main Beach), lekko w głębi, z widokiem na zbocza. Zaplecze pod ręką: <b>Masoutis 1,3 km — 16 min pieszo</b>, tawerny i kawiarnie 3–5 km, kompleks Porto Carras z golfem w promieniu 3 km. W zasięgu popołudnia: Porto Koufo i Toroni (~25–35 min), Kavourotrypes i Vourvourou na wschodnim brzegu (~30–40 min), Kassandra ~1 h 15, Saloniki ~1 h 45. 🛏️ <b>nd 4.10 – wt 6.10 (3 noce): <a href='https://maps.app.goo.gl/Veouai5PZE4GEop19' target='_blank' rel='noopener'>Christos House – Holiday Home</a>, Imeri Elia / Neos Marmaras 630 81 — dwie noce opłacone przez Booking (319 zł), trzecia przedłużona na miejscu za 30 €.</b> ✅ Bezpłatny parking prywatny na terenie, bez rezerwacji. ✅ Darmowe wifi w całym obiekcie. Domek z ogrodem, tarasem, klimatyzacją i grillem. Zameldowanie 15:00–21:00, <b>gospodarz wpuszcza osobiście</b> — napisz mu godzinę przyjazdu. Wymeldowanie do 12:00. 🐕 <b>Pies „on request”, możliwa dopłata</b> — zgłoś przed przyjazdem i miej gotówkę. 🏕️ <b>śr 7.10: przeprowadzka na kemping Stavros</b> — 3 noce (7–10.10), <a href='https://www.google.com/maps/search/?api=1&query=Camping+Stavros+Agia+Kiriaki+Neos+Marmaras' target='_blank' rel='noopener'>Agia Kiriaki Sithonias, 630 81 Neos Marmaras</a>, 36 €/doba. Wyjazd sb 10.10 rano na Kalamatę. (Powrót idzie inną drogą — przez Ateny.)"},
   {key:"kamena",     label:"4", cls:"",      txt:"Nocleg: <b>sb 10.10 (w drodze do Kalamaty)</b> · <b>Camping Venezuela</b>, plaża Agios Serafim, 35009 — ~5 km na płn. od Kamena Vourla, przy starej drodze krajowej Lamia–Ateny (km 185). Koszt <b>23 €/noc z kartą ACSI</b> (karta kupiona 10.10 za 103,99 zł — przyda się też w Stoupie). Tel. +30 2235 041691 / +30 694 651 8368. ✅ Wg park4night czynny do 30.10 (starsze katalogi podają 30.09 — w razie wątpliwości krótki telefon); plan B: nocleg na dziko w busie (park4night), wszystko w środku. W powrocie Ateny przelotowo."},
-  {key:"platamonas", label:"5", cls:"",      txt:"Nocleg: <b>czw 29.10 (powrót)</b> — <b>na dziko w busie, za darmo</b>, nad morzem pod Olimpem (Platamonas / Leptokarya). Po pracy z Glyfy (Aginara Beach), przyjazd ~22:30. Zamiast Larisy, bo Larisa leży w kotlinie: koniec października wg Open-Meteo (10 lat) średnio <b>~12° w nocy zamiast ~9°</b>, najzimniej ~7° zamiast ~4°. Ostatnia noc w Grecji (UE, net działa). Miejsce z park4night blisko zjazdu z A1 — jedna noc w pojeździe, wszystko w środku."},
-  {key:"aginara",    label:"M", cls:"end",   txt:"2. baza workation (nd 11.10 – śr 14.10, 3 noce) · <b>Camping Aginara Beach</b>, Glyfa (Ilia, płn.-zach. Peloponez, gmina Pineios) — mały kemping tuż przy plaży Glyfa nad Morzem Jońskim, z dala od ruchliwych dróg. <b>25 €/dobę.</b> W pobliżu: zamek Chlemoutsi (~6 km), Kyllini (port, promy na Zakynthos), Olimpia (~50 km), Patras (~70 km). Stąd start powrotu (w planie czw 29.10 po pracy)."},
+  {key:"platamonas", label:"5", cls:"",      txt:"Nocleg: <b>czw 29.10 (powrót)</b> — <b>na dziko w busie, za darmo</b>, nad morzem pod Olimpem (Platamonas / Leptokarya). Po pracy z Gialovy (Navarino Beach), przyjazd ~00:15. Zamiast Larisy, bo Larisa leży w kotlinie: koniec października wg Open-Meteo (10 lat) średnio <b>~12° w nocy zamiast ~9°</b>, najzimniej ~7° zamiast ~4°. Ostatnia noc w Grecji (UE, net działa). Miejsce z park4night blisko zjazdu z A1 — jedna noc w pojeździe, wszystko w środku."},
+  {key:"aginara",    label:"M", cls:"",      txt:"2. baza workation, cz. 1 (nd 11.10 – śr 14.10, 3 noce) · <b>Camping Aginara Beach</b>, Glyfa (Ilia, płn.-zach. Peloponez, gmina Pineios) — mały kemping tuż przy plaży Glyfa nad Morzem Jońskim, z dala od ruchliwych dróg. <b>25 €/dobę.</b> W pobliżu: zamek Chlemoutsi (~6 km), Kyllini (port, promy na Zakynthos), Olimpia (~50 km), Patras (~70 km). W śr 14.10 przeprowadzka na południe, do Gialovy."},
+  {key:"navarino",   label:"M", cls:"end",   txt:"2. baza workation, cz. 2 (od śr 14.10) · <b>Camping Navarino Beach</b>, Gialova (zatoka Navarino koło Pylos) — kamper przy samej piaszczystej plaży z łagodnym wejściem, zatokę osłania wyspa Sfaktiria. Cień pod eukaliptusami, prąd 10 A, do tawern w Gialovie 10 min plażą. Otwarty do 31.10. Tel. +30 2723 022973. Bierzcie miejsce w 1. rzędzie (dalej słychać drogę). W pobliżu: laguna Gialova (ptaki), plaża Voidokilia (~8 km), Pylos (~7 km), Methoni (~20 km). Stąd start powrotu w czw 29.10 po pracy."},
 ];
 
 // ---- rozpiska ----
@@ -798,17 +819,22 @@ const STAY = [
    km:483, temp:"~24°/16°", dep:"~09:00", arr:"~18:15",
    note:"<b>Finalnie: 2 h w Atenach, potem przez Patras do Glyfy (Camping Aginara Beach) — zamiast Stoupy / Kalogrii.</b> Trasa: A1 „Nea Odos” → <b>centrum Aten ~11:15</b> (185 km) → spacer (Thissio, Plaka, Monastiraki; metro OASA, parking Polis Park) → wyjazd ~14:30 → Attiki Odos → A8 „Olympia Odos” przez Korynt wzdłuż Zatoki Korynckiej → obwodnica Patras → A5 → zjazd Gastouni → Glyfa. Razem ~483 km (OSRM: 185 + 298). 💶 <b>Bramki zapłacone (wyciąg Revolut):</b> Nea Odos 118,01 zł, Attiki Odos 2 × 11,25 zł, Olympia Odos 154,40 zł, bramka Patras 39,70 zł = <b>334,61 zł (~76 €)</b>, kat. 3. 🏕️ <b>Camping Aginara Beach</b>, 25 €/dobę."},
 
-  {type:"stay", date:"11–14.10", to:"Glyfa — Camping Aginara Beach (3 noce, wyjazd śr 14.10 przed 12:00)", temp:"~22°/14° → ~20°/12° pod koniec (morze ~23° → ~22°)",
-   note:"Baza: <b>Camping Aginara Beach</b>, Glyfa (Ilia) — mały kemping tuż przy plaży, <b>25 €/dobę</b> (zmiana planu z 11.10: zamiast Kalogrii w Stoupie i Thines w Finikoundzie). Wyjazd w śr 14.10 przed 12:00 (check-out) — kolejna baza do ustalenia; w kalkulatorze dalej 18 nocy × 25 € na całym Peloponezie. Praca zdalna od pn 12.10. W zasięgu: zamek Chlemoutsi (~6 km), Kyllini i Loutra Kyllinis, prom z Kyllini na Zakynthos (~1 h), starożytna Olimpia (~50 km), Patras (~70 km, duże zakupy). Wyjazd powrotny w czwartek 29.10 po pracy, piątek 30.10 urlop — w domu w niedzielę 1.11."},
+  {type:"stay", date:"11–14.10", to:"Glyfa — Camping Aginara Beach (3 noce, wyjazd śr 14.10 przed 12:00)", temp:"~21°/17°, 13.10 burze",
+   note:"Baza: <b>Camping Aginara Beach</b>, Glyfa (Ilia) — mały kemping tuż przy plaży, <b>25 €/dobę</b> (zmiana planu z 11.10: zamiast Kalogrii w Stoupie i Thines w Finikoundzie). Wyjazd w śr 14.10 przed 12:00 (check-out) — na południe, do Gialovy. Zakynthos odpuszczony: prom ~200 € w obie strony, a prognoza taka sama jak na lądzie. Praca zdalna od pn 12.10. W zasięgu: zamek Chlemoutsi (~6 km), Kyllini i Loutra Kyllinis, prom z Kyllini na Zakynthos (~1 h), starożytna Olimpia (~50 km), Patras (~70 km, duże zakupy). Wyjazd powrotny w czwartek 29.10 po pracy, piątek 30.10 urlop — w domu w niedzielę 1.11."},
+  {day:"PRZEPROWADZKA", date:"śr 14.10 · praca", type:"drive", from:"Glyfa · Aginara Beach (przed 12:00)", to:"GIALOVA · Camping Navarino Beach (+ objazd kempingów)", key:"navarino",
+   km:145, temp:"~21°/17°", dep:"~11:30", arr:"~14:45",
+   note:"Check-out w Aginarze do 12:00, więc wyjazd ~11:30. Glyfa → Gastouni → Pyrgos → wzdłuż wybrzeża Jońskiego przez Kyparissię i Filiatrę → Gialova. ~145 km, ~3 h 15 (OSRM), bez autostrad i bez bramek. ⚠️ To dzień pracy: albo pracujesz z fotela pasażera (grecki net działa), albo bierzesz 2–3 h wolnego. 🏕️ <b>Najpierw Navarino Beach</b> — jak się spodoba, zostajecie. 🔎 <b>Objazd kempingów (po pracy albo w weekend 17–18.10)</b> — wszystkie przy drodze Methoni–Koroni, otwarte do końca października: <b>Finikounda</b> (~26 km od Gialovy, ~40 min): Ammos (do 30.10), <b>Thines</b> (cały rok, 21 € z ACSI), Anemomilos (do 31.10), Loutsa (do 31.10) — wszystkie przy jednej długiej plaży, ~4 km od siebie; dalej <b>Tsapi</b> (do 31.10, ~15 km, osobna zatoczka) i <b>Koroni</b> (cały rok, ~18 km). Odpadają: Erodios obok Navarino (zamyka 25.10) i Methoni (zamyka 15.10). Przed przyjazdem dzwońcie — pod koniec sezonu kempingi zamykają się wcześniej."},
+  {type:"stay", date:"od 14.10", to:"Gialova — Camping Navarino Beach (do 29.10, 15 nocy)", temp:"14–20.10 sucho, 20–23°/12–16°",
+   note:"Baza: <b>Camping Navarino Beach</b>, Gialova — przy samej plaży w zatoce Navarino, osłoniętej wyspą Sfaktiria. Cena do potwierdzenia (w kalkulatorze 25 €/dobę). Praca zdalna od czw 15.10. W zasięgu: Voidokilia i Stary Navarino (zamek), laguna Gialova, Pylos, Methoni (twierdza, ~20 km), Finikounda (~26 km). Kalamata ~1 h (duże zakupy). Wyjazd powrotny w czwartek 29.10 po pracy."},
 ];
 
 const RET = [
   {day:"DZIEŃ 6", date:"czw 29.10 · praca", type:"work",
-   to:"💻 Praca zdalna 07:00–15:00 · Glyfa (ostatni dzień)",
-   note:"Rano bez jazdy — pracujesz z Glyfy. Po 15:00 ruszacie na północ. Piątek 30.10 = urlop, więc to jedyny dzień jazdy po pracy w całym powrocie."},
-  {day:"DZIEŃ 6", date:"czw 29.10 · praca", type:"drive", from:"Glyfa (po 15:00)", to:"Platamonas (nocleg na dziko)", key:"platamonas",
-   km:458, temp:"~21°/12°", dep:"15:00", arr:"~22:30",
-   note:"Glyfa → A5 „Olympia Odos” → obwodnica Patras → <b>most Rio–Antirrio</b> (płatny, w 2026 ~16 € za osobówkę — bus może wpaść w wyższą kategorię) → wybrzeże przez Nafpaktos i Itea → Amfissa → Lamia → <b>A1 przez Larisę</b> → wąwóz Tempi → Platamonas. ~458 km, ~6 h 45 jazdy (OSRM) — o ~220 km i ~2 h krócej niż z Finikoundy, przez Ateny nie trzeba jechać. Odcinek Antirrio–Amfissa–Lamia to kręte drogi krajowe (już po zmroku, zachód ~18:20) — Pindos omijamy. 💸 <b>Wariant oszczędny (~150–180 zł mniej, +~1 h):</b> do Patras starą EO9 przez Kato Achaia zamiast A5 (bez bramki Patras ~40 zł); <b>prom Rio–Antirrio</b> zamiast mostu (kursuje całą dobę co ~15–30 min, zwykle taniej — cenę dla busa sprawdź w kasie); od Lamii <b>starą EO1 wybrzeżem</b> przez Stylidę, Almyros, Nea Anchialos i Velestino do Larisy (bez bramek Pelasgia i Moschochori, ~97 zł), dalej A1 przez Tempi. Bramki Antirrio–Lamia i tak nie ma. Długi wieczór, ale dzięki niemu piątek jest ~50 km krótszy i kończy się w Belgradzie. 🌙 <b>Nocleg na dziko w busie</b> (darmowy) nad morzem — cieplej niż w kotlinie Larisy: wybierz miejsce z park4night blisko zjazdu z A1, bo na rano liczy się szybki wjazd na autostradę (start 07:00). W Grecji dzikie biwakowanie formalnie jest zakazane, ale jedna noc w pojeździe bez rozkładania się jest tolerowana — wszystko zostaje w środku. Grecja = net działa."},
+   to:"💻 Praca zdalna 07:00–15:00 · Gialova (ostatni dzień)",
+   note:"Rano bez jazdy — pracujesz z Gialovy. Po 15:00 ruszacie na północ. Piątek 30.10 = urlop, więc to jedyny dzień jazdy po pracy w całym powrocie."},
+  {day:"DZIEŃ 6", date:"czw 29.10 · praca", type:"drive", from:"Gialova (po 15:00)", to:"Platamonas (nocleg na dziko)", key:"platamonas",
+   km:570, temp:"~21°/12°", dep:"15:00", arr:"~00:15",
+   note:"Gialova → Kyparissia → wybrzeże Jońskie → Pyrgos (~1 h 50 lokalnymi drogami, bez bramek — jeszcze za dnia) → A5 „Olympia Odos” → obwodnica Patras → <b>most Rio–Antirrio</b> (płatny, w 2026 ~16 € za osobówkę — bus może wpaść w wyższą kategorię) → wybrzeże przez Nafpaktos i Itea → Amfissa → Lamia → <b>A1 przez Larisę</b> → wąwóz Tempi → Platamonas. ~570 km, ~9 h jazdy (OSRM). Alternatywa przez Kalamatę, Tripoli i Ateny to ~663 km, ~8 h 10 — godzinę szybciej, ale z bramkami A7, Olympia Odos, Attiki i Nea Odos (~300 zł więcej wg wyciągu z 11.10). Przy przyjeździe po północy przesuń piątkowy start na 08:00. Odcinek Antirrio–Amfissa–Lamia to kręte drogi krajowe (już po zmroku, zachód ~18:20) — Pindos omijamy. 💸 <b>Wariant oszczędny (~150–180 zł mniej, +~1 h):</b> do Patras starą EO9 przez Kato Achaia zamiast A5 (bez bramki Patras ~40 zł); <b>prom Rio–Antirrio</b> zamiast mostu (kursuje całą dobę co ~15–30 min, zwykle taniej — cenę dla busa sprawdź w kasie); od Lamii <b>starą EO1 wybrzeżem</b> przez Stylidę, Almyros, Nea Anchialos i Velestino do Larisy (bez bramek Pelasgia i Moschochori, ~97 zł), dalej A1 przez Tempi. Bramki Antirrio–Lamia i tak nie ma. Długi wieczór, ale dzięki niemu piątek jest ~50 km krótszy i kończy się w Belgradzie. 🌙 <b>Nocleg na dziko w busie</b> (darmowy) nad morzem — cieplej niż w kotlinie Larisy: wybierz miejsce z park4night blisko zjazdu z A1, bo na rano liczy się szybki wjazd na autostradę (start 07:00). W Grecji dzikie biwakowanie formalnie jest zakazane, ale jedna noc w pojeździe bez rozkładania się jest tolerowana — wszystko zostaje w środku. Grecja = net działa."},
 
   {day:"DZIEŃ 7", date:"pt 30.10 · urlop", type:"toborder", from:"Platamonas (07:00)", to:"granica Evzoni–Bogorodica", key:"evzoni_b",
    km:143, temp:"~16°/9°", dep:"07:00", arr:"~09:00", badge:"granica GR→MK",
@@ -1205,7 +1231,8 @@ function addTiles(){
 // Min to temperatura nocy, czyli to, co liczy się przy spaniu w busie.
 const TEMP_PTS = [
   {name:'Kamena Vourla — Camping Venezuela', ll:[38.8228,22.7167], from:'2026-10-10', to:'2026-10-10', what:'nocleg sb 10.10'},
-    {name:'Glyfa — Camping Aginara Beach',    ll:[37.8372,21.1288], from:'2026-10-11', to:'2026-10-29', what:'baza od 11.10'},
+    {name:'Glyfa — Camping Aginara Beach',    ll:[37.8372,21.1288], from:'2026-10-11', to:'2026-10-14', what:'baza 11–14.10'},
+  {name:'Gialova — Camping Navarino Beach', ll:[36.9468,21.7074], from:'2026-10-14', to:'2026-10-29', what:'baza 14–29.10'},
   {name:'Larisa (kotlina)',                  ll:[39.6390,22.4191], from:'2026-10-29', to:'2026-10-29', what:'czw 29.10 — dla porównania (dawny plan)'},
   {name:'Platamonas (wybrzeże pod Olimpem)', ll:[40.0050,22.5970], from:'2026-10-29', to:'2026-10-29', what:'nocleg czw 29.10'},
   {name:'Belgrad — Camp Dunav',              ll:[44.8580,20.3300], from:'2026-10-30', to:'2026-10-30', what:'nocleg pt 30.10'},
@@ -1276,7 +1303,7 @@ function initMap(){
     L.polyline(GEO.out,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map)
       .bindPopup('▼ <b>Dojazd</b> — pt 2.10 – nd 4.10, przez Ostrawę, Brno, Bratysławę i Budapeszt (~2 260 km).');
     L.polyline(GEO.transfer,{color:'#34d399',weight:4,opacity:.9}).addTo(map)
-      .bindPopup('■ <b>Przeskok Chalkidiki → Kamena Vourla → Ateny → Patras → Glyfa</b> — sb 10.10 do Kamena Vourla (~442 km), nd 11.10 przez centrum Aten (2 h) i Patras do Camping Aginara Beach (~483 km). Pindos omijamy.');
+      .bindPopup('■ <b>Przeskok Chalkidiki → Kamena Vourla → Ateny → Patras → Glyfa → Gialova</b> — sb 10.10 do Kamena Vourla (~442 km), nd 11.10 przez centrum Aten (2 h) i Patras do Camping Aginara Beach (~483 km); śr 14.10 wybrzeżem do Gialovy, Camping Navarino Beach (~145 km). Pindos omijamy.');
     L.polyline(GEO.roam,{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
       .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE), ~776 km. W dojeździe w weekend, w powrocie w piątek 30.10 (urlop).');
     ELEV.forEach(m=>{
