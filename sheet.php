@@ -188,11 +188,27 @@ const CATS = [
 ];
 const OUT_CAT = 'Poza wyjazdem';
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
-// Prognoza dla kategorii bez stałej ceny: średnia na dzień od startu × cały wyjazd.
-// Zakupy idą „górkami” (zapas na kilka dni), więc liczymy po dniach kalendarzowych,
-// a nie po dniach z wydatkami — dni „na zapasach” obniżają średnią, jak w rzeczywistości.
-const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
+// Prognoza konsumpcji, przeliczana przy każdym dodaniu / imporcie / poprawce:
+// średnia = wydane ÷ dni kalendarzowe od startu do ostatniego pełnego dnia (wczoraj,
+// a dziś tylko jeśli coś już dziś wpisano). Zakupy idą „górkami”, więc dni „na zapasach”
+// też się liczą i obniżają średnią, jak w rzeczywistości.
+// Prognoza = wydane + średnia × pozostałe dni pobytu + RETURN_PER_DAY × pozostałe dni powrotu.
+const TRIP_FROM = '2026-10-02', STAY_TO = '2026-10-28', TRIP_TO = '2026-11-01', RETURN_PER_DAY = 100;
 const FORECAST = ['Konsumpcja'];
+function forecast(items,cat){
+  const day=864e5, t=d=>Date.parse(d+'T12:00'), iso=ms=>new Date(ms).toISOString().slice(0,10);
+  const list=items.filter(x=>x.cat===cat&&x.date>=TRIP_FROM&&x.date<=TRIP_TO);
+  const now=today(), yest=iso(t(now)-day);
+  let to=list.some(x=>x.date===now)?now:yest;
+  if(to>TRIP_TO) to=TRIP_TO;
+  if(to<TRIP_FROM) return null;
+  const spent=list.filter(x=>x.date<=to).reduce((s,x)=>s+pln(x),0);
+  const days=Math.round((t(to)-t(TRIP_FROM))/day)+1, avg=spent/days;
+  const span=(a,b)=>Math.max(0,Math.round((t(b)-t(a))/day)+1);
+  const next=iso(t(to)+day), retFrom=iso(t(STAY_TO)+day);
+  const stayLeft=span(next,STAY_TO), retLeft=span(next>retFrom?next:retFrom,TRIP_TO);
+  return {to,days,spent,avg,stayLeft,retLeft,total:spent+avg*stayLeft+RETURN_PER_DAY*retLeft};
+}
 // Stare nazwy kategorii (przed 9.10) — pokazujemy je jako Konsumpcję.
 const CAT_ALIAS = {'Jedzenie':'Konsumpcja','Zakupy':'Konsumpcja'};
 const fixCat = it => { if(CAT_ALIAS[it.cat]) it.cat=CAT_ALIAS[it.cat]; return it; };
@@ -270,17 +286,17 @@ function renderSummary(){
   ITEMS.forEach(it=>{ const v=pln(it); if(it.cat!==OUT_CAT) total+=v; const c=CAT_NAMES.includes(it.cat)?it.cat:'Inne'; by[c]=(by[c]||0)+v; });
   $('sum').textContent=zl(total);
   $('sumplan').textContent='plan całego wyjazdu: '+zl(PLAN_TOTAL);
-  const dayMs=864e5, t0=Date.parse(TRIP_FROM+'T12:00'), t1=Date.parse(TRIP_TO+'T12:00');
-  const tripDays=Math.round((t1-t0)/dayMs)+1;
-  const passed=Math.max(1,Math.min(tripDays,Math.round((Date.parse(today()+'T12:00')-t0)/dayMs)+1));
   $('cats').innerHTML=CATS.filter(([c,p])=>p||by[c]).map(([c,p])=>{
     const v=by[c]||0, pct=p?Math.min(100,v/p*100):0;
     return '<div class="cat"'+(c===OUT_CAT?' style="opacity:.55"':'')+'><span>'+esc(c)+(c===OUT_CAT?' <small>(nie wlicza się)</small>':'')+'</span><span class="v">'+zl(v)+
       (p?' <small>/ '+zl(p)+'</small>':'')+'</span>'+
       (p?'<div class="bar"><i class="'+(v>p?'over':'')+'" style="width:'+pct+'%"></i></div>':'')+
-      (FORECAST.includes(c)&&v&&passed<tripDays
-        ? (()=>{ const avg=v/passed, fc=avg*tripDays;
-            return '<small style="display:block;opacity:.75;margin-top:2px">śr. '+zl(avg)+'/dzień ('+passed+' z '+tripDays+' dni) → prognoza na koniec: <b style="color:'+(p&&fc>p?'var(--red)':'inherit')+'">'+zl(fc)+'</b></small>'; })()
+      (FORECAST.includes(c)&&v
+        ? (()=>{ const f=forecast(ITEMS,c); if(!f||!(f.stayLeft+f.retLeft)) return '';
+            const dm=f.to.slice(8,10)+'.'+f.to.slice(5,7);
+            return '<small style="display:block;opacity:.75;margin-top:2px">śr. <b>'+zl(f.avg)+'/dzień</b> ('+zl(f.spent)+' za '+f.days+' dni, do '+dm+')'+
+              ' → prognoza: '+(f.stayLeft?f.stayLeft+' dni pobytu × '+zl(f.avg)+' + ':'')+(f.retLeft?f.retLeft+' dni powrotu × '+zl(RETURN_PER_DAY)+' = ':'= ')+
+              '<b style="color:'+(p&&f.total>p?'var(--red)':'inherit')+'">'+zl(f.total)+'</b></small>'; })()
         : '')+'</div>';
   }).join('');
 }

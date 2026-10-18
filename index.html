@@ -323,6 +323,7 @@
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
       <div class="row"><span>Konsumpcja + internet + inne</span><span id="r-living">—</span></div>
       <div class="row total"><span>RAZEM cały wyjazd (szacunek)</span><b id="r-all">—</b></div>
+      <p id="food-live" style="display:none;font-size:12px;margin:8px 0 0;padding:8px 10px;border:1px solid var(--accent);border-radius:8px"></p>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0"><b>Konsumpcja (jedzenie i zakupy) — przeliczone z wyciągu (do 16.10):</b> 2 088 zł za 15 dni (2–16.10, 16.10 bez wydatków) = <b>~139 zł/dzień</b>, razem z kolacjami w tawernach i dniami „na zapasach” (14.10 duże zakupy w Sklavenitisie ~296 zł na kilka dni). Dalej: 12 dni na Peloponezie (17–28.10) × ~139 zł ≈ 1 670 zł + 4 dni powrotu × ~100 zł ≈ 400 zł → <b>~4 160 zł</b>; przy celu ~100 zł/dzień wyszłoby ~3 690 zł; w kalkulatorze <b>4 300 zł z zapasem ~140 zł</b> (wcześniej 4 500). Wydatki idą „górkami” (zakupy co kilka dni), więc patrz na sumę tygodniową, nie dzienną. Internet zamknięty: 2 greckie karty SIM (185 zł) + Orange Flex + 1Global, starczy do końca wyjazdu.</p>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Agia Kiriaki (kemping Stavros)→Kamena Vourla 442 km + Kamena Vourla→Ateny→Patras→Glyfa (Camping Aginara Beach) 483 km + Glyfa→Finikounda (Camping Anemomilos) 172 km = 3 357 km, powrót 680 + 730 + 973 + 495 = 2 878 km autostradą przez Kalamatę, Tripoli, Korynt, Ateny, Platamonas, Belgrad i MOP Woźniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i obwodnicę Aten (nocleg sb 10.10 w Kamena Vourla), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noce 1 (pt 2.10) i 8 (sb 31.10) są darmowe</b> — śpicie w busie na MOP Woźniki (Zachód w dojeździe, Wschód w powrocie), a <b>w Platamonasie (czw 29.10) śpicie na dziko w busie</b>, stąd tylko 3 płatne noce w drodze: Camp Dunav ×2 po <b>130 zł</b> i <b>Camping Venezuela w Kamena Vourla</b> (<b>23 € z kartą ACSI</b> ≈ 101 zł). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>36 €/dobę</b>. Nocleg na Peloponezie: <b>Camping Aginara Beach</b> w Glyfie 3 noce × 25 € + <b>Camping Anemomilos</b> w Finikoundzie 15 nocy × 23 € (zostajecie do końca, do 29.10) = 420 €, w kalkulatorze średnio 23,33 €/dobę × 18 nocy (11–29.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
@@ -1259,6 +1260,30 @@ function calc(){
 }
 ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
 calc();
+
+// Konsumpcja na żywo z arkusza wydatków (tylko z tokenem na tym urządzeniu) — ta sama
+// metoda co w sheet.php: średnia do ostatniego pełnego dnia, dalej dni pobytu × średnia
+// + dni powrotu × 100 zł. Liczba w polu kalkulatora zostaje ręczna.
+function foodLive(){
+  const tok=adminToken(), el=document.getElementById('food-live'); if(!tok) return;
+  const FROM='2026-10-02', STAY_TO='2026-10-28', TO='2026-11-01', RET=100, CAT='Konsumpcja', ALIAS={'Jedzenie':1,'Zakupy':1};
+  const day=864e5, t=d=>Date.parse(d+'T12:00'), iso=ms=>new Date(ms).toISOString().slice(0,10);
+  const now=(()=>{ const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); })();
+  fetch('api.php',{method:'POST',body:new URLSearchParams({action:'costs',token:tok})}).then(r=>r.json()).then(d=>{
+    if(!d||!d.items) return;
+    const rates=Object.assign({PLN:1},d.rates||{}), pln=x=>(+x.amount||0)*(rates[x.cur]||0);
+    const list=d.items.filter(x=>(x.cat===CAT||ALIAS[x.cat])&&x.date>=FROM&&x.date<=TO);
+    let to=list.some(x=>x.date===now)?now:iso(t(now)-day); if(to>TO) to=TO; if(to<FROM||!list.length) return;
+    const spent=list.filter(x=>x.date<=to).reduce((s,x)=>s+pln(x),0), days=Math.round((t(to)-t(FROM))/day)+1, avg=spent/days;
+    const span=(a,b)=>Math.max(0,Math.round((t(b)-t(a))/day)+1), next=iso(t(to)+day), rf=iso(t(STAY_TO)+day);
+    const stay=span(next,STAY_TO), ret=span(next>rf?next:rf,TO), total=spent+avg*stay+RET*ret, plan=v('c-food');
+    el.innerHTML='<b>Na żywo z arkusza:</b> '+fmt(spent)+' za '+days+' dni (do '+to.slice(8,10)+'.'+to.slice(5,7)+') = <b>'+fmt(avg)+'/dzień</b>'+
+      (stay+ret?' → '+(stay?stay+' dni pobytu × '+fmt(avg)+' + ':'')+(ret?ret+' dni powrotu × '+fmt(RET)+' ':'')+'= <b style="color:'+(total>plan?'var(--red,#f87171)':'inherit')+'">'+fmt(total)+'</b>':'')+
+      ' (w kalkulatorze '+fmt(plan)+')';
+    el.style.display='block';
+  }).catch(()=>{});
+}
+foodLive();
 
 // ---- mapa (opcjonalna — wymaga internetu; plan po prawej działa bez niej) ----
 let map=null, markers={}, postLayer=null;
