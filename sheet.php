@@ -172,7 +172,7 @@ const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo 6 235 km × 10 l × 9,20 zł,
 // opłaty: dojazd 976 zł zapłacone + powrót ~910 zł (autostradą przez Ateny), noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI), MOP i Platamonas za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Aginara 3 × 25 € + Anemomilos 15 × 23 €, kurs 4,40)
-// + szacunek z pierwszych dni: konsumpcja 4 300 zł (przeliczone 16.10: ~139 zł/dzień), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
+// + szacunek z pierwszych dni: konsumpcja 4 300 zł (przeliczone 17.10: ~137 zł/dzień × 31 dni ≈ 4 240 zł), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
 // „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
@@ -192,8 +192,8 @@ const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // średnia = wydane ÷ dni kalendarzowe od startu do ostatniego pełnego dnia (wczoraj,
 // a dziś tylko jeśli coś już dziś wpisano). Zakupy idą „górkami”, więc dni „na zapasach”
 // też się liczą i obniżają średnią, jak w rzeczywistości.
-// Prognoza = wydane + średnia × pozostałe dni pobytu + RETURN_PER_DAY × pozostałe dni powrotu.
-const TRIP_FROM = '2026-10-02', STAY_TO = '2026-10-28', TRIP_TO = '2026-11-01', RETURN_PER_DAY = 100;
+// Prognoza = wydane + średnia × pozostałe dni (pobyt i powrót liczone tak samo).
+const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
 const FORECAST = ['Konsumpcja'];
 function forecast(items,cat){
   const day=864e5, t=d=>Date.parse(d+'T12:00'), iso=ms=>new Date(ms).toISOString().slice(0,10);
@@ -205,9 +205,8 @@ function forecast(items,cat){
   const spent=list.filter(x=>x.date<=to).reduce((s,x)=>s+pln(x),0);
   const days=Math.round((t(to)-t(TRIP_FROM))/day)+1, avg=spent/days;
   const span=(a,b)=>Math.max(0,Math.round((t(b)-t(a))/day)+1);
-  const next=iso(t(to)+day), retFrom=iso(t(STAY_TO)+day);
-  const stayLeft=span(next,STAY_TO), retLeft=span(next>retFrom?next:retFrom,TRIP_TO);
-  return {to,days,spent,avg,stayLeft,retLeft,total:spent+avg*stayLeft+RETURN_PER_DAY*retLeft};
+  const left=span(iso(t(to)+day),TRIP_TO);
+  return {to,days,spent,avg,left,total:spent+avg*left};
 }
 // Stare nazwy kategorii (przed 9.10) — pokazujemy je jako Konsumpcję.
 const CAT_ALIAS = {'Jedzenie':'Konsumpcja','Zakupy':'Konsumpcja'};
@@ -292,10 +291,10 @@ function renderSummary(){
       (p?' <small>/ '+zl(p)+'</small>':'')+'</span>'+
       (p?'<div class="bar"><i class="'+(v>p?'over':'')+'" style="width:'+pct+'%"></i></div>':'')+
       (FORECAST.includes(c)&&v
-        ? (()=>{ const f=forecast(ITEMS,c); if(!f||!(f.stayLeft+f.retLeft)) return '';
+        ? (()=>{ const f=forecast(ITEMS,c); if(!f||!f.left) return '';
             const dm=f.to.slice(8,10)+'.'+f.to.slice(5,7);
             return '<small style="display:block;opacity:.75;margin-top:2px">śr. <b>'+zl(f.avg)+'/dzień</b> ('+zl(f.spent)+' za '+f.days+' dni, do '+dm+')'+
-              ' → prognoza: '+(f.stayLeft?f.stayLeft+' dni pobytu × '+zl(f.avg)+' + ':'')+(f.retLeft?f.retLeft+' dni powrotu × '+zl(RETURN_PER_DAY)+' = ':'= ')+
+              ' → prognoza: + '+f.left+' dni × '+zl(f.avg)+' = '+
               '<b style="color:'+(p&&f.total>p?'var(--red)':'inherit')+'">'+zl(f.total)+'</b></small>'; })()
         : '')+'</div>';
   }).join('');
