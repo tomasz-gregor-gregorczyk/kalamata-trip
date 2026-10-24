@@ -299,21 +299,24 @@
       <div class="row"><label>Cena ON na powrocie (zł/l, śr. ważona z planu tankowania)</label><input id="c-price" type="number" value="7.76" step="0.05"></div>
       <div class="row"><label>Opłaty+winiety — dojazd i przeskok (zł, zapłacone wg wyciągu)</label><input id="c-toll" type="number" value="976"></div>
       <div class="row"><label>Opłaty+winiety — powrót (zł, szacunek)</label><input id="c-toll-ret" type="number" value="910"></div>
+      <h3 style="margin:14px 0 6px">Noclegi — cały wyjazd</h3>
+      <h3 style="margin:10px 0 6px;font-size:13px">W drodze (MOP Woźniki ×2 za darmo)</h3>
       <div class="row"><label>Camp Dunav (zł/noc)</label><input id="c-dunav" type="number" value="130"></div>
       <div class="row"><label>Nocy w Camp Dunav (sb 3.10 + pt 30.10)</label><input id="c-dunav-nights" type="number" value="2"></div>
-      <div class="row"><label>Inny nocleg w drodze — Kamena Vourla, Camping Venezuela (zł/noc)</label><input id="c-hotel" type="number" value="101"></div>
+      <div class="row"><label>Kamena Vourla, Camping Venezuela (zł/noc)</label><input id="c-hotel" type="number" value="101"></div>
       <div class="row"><label>Nocy płatnych w Kamena Vourla (sb 10.10; MOP = 0)</label><input id="c-nights" type="number" value="1"></div>
       <div class="row"><label>Hotel w Platamonasie ze śniadaniem — czw 29.10 (zł)</label><input id="c-plat" type="number" value="350"></div>
-      <h3 style="margin:14px 0 6px">Nocleg w Chalkidiki (1. tydzień)</h3>
+      <h3 style="margin:10px 0 6px;font-size:13px">Chalkidiki (1. tydzień)</h3>
       <div class="row"><label>Christos House — średnio za dobę (EUR)</label><input id="c-chal-hot-eur" type="number" value="34.17" step="0.5"></div>
       <div class="row"><label>Nocy pod dachem (nd 4.10 – wt 6.10)</label><input id="c-chal-hot-nights" type="number" value="3"></div>
       <div class="row"><label>Kemping Stavros — za dobę (EUR)</label><input id="c-chal-eur" type="number" value="36" step="1"></div>
       <div class="row"><label>Nocy na kempingu (śr 7.10 – sb 10.10)</label><input id="c-chal-nights" type="number" value="3"></div>
-      <h3 style="margin:14px 0 6px">Nocleg na Peloponezie (2. tydzień i dalej)</h3>
+      <h3 style="margin:10px 0 6px;font-size:13px">Peloponez (2. tydzień i dalej)</h3>
       <div class="row"><label>Camping Aginara Beach — za dobę (EUR)</label><input id="c-agi-eur" type="number" value="25" step="1"></div>
       <div class="row"><label>Nocy w Aginarze (nd 11.10 – śr 14.10)</label><input id="c-agi-nights" type="number" value="3"></div>
       <div class="row"><label>Camping Anemomilos — za dobę (EUR; na razie 0 — pokryte odszkodowaniem za drzewo)</label><input id="c-ane-eur" type="number" value="0" step="1"></div>
       <div class="row"><label>Nocy w Anemomilos (śr 14.10 – czw 29.10)</label><input id="c-ane-nights" type="number" value="15"></div>
+      <h3 style="margin:14px 0 6px">Pozostałe</h3>
       <div class="row"><label>Konsumpcja (jedzenie i zakupy) — cały wyjazd (zł) - szacunek</label><input id="c-food" type="number" value="4300" step="100"></div>
       <p id="food-live" style="display:none;font-size:11.5px;color:var(--accent);margin:-2px 0 8px"></p>
       <div class="row"><label>Internet — 2 karty SIM GR + reszta, zamknięte (zł)</label><input id="c-net" type="number" value="229"></div>
@@ -321,13 +324,14 @@
       <div class="row"><label>Kurs EUR (zł)</label><input id="c-eur" type="number" value="4.40" step="0.01"></div>
       <div class="row"><span>Paliwo (zapłacone + do kupienia na powrót)</span><span id="r-fuel">—</span></div>
       <div class="row"><span>Opłaty drogowe (tam + powrót)</span><span id="r-toll">—</span></div>
-      <div class="row"><span>Noclegi w drodze</span><span id="r-hotel">—</span></div>
-      <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
+      <div class="row total"><span>RAZEM przejazd (paliwo + opłaty)</span><b id="r-total">—</b></div>
+      <div class="row"><span>W drodze — Camp Dunav ×2, Kamena Vourla, hotel w Platamonasie</span><span id="r-hotel">—</span></div>
       <div class="row"><span>Christos House, Neos Marmaras (3 noce)</span><span id="r-chal-hot">—</span></div>
       <div class="row"><span>Chalkidiki — kemping Stavros</span><span id="r-chal">—</span></div>
       <div class="row"><span>Aginara Beach, Glyfa (3 noce)</span><span id="r-agi">—</span></div>
       <div class="row"><span>Anemomilos, Finikounda (15 nocy)</span><span id="r-ane">—</span></div>
-      <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
+      <div class="row total"><span>RAZEM noclegi</span><b id="r-sleep">—</b></div>
+      <div class="row total"><span>RAZEM przejazd + noclegi</span><b id="r-grand">—</b></div>
       <div class="row"><span>Konsumpcja + internet + inne</span><span id="r-living">—</span></div>
       <div class="row total"><span>RAZEM cały wyjazd (szacunek)</span><b id="r-all">—</b></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0"><b>Konsumpcja (jedzenie i zakupy) — z arkusza (do 17.10):</b> 2 190 zł za 16 dni (2–17.10, dni bez wydatków też się liczą) = <b>~137 zł/dzień</b>, razem z kolacjami w tawernach i dniami „na zapasach”. Każdy pozostały dzień (pobyt i powrót) liczony tak samo: 31 dni × ~137 zł ≈ <b>~4 240 zł</b>; w kalkulatorze <b>4 300 zł z zapasem ~60 zł</b>. Wydatki idą „górkami” (zakupy co kilka dni), więc patrz na sumę tygodniową, nie dzienną. Internet zamknięty: 2 greckie karty SIM (185 zł) + Orange Flex + 1Global, starczy do końca wyjazdu.</p>
@@ -1251,7 +1255,7 @@ function calc(){
   const chalEur=v('c-chal-eur'),chalNights=v('c-chal-nights');
   const chalHotEur=v('c-chal-hot-eur'),chalHotNights=v('c-chal-hot-nights');
   const fuel=v('c-fuel-paid')+Math.max(0,(kmRet+v('c-km-local'))*(cons/100)-v('c-tank'))*price, tollT=toll+tollRet, hotelT=dunav*dunavNights+hotel*nights+v('c-plat');
-  const trip=fuel+tollT+hotelT, agiT=agiEur*agiNights*eur, aneT=aneEur*aneNights*eur, kalT=agiT+aneT, chalT=chalEur*chalNights*eur, chalHotT=chalHotEur*chalHotNights*eur;
+  const trip=fuel+tollT, agiT=agiEur*agiNights*eur, aneT=aneEur*aneNights*eur, kalT=agiT+aneT, chalT=chalEur*chalNights*eur, chalHotT=chalHotEur*chalHotNights*eur;
   document.getElementById('r-fuel').textContent=fmt(fuel);
   document.getElementById('r-toll').textContent=fmt(tollT);
   document.getElementById('r-hotel').textContent=fmt(hotelT);
@@ -1260,10 +1264,12 @@ function calc(){
   document.getElementById('r-chal').textContent=fmt(chalT)+' ('+Math.round(chalEur*chalNights).toLocaleString('pl-PL')+' EUR)';
   document.getElementById('r-agi').textContent=fmt(agiT)+' ('+Math.round(agiEur*agiNights).toLocaleString('pl-PL')+' EUR)';
   document.getElementById('r-ane').textContent=fmt(aneT)+' ('+Math.round(aneEur*aneNights).toLocaleString('pl-PL')+' EUR)';
-  document.getElementById('r-grand').textContent=fmt(trip+chalHotT+chalT+kalT);
+  const sleep=hotelT+chalHotT+chalT+kalT;
+  document.getElementById('r-sleep').textContent=fmt(sleep);
+  document.getElementById('r-grand').textContent=fmt(trip+sleep);
   const living=v('c-food')+v('c-net')+v('c-other');
   document.getElementById('r-living').textContent=fmt(living);
-  document.getElementById('r-all').textContent=fmt(trip+chalHotT+chalT+kalT+living);
+  document.getElementById('r-all').textContent=fmt(trip+sleep+living);
 }
 ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
 calc();
