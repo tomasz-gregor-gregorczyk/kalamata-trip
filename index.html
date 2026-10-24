@@ -306,9 +306,11 @@
       <div class="row"><label>Nocy pod dachem (nd 4.10 – wt 6.10)</label><input id="c-chal-hot-nights" type="number" value="3"></div>
       <div class="row"><label>Kemping Stavros — za dobę (EUR)</label><input id="c-chal-eur" type="number" value="36" step="1"></div>
       <div class="row"><label>Nocy na kempingu (śr 7.10 – sb 10.10)</label><input id="c-chal-nights" type="number" value="3"></div>
-      <h3 style="margin:14px 0 6px">Nocleg na Peloponezie — Aginara Beach 3 noce (25 €) + Anemomilos 15 nocy (23 €)</h3>
-      <div class="row"><label>Średnio za dobę (EUR)</label><input id="c-kal-eur" type="number" value="23.33" step="0.5"></div>
-      <div class="row"><label>Nocy na Peloponezie (11–29.10)</label><input id="c-kal-nights" type="number" value="18"></div>
+      <h3 style="margin:14px 0 6px">Nocleg na Peloponezie (2. tydzień i dalej)</h3>
+      <div class="row"><label>Camping Aginara Beach — za dobę (EUR)</label><input id="c-agi-eur" type="number" value="25" step="1"></div>
+      <div class="row"><label>Nocy w Aginarze (nd 11.10 – śr 14.10)</label><input id="c-agi-nights" type="number" value="3"></div>
+      <div class="row"><label>Camping Anemomilos — za dobę (EUR; na razie 0 — pokryte odszkodowaniem za drzewo)</label><input id="c-ane-eur" type="number" value="0" step="1"></div>
+      <div class="row"><label>Nocy w Anemomilos (śr 14.10 – czw 29.10)</label><input id="c-ane-nights" type="number" value="15"></div>
       <div class="row"><label>Konsumpcja (jedzenie i zakupy) — cały wyjazd (zł) - szacunek</label><input id="c-food" type="number" value="4300" step="100"></div>
       <p id="food-live" style="display:none;font-size:11.5px;color:var(--accent);margin:-2px 0 8px"></p>
       <div class="row"><label>Internet — 2 karty SIM GR + reszta, zamknięte (zł)</label><input id="c-net" type="number" value="229"></div>
@@ -320,12 +322,13 @@
       <div class="row total"><span>RAZEM przejazd</span><b id="r-total">—</b></div>
       <div class="row"><span>Christos House, Neos Marmaras (3 noce)</span><span id="r-chal-hot">—</span></div>
       <div class="row"><span>Chalkidiki — kemping Stavros</span><span id="r-chal">—</span></div>
-      <div class="row"><span>Aginara + Anemomilos (18 nocy)</span><span id="r-kal">—</span></div>
+      <div class="row"><span>Aginara Beach, Glyfa (3 noce)</span><span id="r-agi">—</span></div>
+      <div class="row"><span>Anemomilos, Finikounda (15 nocy)</span><span id="r-ane">—</span></div>
       <div class="row total"><span>RAZEM z pobytem</span><b id="r-grand">—</b></div>
       <div class="row"><span>Konsumpcja + internet + inne</span><span id="r-living">—</span></div>
       <div class="row total"><span>RAZEM cały wyjazd (szacunek)</span><b id="r-all">—</b></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0"><b>Konsumpcja (jedzenie i zakupy) — z arkusza (do 17.10):</b> 2 190 zł za 16 dni (2–17.10, dni bez wydatków też się liczą) = <b>~137 zł/dzień</b>, razem z kolacjami w tawernach i dniami „na zapasach”. Każdy pozostały dzień (pobyt i powrót) liczony tak samo: 31 dni × ~137 zł ≈ <b>~4 240 zł</b>; w kalkulatorze <b>4 300 zł z zapasem ~60 zł</b>. Wydatki idą „górkami” (zakupy co kilka dni), więc patrz na sumę tygodniową, nie dzienną. Internet zamknięty: 2 greckie karty SIM (185 zł) + Orange Flex + 1Global, starczy do końca wyjazdu.</p>
-      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Agia Kiriaki (kemping Stavros)→Kamena Vourla 442 km + Kamena Vourla→Ateny→Patras→Glyfa (Camping Aginara Beach) 483 km + Glyfa→Finikounda (Camping Anemomilos) 172 km = 3 357 km, powrót 466 + 965 + 973 + 495 = 2 899 km autostradą przez Kalamatę, Tripoli, Korynt, Ateny, Kamena Vourla, Lamię, Belgrad i MOP Woźniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i obwodnicę Aten (nocleg sb 10.10 w Kamena Vourla), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noce 1 (pt 2.10) i 8 (sb 31.10) są darmowe</b> — śpicie w busie na MOP Woźniki (Zachód w dojeździe, Wschód w powrocie), stąd 4 płatne noce w drodze: Camp Dunav ×2 po <b>130 zł</b> i <b>Camping Venezuela w Kamena Vourla</b> ×2 (sb 10.10 i czw 29.10, <b>23 € z kartą ACSI</b> ≈ 101 zł). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>36 €/dobę</b>. Nocleg na Peloponezie: <b>Camping Aginara Beach</b> w Glyfie 3 noce × 25 € + <b>Camping Anemomilos</b> w Finikoundzie 15 nocy × 23 € (zostajecie do końca, do 29.10) = 420 €, w kalkulatorze średnio 23,33 €/dobę × 18 nocy (11–29.10). Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 0">Dystanse to sumy odcinków z rozpiski dzień po dniu (dojazd 2 260 km + przeskok Agia Kiriaki (kemping Stavros)→Kamena Vourla 442 km + Kamena Vourla→Ateny→Patras→Glyfa (Camping Aginara Beach) 483 km + Glyfa→Finikounda (Camping Anemomilos) 172 km = 3 357 km, powrót 466 + 965 + 973 + 495 = 2 899 km autostradą przez Kalamatę, Tripoli, Korynt, Ateny, Kamena Vourla, Lamię, Belgrad i MOP Woźniki). <b>Wszystkie odcinki przeliczone routerem OSRM na danych OpenStreetMap</b> (wrzesień 2026), a nie szacowane — wcześniejsza rozpiska zaniżała trasę o ~300 km. Przeskok do Kalamaty idzie przez A1 i obwodnicę Aten (nocleg sb 10.10 w Kamena Vourla), a nie skrótem przez Pindos i most Rio–Antirrio. Bez wyżywienia. <b>Noce 1 (pt 2.10) i 8 (sb 31.10) są darmowe</b> — śpicie w busie na MOP Woźniki (Zachód w dojeździe, Wschód w powrocie), stąd 4 płatne noce w drodze: Camp Dunav ×2 po <b>130 zł</b> i <b>Camping Venezuela w Kamena Vourla</b> ×2 (sb 10.10 i czw 29.10, <b>23 € z kartą ACSI</b> ≈ 101 zł). Chalkidiki rozbite na dwie pozycje: <b><a href="https://maps.app.goo.gl/Veouai5PZE4GEop19" target="_blank" rel="noopener">Christos House</a> w Neos Marmaras (Imeri Elia) na 3 noce</b> (nd 4.10 – wt 6.10) — pierwsze dwie <b>opłacone przez Booking za 319 zł</b>, czyli ~36,25 €/doba przy kursie 4,40; trzecia noc (wt 6.10) przedłużona na miejscu za <b>30 €</b> — razem 102,50 €, w kalkulatorze średnio 34,17 €/doba; dopłata za psa (jeśli będzie) płatna gotówką na miejscu, poza tą kwotą; <b>kemping Stavros na pozostałe 3 noce</b> (śr 7.10 – sb 10.10) po <b>36 €/dobę</b>. Nocleg na Peloponezie, dwie osobne pozycje: <b>Camping Aginara Beach</b> w Glyfie 3 noce × 25 € = 75 € oraz <b>Camping Anemomilos</b> w Finikoundzie 15 nocy (14–29.10) — <b>na razie 0 €</b>: 23.10 kemping wypłacił 450 € odszkodowania za drzewo, które spadło na namiot, obniżył dobę do 20 € i rozliczył 10 nocy (do nd 25.10) za 200 € z tej kwoty, a resztę (250 €) oddał gotówką. Jeśli zostaniecie do czw 29.10, dojdzie ~4 × 20 € = 80 €. Winiety SK+HU trzeba kupić 2× (10-dniowe wygasają przed powrotem). Kurs EUR: <b>4,40 zł</b> — średni NBP z 18.09.2026 to 4,3633, doliczony niewielki spread kartowy/kantorowy. W kalkulatorze przyjęte <b>9,20 zł/l</b> jako średnia ważona z zapasem na wzrost cen. Układ cen na trasie zostaje ten sam — Grecja najdroższa, Macedonia najtańsza (rozrzut ok. 2 zł/l między nimi): tankuj pełny bak w Macedonii tuż przed granicą z Grecją.</p>
     </div>
 
     <div class="section-title">Logika workation + ważne uwagi</div>
@@ -1239,23 +1242,24 @@ function toggleLegend(){const l=document.getElementById('legend');const c=l.clas
 if(window.innerWidth<=900){document.getElementById('legend').classList.add('collapsed');document.getElementById('legend-caret').textContent='▸';}
 
 // ---- kalkulator ----
-const ids=['c-km','c-km-ret','c-cons','c-price','c-toll','c-toll-ret','c-dunav','c-dunav-nights','c-hotel','c-nights','c-chal-eur','c-chal-nights','c-chal-hot-eur','c-chal-hot-nights','c-kal-eur','c-kal-nights','c-eur','c-food','c-net','c-other'];
+const ids=['c-km','c-km-ret','c-cons','c-price','c-toll','c-toll-ret','c-dunav','c-dunav-nights','c-hotel','c-nights','c-chal-eur','c-chal-nights','c-chal-hot-eur','c-chal-hot-nights','c-agi-eur','c-agi-nights','c-ane-eur','c-ane-nights','c-eur','c-food','c-net','c-other'];
 function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł';}
 function v(id){return +document.getElementById(id).value||0;}
 function calc(){
   const km=v('c-km'),kmRet=v('c-km-ret'),cons=v('c-cons'),price=v('c-price'),toll=v('c-toll'),tollRet=v('c-toll-ret'),hotel=v('c-hotel'),nights=v('c-nights'),dunav=v('c-dunav'),dunavNights=v('c-dunav-nights');
-  const kalEur=v('c-kal-eur'),kalNights=v('c-kal-nights'),eur=v('c-eur');
+  const agiEur=v('c-agi-eur'),agiNights=v('c-agi-nights'),aneEur=v('c-ane-eur'),aneNights=v('c-ane-nights'),eur=v('c-eur');
   const chalEur=v('c-chal-eur'),chalNights=v('c-chal-nights');
   const chalHotEur=v('c-chal-hot-eur'),chalHotNights=v('c-chal-hot-nights');
   const fuel=(km+kmRet)*(cons/100)*price, tollT=toll+tollRet, hotelT=dunav*dunavNights+hotel*nights;
-  const trip=fuel+tollT+hotelT, kalT=kalEur*kalNights*eur, chalT=chalEur*chalNights*eur, chalHotT=chalHotEur*chalHotNights*eur;
+  const trip=fuel+tollT+hotelT, agiT=agiEur*agiNights*eur, aneT=aneEur*aneNights*eur, kalT=agiT+aneT, chalT=chalEur*chalNights*eur, chalHotT=chalHotEur*chalHotNights*eur;
   document.getElementById('r-fuel').textContent=fmt(fuel);
   document.getElementById('r-toll').textContent=fmt(tollT);
   document.getElementById('r-hotel').textContent=fmt(hotelT);
   document.getElementById('r-total').textContent=fmt(trip);
   document.getElementById('r-chal-hot').textContent=fmt(chalHotT)+' ('+Math.round(chalHotEur*chalHotNights).toLocaleString('pl-PL')+' EUR)';
   document.getElementById('r-chal').textContent=fmt(chalT)+' ('+Math.round(chalEur*chalNights).toLocaleString('pl-PL')+' EUR)';
-  document.getElementById('r-kal').textContent=fmt(kalT)+' ('+Math.round(kalEur*kalNights).toLocaleString('pl-PL')+' EUR)';
+  document.getElementById('r-agi').textContent=fmt(agiT)+' ('+Math.round(agiEur*agiNights).toLocaleString('pl-PL')+' EUR)';
+  document.getElementById('r-ane').textContent=fmt(aneT)+' ('+Math.round(aneEur*aneNights).toLocaleString('pl-PL')+' EUR)';
   document.getElementById('r-grand').textContent=fmt(trip+chalHotT+chalT+kalT);
   const living=v('c-food')+v('c-net')+v('c-other');
   document.getElementById('r-living').textContent=fmt(living);
