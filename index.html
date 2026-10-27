@@ -202,6 +202,9 @@
     list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px}
   .hist summary::-webkit-details-marker{display:none}
   .hist summary .cnt{font-weight:400;color:var(--muted);font-size:11.5px}
+  .hist summary .hist-r{display:flex;align-items:center;gap:10px}
+  .hist-trip{font-weight:800;font-size:11.5px;color:var(--accent2);text-decoration:none;border:1px solid rgba(245,158,11,.5);border-radius:999px;padding:3px 10px}
+  .hist-trip:hover{background:rgba(245,158,11,.12)}
   .hist .body{padding:0 14px 12px;max-height:320px;overflow-y:auto}
   .trow{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);
     font-size:12px;cursor:pointer;align-items:baseline}
@@ -269,14 +272,16 @@
     </header>
 
     <details class="hist" id="hist">
-      <summary>📋 Historia zameldowań <span class="cnt" id="hist-cnt">—</span></summary>
+      <summary>📋 Historia zameldowań
+        <span class="hist-r"><a class="hist-trip" href="#" title="Przejechana trasa dzień po dniu, z odtwarzaniem"
+          onclick="event.preventDefault();event.stopPropagation();if(!tripOn)toggleTrip();document.getElementById('map').scrollIntoView({behavior:'smooth'});">🧭 na mapie</a>
+        <span class="cnt" id="hist-cnt">—</span></span></summary>
       <div class="body" id="track-list">Ładowanie…</div>
       <div class="foot">
         Zapis każdej pozycji wysłanej z telefonu — gdyby trzeba było odtworzyć trasę.
         Pojedyncze wpisy skasujesz krzyżykiem po włączeniu 🔒 trybu edycji.
         <a href="api.php?action=track&amp;format=gpx">⤓ pobierz ślad jako GPX</a>
         (otworzy się w Google Earth, OsmAnd, Garminie).
-        <a href="#" onclick="if(!tripOn)toggleTrip();return false;">🧭 pokaż na mapie dzień po dniu</a>
       </div>
     </details>
 
