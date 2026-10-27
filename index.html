@@ -113,6 +113,26 @@
   .findus:disabled svg{fill:#475569}
   .findus:disabled i{background:#475569;box-shadow:none;animation:none}
   @media (max-width:900px){ .findus{top:10px;right:10px;padding:9px 14px 9px 11px;font-size:12.5px;gap:7px} }
+  /* "Nasza trasa" — drugi przycisk pod "Znajdź nas"; włączony = pomarańczowa ramka */
+  .findus.tripbtn{top:62px}
+  .findus.tripbtn.on{border-color:var(--accent2);box-shadow:0 6px 22px rgba(0,0,0,.5),0 0 18px rgba(245,158,11,.35)}
+  @media (max-width:900px){ .findus.tripbtn{top:54px} }
+  .trip-panel{display:none;max-height:calc(100% - 130px);overflow:auto;min-width:230px;max-width:290px}
+  #map.trip .trip-panel{display:block}
+  #map.trip #legend{display:none}
+  .trip-panel .trip-head{font-weight:800;font-size:12.5px;margin-bottom:4px}
+  .trip-panel .trip-sum{color:var(--muted);margin-bottom:8px}
+  .trip-panel .trip-sum b{color:var(--accent2)}
+  .trip-panel .trip-play{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .trip-panel .trip-play button{background:var(--accent2);color:#3a2500;border:none;border-radius:999px;
+    font:inherit;font-weight:800;padding:5px 12px;cursor:pointer}
+  .trip-panel .trip-play span{color:var(--accent2);font-weight:700}
+  .trip-panel .td{cursor:pointer;border-radius:6px;padding:2px 4px;margin:1px -4px}
+  .trip-panel .td:hover{background:rgba(148,163,184,.12)}
+  .trip-panel .td .dot{width:14px;height:4px;flex:none}
+  .trip-panel .td em{font-style:normal;color:var(--muted);margin-left:auto;padding-left:8px;white-space:nowrap}
+  .trip-panel .td b{color:var(--accent2);flex:none;min-width:34px}
+  @media (max-width:900px){ .trip-panel{max-height:52%;max-width:250px;font-size:10px;left:8px;bottom:8px;padding:7px 9px} }
   .legend{position:absolute;bottom:14px;left:14px;z-index:1000;background:rgba(15,23,42,.92);
     border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:11.5px;color:var(--text)}
   .legend div{display:flex;align-items:center;gap:7px;margin:3px 0}
@@ -214,6 +234,11 @@
       Znajdź nas
       <i></i>
     </button>
+    <button class="findus tripbtn" id="tripbtn" onclick="toggleTrip()"
+            title="Pokaż, którędy faktycznie jechaliśmy — z zameldowań, dzień po dniu">
+      🧭 Nasza trasa
+    </button>
+    <div class="legend trip-panel" id="trip-panel">Ładowanie…</div>
     <div class="legend" id="legend">
       <button class="legend-toggle" onclick="toggleLegend()" aria-label="Pokaż/ukryj legendę">🗺️ Legenda <span id="legend-caret">▾</span></button>
       <div class="legend-body">
@@ -251,6 +276,7 @@
         Pojedyncze wpisy skasujesz krzyżykiem po włączeniu 🔒 trybu edycji.
         <a href="api.php?action=track&amp;format=gpx">⤓ pobierz ślad jako GPX</a>
         (otworzy się w Google Earth, OsmAnd, Garminie).
+        <a href="#" onclick="if(!tripOn)toggleTrip();return false;">🧭 pokaż na mapie dzień po dniu</a>
       </div>
     </details>
 
@@ -1080,6 +1106,8 @@ let ADMIN = false;
 // Przy 'let' sięgnięcie po zmienną przed jej deklaracją to ReferenceError,
 // który przerywa cały skrypt.
 let trackLayer=null, trackData=[];
+// Widok „Nasza trasa” (toggleTrip) — drawTrack sprawdza go, żeby nie dokładać kropkowanego śladu pod spód.
+let tripOn=false, tripDays=null;
 // To samo dotyczy pozycji na żywo: drawPosts() sprawdza liveLL, żeby odsunąć
 // zdjęcia spod znacznika busa, a bywa wołane zanim wykonałaby się sekcja LIVE.
 let liveMarker=null, liveLL=null;
@@ -1297,7 +1325,7 @@ function foodLive(){
 foodLive();
 
 // ---- mapa (opcjonalna — wymaga internetu; plan po prawej działa bez niej) ----
-let map=null, markers={}, postLayer=null;
+let map=null, markers={}, postLayer=null, planLayer=null;
 const LIVE_ICON = '<div class="live"><span class="live-ring"></span><span class="live-badge">'+
   '<svg viewBox="0 0 24 24" aria-hidden="true">'+
   '<path d="M2.4 7.1c0-1 .8-1.8 1.8-1.8h8c1 0 1.8.8 1.8 1.8v1.4h2.4c.6 0 1.2.3 1.5.8l1.6 2.4c.2.4.3.8.3 1.2v2.5c0 .5-.4 1-1 1h-1.3a2.6 2.6 0 0 0-5 0H8.7a2.6 2.6 0 0 0-5 0H2.4c-.6 0-1-.5-1-1V7.1zm13.6 2.6v2.2h3.4l-1.4-2.2h-2z"/>'+
@@ -1320,6 +1348,8 @@ function loadTrack(){
   return fetch('api.php?action=track&t='+Date.now()).then(r=>r.json()).then(rows=>{
     if(!Array.isArray(rows)) return;
     trackData=rows; renderTrackList(); drawTrack();
+    // nowe albo skasowane zameldowanie — „Nasza trasa” liczy się od nowa
+    tripDays=null; if(tripOn) tripLoad();
   }).catch(()=>{
     const el=document.getElementById('track-list');
     if(el) el.textContent='Historia dostępna dopiero na serwerze (wymaga PHP).';
@@ -1342,7 +1372,8 @@ function renderTrackList(){
 function drawTrack(){
   if(!map||!trackData.length) return;
   if(trackLayer) map.removeLayer(trackLayer);
-  trackLayer=L.layerGroup().addTo(map);
+  trackLayer=L.layerGroup();
+  if(!tripOn) trackLayer.addTo(map);
   L.polyline(trackData.map(r=>[r.lat,r.lng]),
     {color:'#e2e8f0',weight:3,opacity:.8,dashArray:'1,7',lineCap:'round'}).addTo(trackLayer);
   trackData.forEach(r=>{
@@ -1367,6 +1398,182 @@ function delTrack(i){
     if(d.ok) loadTrack();
     else alert('Nie udało się usunąć: '+(d.error||'nieznany błąd'));
   }).catch(e=>alert('Błąd sieci: '+e.message));
+}
+
+// ---- „Nasza trasa”: faktycznie przejechana droga z zameldowań, dzień po dniu ----
+// Zameldowania są rzadkie (co kilkadziesiąt–kilkaset km), więc odcinki między nimi
+// prowadzimy po drogach routerem OSRM; gdy nie odpowie, zostaje prosta kreska.
+// Wynik routera trzymamy w localStorage, żeby przy kolejnym otwarciu nie pytać go znowu.
+const TRIP_FROM='2026-10-01';
+const TRIP_COLORS=['#38bdf8','#f59e0b','#34d399','#f472b6','#a78bfa','#fb7185','#facc15','#2dd4bf','#fb923c','#818cf8','#4ade80','#e879f9'];
+let tripLayer=null, tripAnimLayer=null, tripTimer=null;
+function tripLocalDay(iso){
+  const d=new Date(iso);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function tripDd(day){
+  const dni=['nd','pn','wt','śr','cz','pt','sb'];
+  return dni[new Date(day+'T12:00').getDay()]+' '+(+day.slice(8,10))+'.'+day.slice(5,7);
+}
+// Krótkie nazwy naszych miejsc (do 6 km od zameldowania) — geokoder daje np.
+// „Δημοτική Ενότητα Σιθωνίας (Sithonia Municipal Unit)” albo „Άγιος Σεραφείμ”.
+const TRIP_PLACES=[
+  {ll:CITIES.gdynia.ll, name:'Gdynia'}, {ll:CITIES.wozniki.ll, name:'MOP Woźniki'},
+  {ll:CITIES.belgrad.ll, name:'Belgrad (Camp Dunav)'}, {ll:CITIES.chalkidiki.ll, name:'Neos Marmaras'},
+  {ll:[40.0424,23.8131], name:'Camping Stavros'}, {ll:CITIES.kamena.ll, name:'Kamena Vourla'},
+  {ll:CITIES.ateny.ll, name:'Ateny'}, {ll:CITIES.aginara.ll, name:'Glyfa (Aginara)'},
+  {ll:CITIES.anemomilos.ll, name:'Finikounda'}, {ll:CITIES.platamonas.ll, name:'Platamonas'},
+];
+// pierwszeństwo: ręczna etykieta > nasze miejsce > „Φοινικούντα (Finikouda), Grecja” → „Finikouda”
+function tripName(r){
+  if(r.label && r.label!=='W drodze') return r.label;
+  let best=null, bd=6000;
+  TRIP_PLACES.forEach(p=>{ const d=L.latLng(p.ll).distanceTo([r.lat,r.lng]); if(d<bd){ bd=d; best=p; } });
+  if(best) return best.name;
+  const p=r.place||'', m=p.match(/\(([^)]+)\)/);
+  return (m ? m[1] : p.split(',')[0]).replace(/ (Urban )?Municipal(ity| Unit)$/,'');
+}
+// Postoje (ten sam kemping, parking) sklejamy w jeden punkt; dzień = odcinek od ostatniego
+// punktu dnia poprzedniego do ostatniego zameldowania tego dnia. Dni bez ruchu znikają.
+function tripBuildDays(){
+  const pts=[];
+  trackData.filter(r=>tripLocalDay(r.t)>=TRIP_FROM).forEach(r=>{
+    const ll=L.latLng(r.lat,r.lng), last=pts[pts.length-1];
+    if(last && last.ll.distanceTo(ll)<3000) return;
+    pts.push({ll:ll, r:r, day:tripLocalDay(r.t)});
+  });
+  const days=[];
+  pts.forEach((p,i)=>{
+    if(!i) return;
+    let d=days[days.length-1];
+    if(!d || d.day!==p.day){ d={day:p.day, pts:[pts[i-1]]}; days.push(d); }
+    d.pts.push(p);
+  });
+  return days;
+}
+function tripRoute(d){
+  const coords=d.pts.map(p=>p.ll.lng.toFixed(5)+','+p.ll.lat.toFixed(5)).join(';'), key='trip-osrm:'+coords;
+  try{
+    const c=JSON.parse(localStorage.getItem(key)||'null');
+    if(c){ d.line=c.line; d.km=c.km; return Promise.resolve(); }
+  }catch(e){}
+  return fetch('https://router.project-osrm.org/route/v1/driving/'+coords+'?overview=full&geometries=geojson')
+    .then(r=>r.json()).then(o=>{
+      if(!o.routes || !o.routes[0]) throw new Error(o.code||'brak trasy');
+      d.line=o.routes[0].geometry.coordinates.map(c=>[+c[1].toFixed(5),+c[0].toFixed(5)]);
+      d.km=o.routes[0].distance/1000;
+      try{ localStorage.setItem(key,JSON.stringify({line:d.line,km:d.km})); }catch(e){}
+    }).catch(()=>{
+      d.line=d.pts.map(p=>[p.ll.lat,p.ll.lng]);
+      d.km=d.pts.reduce((s,p,i)=>i ? s+p.ll.distanceTo(d.pts[i-1].ll)/1000 : 0, 0);
+      d.straight=true;
+    });
+}
+function tripLoad(){
+  const el=document.getElementById('trip-panel');
+  if(tripDays){ tripDraw(); tripPanel(); tripFit(); return; }
+  if(!trackData.length){ el.textContent='Brak zameldowań do pokazania.'; return; }
+  el.textContent='Wyznaczam trasę po drogach…';
+  const days=tripBuildDays();
+  // po kolei, a nie naraz — publiczny router OSRM nie lubi serii równoległych zapytań
+  days.reduce((p,d)=>p.then(()=>tripRoute(d)), Promise.resolve()).then(()=>{
+    tripDays=days;
+    if(tripOn){ tripDraw(); tripPanel(); tripFit(); }
+  });
+}
+function tripDraw(){
+  tripLayer.clearLayers();
+  tripDays.forEach((d,i)=>{
+    d.color=TRIP_COLORS[i%TRIP_COLORS.length];
+    const a=d.pts[0].r, b=d.pts[d.pts.length-1].r;
+    L.polyline(d.line,{color:'#0b1220',weight:8,opacity:.6}).addTo(tripLayer);
+    d.poly=L.polyline(d.line,{color:d.color,weight:4.5,opacity:.95}).addTo(tripLayer)
+      .bindPopup('<b>'+tripDd(d.day)+'</b> · '+esc(tripName(a))+' → '+esc(tripName(b))+'<br>~'+Math.round(d.km)+' km'+(d.straight?' (w linii prostej)':''));
+    if(!i) L.circleMarker(d.line[0],{radius:6,color:'#fff',weight:2,fillColor:'#34d399',fillOpacity:1}).addTo(tripLayer)
+      .bindPopup('<b>Start</b> — '+esc(tripName(a))+'<br>'+fmtWhen(a.t));
+    L.circleMarker(d.line[d.line.length-1],{radius:5,color:'#fff',weight:2,fillColor:d.color,fillOpacity:1}).addTo(tripLayer)
+      .bindPopup('<b>Koniec dnia '+tripDd(d.day)+'</b><br>'+esc(tripName(b))+'<br>'+fmtWhen(b.t));
+  });
+}
+function tripPanel(){
+  const el=document.getElementById('trip-panel');
+  if(!tripDays.length){ el.textContent='Jeszcze nie ma przejechanych odcinków.'; return; }
+  const total=tripDays.reduce((s,d)=>s+d.km,0), straight=tripDays.some(d=>d.straight);
+  el.innerHTML='<div class="trip-head">🧭 Którędy faktycznie jechaliśmy</div>'+
+    '<div class="trip-sum">'+tripDays.length+' dni w ruchu · <b>~'+Math.round(total).toLocaleString('pl-PL')+' km</b></div>'+
+    '<div class="trip-play"><button id="trip-play" onclick="tripPlay()">▶ Odtwórz</button><span id="trip-now"></span></div>'+
+    tripDays.map((d,i)=>'<div class="td" onclick="tripFocus('+i+')"><span class="dot" style="background:'+d.color+'"></span>'+
+      '<b>'+tripDd(d.day)+'</b><span>'+esc(tripName(d.pts[0].r))+' → '+esc(tripName(d.pts[d.pts.length-1].r))+'</span>'+
+      '<em>'+Math.round(d.km)+' km'+(d.straight?'*':'')+'</em></div>').join('')+
+    (straight?'<div style="color:var(--muted)">* w linii prostej — router nie odpowiedział</div>':'')+
+    '<div style="color:var(--muted);margin-top:6px;display:block">Z zameldowań telefonu; między nimi droga dobrana routerem, więc to przybliżenie.</div>';
+}
+function tripFit(){
+  if(tripDays && tripDays.length) map.fitBounds(L.latLngBounds([].concat(...tripDays.map(d=>d.line))),{padding:[40,40]});
+}
+function tripFocus(i){
+  const d=tripDays&&tripDays[i]; if(!d) return;
+  map.fitBounds(d.poly.getBounds(),{padding:[50,50]});
+  d.poly.openPopup();
+}
+function toggleTrip(){
+  if(!map) return;
+  tripOn=!tripOn;
+  document.getElementById('map').classList.toggle('trip',tripOn);
+  document.getElementById('tripbtn').classList.toggle('on',tripOn);
+  if(tripOn){
+    map.removeLayer(planLayer);
+    if(trackLayer) map.removeLayer(trackLayer);
+    if(!tripLayer) tripLayer=L.layerGroup();
+    tripLayer.addTo(map);
+    tripLoad();
+  } else {
+    tripStop();
+    map.removeLayer(tripLayer);
+    planLayer.addTo(map);
+    if(trackLayer) trackLayer.addTo(map);
+    fitAll();
+  }
+}
+// Odtwarzanie: bus jedzie po całej trasie, tempo stałe w kilometrach (nie w punktach
+// routera, które na autostradzie są rzadkie, a w mieście gęste).
+function tripPlay(){
+  if(tripTimer){ tripStop(); return; }
+  if(!tripDays || !tripDays.length) return;
+  tripFit();
+  tripDays.forEach(d=>d.poly.setStyle({opacity:.18}));
+  tripAnimLayer=L.layerGroup().addTo(map);
+  const flat=[]; let km=0;
+  tripDays.forEach((d,i)=>d.line.forEach((p,k)=>{
+    const ll=L.latLng(p);
+    if(k) km+=flat[flat.length-1].ll.distanceTo(ll)/1000;
+    flat.push({ll:ll, i:i, km:km});
+  }));
+  const T=Math.min(30000, 8000+km*3);
+  const lines=tripDays.map(d=>L.polyline([],{color:d.color,weight:4.5,opacity:.95}).addTo(tripAnimLayer));
+  const bus=L.marker(flat[0].ll,{icon:L.divIcon({className:'',html:LIVE_ICON,iconSize:[34,34],iconAnchor:[17,17]}),zIndexOffset:1000}).addTo(tripAnimLayer);
+  const now=document.getElementById('trip-now'), t0=performance.now();
+  let j=0;
+  document.getElementById('trip-play').textContent='■ Stop';
+  const step=t=>{
+    const target=km*Math.min(1,(t-t0)/T);
+    while(j<flat.length && flat[j].km<=target){ lines[flat[j].i].addLatLng(flat[j].ll); j++; }
+    const cur=flat[Math.max(0,j-1)];
+    bus.setLatLng(cur.ll);
+    now.textContent=tripDd(tripDays[cur.i].day)+' · '+Math.round(cur.km).toLocaleString('pl-PL')+' km';
+    if(j<flat.length) tripTimer=requestAnimationFrame(step);
+    else { tripTimer=null; tripEnd(); }
+  };
+  tripTimer=requestAnimationFrame(step);
+}
+function tripEnd(){
+  if(tripAnimLayer){ map.removeLayer(tripAnimLayer); tripAnimLayer=null; }
+  if(tripDays) tripDays.forEach(d=>d.poly && d.poly.setStyle({opacity:.95}));
+  const b=document.getElementById('trip-play'); if(b) b.textContent='▶ Odtwórz';
+}
+function tripStop(){
+  if(tripTimer) cancelAnimationFrame(tripTimer);
+  tripTimer=null; tripEnd();
 }
 
 // ---- dziennik: zdjęcia i wpisy z trasy ----
@@ -1531,29 +1738,32 @@ function initMap(){
   try{
     map = L.map('map',{scrollWheelZoom:true}).setView([46,20],5);
     addTiles();
+    // Cały plan (trasy, przystanki, granice) w jednej grupie, żeby widok „Nasza trasa”
+    // mógł go schować jednym ruchem.
+    planLayer=L.layerGroup().addTo(map);
     // powrot pod spodem, dojazd na wierzchu - na wspolnych odcinkach widac obie
-    L.polyline(GEO.ret,{color:'#f472b6',weight:11,opacity:.12}).addTo(map);
-    L.polyline(GEO.ret,{color:'#f472b6',weight:4,opacity:.85}).addTo(map)
+    L.polyline(GEO.ret,{color:'#f472b6',weight:11,opacity:.12}).addTo(planLayer);
+    L.polyline(GEO.ret,{color:'#f472b6',weight:4,opacity:.85}).addTo(planLayer)
       .bindPopup('▲ <b>Powrót</b> — czw 29.10 – nd 1.11, przez Ateny, Platamonas (hotel), Belgrad (Camp Dunav) i MOP Woźniki (~2 886 km).');
-    L.polyline(GEO.out,{color:'#38bdf8',weight:11,opacity:.12}).addTo(map);
-    L.polyline(GEO.out,{color:'#38bdf8',weight:4,opacity:.85}).addTo(map)
+    L.polyline(GEO.out,{color:'#38bdf8',weight:11,opacity:.12}).addTo(planLayer);
+    L.polyline(GEO.out,{color:'#38bdf8',weight:4,opacity:.85}).addTo(planLayer)
       .bindPopup('▼ <b>Dojazd</b> — pt 2.10 – nd 4.10, przez Ostrawę, Brno, Bratysławę i Budapeszt (~2 260 km).');
-    L.polyline(GEO.transfer,{color:'#34d399',weight:4,opacity:.9}).addTo(map)
+    L.polyline(GEO.transfer,{color:'#34d399',weight:4,opacity:.9}).addTo(planLayer)
       .bindPopup('■ <b>Przeskok Chalkidiki → Kamena Vourla → Ateny → Patras → Glyfa → Finikounda</b> — sb 10.10 do Kamena Vourla (~442 km), nd 11.10 przez centrum Aten (2 h) i Patras do Camping Aginara Beach (~483 km); śr 14.10 wybrzeżem przez Pylos i Methoni do Finikoundy, Camping Anemomilos (~172 km). Pindos omijamy.');
-    L.polyline(GEO.roam,{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(map)
+    L.polyline(GEO.roam,{color:'#ef4444',weight:5,opacity:.9,dashArray:'2,8'}).addTo(planLayer)
       .bindPopup('📵 <b>Strefa roamingu</b> — Serbia + Macedonia Płn. (poza UE), ~776 km. W dojeździe w weekend, w powrocie w piątek 30.10 (urlop).');
     ELEV.forEach(m=>{
       const ic=L.divIcon({className:'',html:'<div class="emk">⛰️</div>',iconSize:[22,22],iconAnchor:[11,11]});
-      L.marker(m.ll,{icon:ic}).addTo(map).bindPopup(`<b>⛰️ ${m.name}</b><br><b>${m.alt}</b><br>${m.note}`);
+      L.marker(m.ll,{icon:ic}).addTo(planLayer).bindPopup(`<b>⛰️ ${m.name}</b><br><b>${m.alt}</b><br>${m.note}`);
     });
     STOPS.forEach(s=>{
       const c=CITIES[s.key];
       const ic=L.divIcon({className:'',html:`<div class="mk ${s.cls}">${s.label}</div>`,iconSize:[26,26],iconAnchor:[13,13]});
-      markers[s.key]=L.marker(c.ll,{icon:ic}).addTo(map).bindPopup(`<b>${c.name}</b><br>${s.txt}`);
+      markers[s.key]=L.marker(c.ll,{icon:ic}).addTo(planLayer).bindPopup(`<b>${c.name}</b><br>${s.txt}`);
     });
     BORDERS.forEach(b=>{
       const ic=L.divIcon({className:'',html:'<div class="bmk">🛂</div>',iconSize:[22,22],iconAnchor:[11,11]});
-      markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(map).bindPopup(
+      markers[b.key]=L.marker(b.ll,{icon:ic}).addTo(planLayer).bindPopup(
         `<b>🛂 ${b.name}</b><br>${b.best}<br><br>${b.roam}<br><br><a href="${b.cam}" target="_blank" rel="noopener">▶ Kamera / czas oczekiwania live</a>`);
     });
     loadTemps();
