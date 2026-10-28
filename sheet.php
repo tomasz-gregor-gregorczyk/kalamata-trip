@@ -171,7 +171,7 @@
 const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
 // Plan = domyślne wartości kalkulatora z index.html (paliwo: 2 926 zł zapłacone do 24.10 + powrót (2 886 + 50 km) × 10 l − 45 l w baku ≈ 249 l × 7,76 zł,
 // opłaty: dojazd 976 zł zapłacone + powrót ~910 zł (autostradą przez Ateny), noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI, sb 10.10) + hotel w Platamonasie 350 zł (czw 29.10), MOP za darmo, + Christos House 2 × 36,25 € + 30 €
-// + kemping Stavros 3 × 36 € + Aginara 3 × 25 € + Anemomilos 80 € (10 nocy pokryte odszkodowaniem za drzewo + 4 × 20 € do 29.10), kurs 4,40)
+// + kemping Stavros 3 × 36 € + Aginara 3 × 25 € + Anemomilos 0 € (10 nocy pokryte odszkodowaniem za drzewo, 4 ostatnie gratis), kurs 4,40)
 // + szacunek z pierwszych dni: konsumpcja 4 300 zł (przeliczone 17.10: ~137 zł/dzień × 31 dni ≈ 4 240 zł), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
 // „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
@@ -179,7 +179,7 @@ const CATS = [
   ['Paliwo',           4855],
   ['Opłaty i winiety', 1886],
   ['Transport i parkingi', null],   // komunikacja miejska, taxi, parkingi, promy
-  ['Noclegi',          2319],
+  ['Noclegi',          1967],
   ['Konsumpcja',       4300],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
