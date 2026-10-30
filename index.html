@@ -299,6 +299,7 @@
     <div id="list-stay"></div>
 
     <div class="section-title leg-ret">▲ Powrót — czw–nd (29.10–1.11) · Platamonas (hotel), Camp Dunav, MOP Woźniki</div>
+    <div style="border:1px solid #f97316;background:rgba(249,115,22,.08);border-radius:8px;padding:10px 12px;margin:0 0 10px;font-size:13px;line-height:1.5">⚠️ <b>Powrót wstrzymany — awaria skrzyni biegów (czw 29.10, w drodze do Platamonasu).</b> Bus w serwisie, wycena naprawy w pn 2.11. Śpimy w <b>hotelu Yakinthos w Paralii Katerinis</b> — 4 doby (29.10–2.11) po 70 € = 280 €, płacimy sami, <b>zwrot z ubezpieczenia</b>. Hotel w Platamonasie odpadł, nocleg w Camp Dunav (pt 30.10) i winiety na sb 31.10 nieaktualne. Plan poniżej to stary harmonogram — nowy termin po wycenie.</div>
     <div id="list-ret"></div>
 
     <div class="section-title">🌡️ Temperatury dzień po dniu</div>
@@ -336,7 +337,7 @@
       <div class="row"><label>Nocy w Camp Dunav (sb 3.10 + pt 30.10)</label><input id="c-dunav-nights" type="number" value="2"></div>
       <div class="row"><label>Kamena Vourla, Camping Venezuela (zł/noc)</label><input id="c-hotel" type="number" value="101"></div>
       <div class="row"><label>Nocy płatnych w Kamena Vourla (sb 10.10; MOP = 0)</label><input id="c-nights" type="number" value="1"></div>
-      <div class="row"><label>Hotel w Platamonasie ze śniadaniem — czw 29.10 (zł)</label><input id="c-plat" type="number" value="352"></div>
+      <div class="row"><label>Hotel w Platamonasie ze śniadaniem — czw 29.10 (zł; odpadł po awarii — hotel w Katerini 4 × 70 € z ubezpieczenia, zwrotny)</label><input id="c-plat" type="number" value="0"></div>
       <h3 style="margin:10px 0 6px;font-size:13px">Chalkidiki (1. tydzień)</h3>
       <div class="row"><label>Christos House — średnio za dobę (EUR)</label><input id="c-chal-hot-eur" type="number" value="34.17" step="0.5"></div>
       <div class="row"><label>Nocy pod dachem (nd 4.10 – wt 6.10)</label><input id="c-chal-hot-nights" type="number" value="3"></div>
@@ -1682,9 +1683,7 @@ const TEMP_PTS = [
   {name:'Kamena Vourla — Camping Venezuela', ll:[38.8228,22.7167], from:'2026-10-10', to:'2026-10-10', what:'nocleg sb 10.10'},
     {name:'Glyfa — Camping Aginara Beach',    ll:[37.8372,21.1288], from:'2026-10-11', to:'2026-10-14', what:'baza 11–14.10'},
   {name:'Finikounda — Camping Anemomilos', ll:[36.8061,21.8015], from:'2026-10-14', to:'2026-10-29', what:'baza 14–29.10'},
-  {name:'Platamonas — hotel',                ll:[40.0050,22.5970], from:'2026-10-29', to:'2026-10-29', what:'nocleg czw 29.10'},
-  {name:'Belgrad — Camp Dunav',              ll:[44.8580,20.3300], from:'2026-10-30', to:'2026-10-30', what:'nocleg pt 30.10'},
-  {name:'MOP Woźniki',                       ll:[50.5980,19.0000], from:'2026-10-31', to:'2026-10-31', what:'nocleg sb 31.10 w busie'},
+  {name:'Paralia Katerinis — hotel Yakinthos', ll:[40.2762,22.5960], from:'2026-10-29', to:'2026-11-02', what:'awaria skrzyni — hotel 29.10–2.11'},
 ];
 let tempLayer=null;
 function isoDay(d){ return d.toISOString().slice(0,10); }
