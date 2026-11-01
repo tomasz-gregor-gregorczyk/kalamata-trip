@@ -114,6 +114,7 @@
 
     <div class="card">
       <div class="total"><b id="sum">0 zł</b><span id="sumplan"></span></div>
+      <div id="sumrefund" class="hint" style="margin-top:4px"></div>
       <div id="cats" style="margin-top:10px"></div>
     </div>
 
@@ -187,6 +188,9 @@ const CATS = [
   ['Poza wyjazdem',    null],   // np. subskrypcja podpięta pod kartę — widać ją, ale nie wlicza się do sum
 ];
 const OUT_CAT = 'Poza wyjazdem';
+// Wpisy, które odda ubezpieczyciel (awaria skrzyni 29.10: hotel Yakinthos 4 × 70 € + taxi).
+// Liczą się normalnie do wydanych, ale pod sumą widać, ile wróci i ile zostanie po zwrocie.
+const REFUND = {'20261101-080500-126b4c':'hotel', '20261101-080512-96bfaa':'taxi'};
 const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // Prognoza konsumpcji, przeliczana przy każdym dodaniu / imporcie / poprawce:
 // średnia = wydane ÷ dni kalendarzowe od startu do ostatniego pełnego dnia (wczoraj,
@@ -285,6 +289,11 @@ function renderSummary(){
   ITEMS.forEach(it=>{ const v=pln(it); if(it.cat!==OUT_CAT) total+=v; const c=CAT_NAMES.includes(it.cat)?it.cat:'Inne'; by[c]=(by[c]||0)+v; });
   $('sum').textContent=zl(total);
   $('sumplan').textContent='plan całego wyjazdu: '+zl(PLAN_TOTAL);
+  const ref=ITEMS.filter(it=>REFUND[it.id]);
+  const refPln=ref.reduce((s,it)=>s+pln(it),0);
+  $('sumrefund').innerHTML=ref.length
+    ? '↩ do zwrotu z ubezpieczenia: <b>'+zl(refPln)+'</b> ('+ref.map(it=>esc(REFUND[it.id])+' '+String(it.amount).replace('.',',')+' '+esc(it.cur)).join(' + ')+') → po zwrocie <b>'+zl(total-refPln)+'</b>'
+    : '';
   $('cats').innerHTML=CATS.filter(([c,p])=>p||by[c]).map(([c,p])=>{
     const v=by[c]||0, pct=p?Math.min(100,v/p*100):0;
     return '<div class="cat"'+(c===OUT_CAT?' style="opacity:.55"':'')+'><span>'+esc(c)+(c===OUT_CAT?' <small>(nie wlicza się)</small>':'')+'</span><span class="v">'+zl(v)+
@@ -316,7 +325,7 @@ function render(){
     }
     html+='<tr data-id="'+esc(it.id)+'">'+
       '<td><input type="date" data-f="date" value="'+esc(it.date)+'"></td>'+
-      '<td><input data-f="name" maxlength="120" value="'+esc(it.name)+'"></td>'+
+      '<td><input data-f="name" maxlength="120" value="'+esc(it.name)+'"'+(REFUND[it.id]?' title="Zwraca ubezpieczyciel"':'')+'>'+(REFUND[it.id]?'<small style="color:var(--green);white-space:nowrap">↩ zwrot z ubezpieczenia</small>':'')+'</td>'+
       '<td><select data-f="cat">'+opts(CAT_NAMES.includes(it.cat)?CAT_NAMES:CAT_NAMES.concat([it.cat]),it.cat)+'</select></td>'+
       '<td class="num"><input data-f="amount" inputmode="decimal" value="'+esc(String(it.amount).replace('.',','))+'"></td>'+
       '<td><select data-f="cur">'+opts(CURS,it.cur)+'</select></td>'+
