@@ -170,21 +170,21 @@
 
 <script>
 const CURS = ['PLN','EUR','CZK','HUF','RSD','MKD'];
-// Plan = domyślne wartości kalkulatora z index.html (paliwo: 2 926 zł zapłacone do 24.10 + powrót (2 886 + 50 km) × 10 l − 45 l w baku ≈ 249 l × 7,76 zł,
-// opłaty: dojazd 976 zł zapłacone + powrót ~910 zł (autostradą przez Ateny), noclegi w drodze: Camp Dunav 2 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI, sb 10.10) + JD4 City Apartment w Katerini 2 × 240 zł (3–5.11, po awarii, bez zwrotu), MOP za darmo, + Christos House 2 × 36,25 € + 30 €
+// Plan = domyślne wartości kalkulatora z index.html (paliwo: 2 926 zł zapłacone do 24.10 + powrót busem tylko do Katerini (680 + 50 km) × 10 l − 45 l w baku ≈ 28 l × 9,00 zł — dalej samolot z assistance pn 9.11, bus lawetą,
+// opłaty: dojazd 976 zł zapłacone + powrót do Katerini ~430 zł (bramki greckie), noclegi w drodze: Camp Dunav 1 × 130 zł + Kamena Vourla 101 zł (23 € z ACSI, sb 10.10) + JD4 City Apartment w Katerini 2 × 240 zł (3–5.11) + przedłużenie 4 × 50 € (5–9.11) — po awarii, bez zwrotu, MOP za darmo, + Christos House 2 × 36,25 € + 30 €
 // + kemping Stavros 3 × 36 € + Aginara 3 × 25 € + Anemomilos 0 € (10 nocy pokryte odszkodowaniem za drzewo, 4 ostatnie gratis), kurs 4,40)
-// + szacunek z pierwszych dni: konsumpcja 4 300 zł (przeliczone 17.10: ~137 zł/dzień × 31 dni ≈ 4 240 zł), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu na coś ekstra.
+// + szacunek z pierwszych dni: konsumpcja 5 350 zł (~137 zł/dzień × 39 dni do wylotu 9.11 ≈ 5 340 zł), internet 229 zł (zamknięty, 100%), inne 200 zł zapasu + kontener dla psa do samolotu 85 € (374 zł).
 // „Poza wyjazdem” (np. subskrypcje podpięte pod kartę) nie wlicza się do sum.
 // Po zmianie założeń w kalkulatorze popraw też te liczby.
 const CATS = [
-  ['Paliwo',           4855],
-  ['Opłaty i winiety', 1886],
+  ['Paliwo',           3178],
+  ['Opłaty i winiety', 1406],
   ['Transport i parkingi', null],   // komunikacja miejska, taxi, parkingi, promy
-  ['Noclegi',          2097],
-  ['Konsumpcja',       4300],   // jedzenie, restauracje, zakupy spożywcze i drobne
+  ['Noclegi',          2847],
+  ['Konsumpcja',       5350],   // jedzenie, restauracje, zakupy spożywcze i drobne
   ['Atrakcje',         null],
   ['Internet',          229],
-  ['Inne',              200],   // zapas na coś ekstra w trakcie wyjazdu
+  ['Inne',              574],   // zapas 200 zł na coś ekstra + kontener dla psa 85 €
   ['Poza wyjazdem',    null],   // np. subskrypcja podpięta pod kartę — widać ją, ale nie wlicza się do sum
 ];
 const OUT_CAT = 'Poza wyjazdem';
@@ -197,7 +197,7 @@ const PLAN_TOTAL = CATS.reduce((s,c)=>s+(c[1]||0),0);
 // a dziś tylko jeśli coś już dziś wpisano). Zakupy idą „górkami”, więc dni „na zapasach”
 // też się liczą i obniżają średnią, jak w rzeczywistości.
 // Prognoza = wydane + średnia × pozostałe dni (pobyt i powrót liczone tak samo).
-const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-01';
+const TRIP_FROM = '2026-10-02', TRIP_TO = '2026-11-09';
 const FORECAST = ['Konsumpcja'];
 function forecast(items,cat){
   const day=864e5, t=d=>Date.parse(d+'T12:00'), iso=ms=>new Date(ms).toISOString().slice(0,10);
